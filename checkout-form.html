@@ -193,8 +193,8 @@
             };
 
             try {
-                // In production, this would point to /.netlify/functions/checkout
-                const response = await fetch('http://localhost:8889/.netlify/functions/checkout', {
+                // Pointing to relative Netlify function path
+                const response = await fetch('/.netlify/functions/checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
