@@ -1,0 +1,35 @@
+node_modules/
+.env
+.DS_Store
+*.log
+bin/
+obj/
+__pycache__/
+*.pyc
+*.pyo
+output/
+
+# Local backup folders
+backup-gh/
+backup/
+
+# Local dev screenshots and assets
+screenshots/
+*.png
+*.zip
+diff.txt
+
+# Python PDF generation scripts (local only, not needed for Netlify)
+*.py
+requirements.txt
+*.gpx
+*.docx
+*.jsx
+
+# Local test scripts
+test_checkout.js
+
+# Files with hardcoded credentials — NEVER commit these
+config.js
+generate_audio.html
+schema.sql

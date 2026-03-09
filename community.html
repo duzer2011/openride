@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenRide Community — Riders on the Road</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy: #1A2B4C;
+      --yellow: #F4D03F;
+      --crimson: #8B1E28;
+      --ivory: #F9F6F0;
+      --cream: #F2EBE1;
+      --ink: #2C3E50;
+      --white: #FFFFFF;
+      --sand: #E5D9C5;
+      --muted: #7F8C8D;
+      --border: #D5C8B5;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--ivory);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 2rem;
+      border-bottom: 1px solid rgba(138, 175, 138, 0.2);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--ivory);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--crimson);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .nav-tab {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: rgba(244, 239, 228, 0.6);
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+    }
+
+    .nav-tab:hover {
+      color: var(--ivory);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-tab.active {
+      color: var(--ivory);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .nav-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 1.1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      background: var(--crimson);
+      border: none;
+      color: var(--white);
+      transition: opacity 0.15s;
+      letter-spacing: 0.03em;
+    }
+
+    .nav-btn:hover {
+      opacity: 0.88;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      background: var(--cream);
+      padding: 2.5rem 2rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: var(--ivory);
+      clip-path: polygon(0 100%, 0 55%, 8% 35%, 18% 55%, 30% 25%, 42% 48%, 55% 20%, 67% 44%, 78% 18%, 90% 40%, 100% 22%, 100% 100%);
+    }
+
+    .page-header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ivory);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+
+    .page-header h1 em {
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .page-header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      opacity: 0.9;
+    }
+
+    .live-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(138, 175, 138, 0.4);
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      margin-top: 0.75rem;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4CAF50;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      max-width: 1060px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* ── COMPOSE BAR ── */
+    .compose {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .compose-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .compose-prompt {
+      flex: 1;
+      background: var(--ivory);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 0.55rem 1.1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.87rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .compose-prompt:hover {
+      border-color: var(--navy);
+    }
+
+    .compose-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .compose-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.77rem;
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .compose-btn:hover {
+      background: var(--ivory);
+      border-color: var(--muted);
+    }
+
+    /* ── FILTER TABS ── */
+    .filter-tabs {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      padding: 0.38rem 0.9rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-tab.active {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+
+    .filter-tab:hover:not(.active) {
+      border-color: var(--muted);
+      color: var(--ink);
+    }
+
+    /* ── POST CARD ── */
+    .post {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      transition: box-shadow 0.2s;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .post:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Post header */
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.9rem 1.1rem 0.7rem;
+    }
+
+    .post-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+      border: 2px solid var(--border);
+    }
+
+    .post-meta {
+      flex: 1;
+    }
+
+    .post-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .post-type-pill {
+      font-size: 0.66rem;
+      font-weight: 500;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
+    }
+
+    .pill-checkin {
+      background: #E3F2FD;
+      color: #1565C0;
+    }
+
+    .pill-badge {
+      background: #FFF8E1;
+      color: #F57F17;
+    }
+
+    .pill-photo {
+      background: #F3E5F5;
+      color: #6A1B9A;
+    }
+
+    .pill-report {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .post-time {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .post-more {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .post-more:hover {
+      background: var(--ivory);
+    }
+
+    /* ── CHECK-IN POST ── */
+    .checkin-card {
+      margin: 0 1.1rem 0.85rem;
+      background: var(--ivory);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .checkin-map {
+      height: 100px;
+      background: linear-gradient(135deg, #d4e8d0 0%, #b8d4b2 40%, var(--navy) 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .checkin-map-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: repeating-linear-gradient(90deg, var(--crimson) 0, var(--crimson) 12px, transparent 12px, transparent 20px);
+      transform: translateY(-50%);
+    }
+
+    .checkin-pin {
+      width: 36px;
+      height: 36px;
+      border-radius: 50% 50% 50% 0;
+      background: var(--crimson);
+      border: 3px solid var(--white);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transform: rotate(-45deg);
+      position: relative;
+      z-index: 2;
+    }
+
+    .checkin-pin span {
+      transform: rotate(45deg);
+      display: block;
+    }
+
+    .checkin-milepost {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: var(--navy);
+      color: var(--ivory);
+      font-family: 'Special Elite', serif;
+      font-size: 0.68rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .checkin-info {
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .checkin-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.95rem;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .checkin-route {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .checkin-stat {
+      text-align: right;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .checkin-stat strong {
+      display: block;
+      font-size: 1rem;
+      color: var(--navy);
+      font-family: 'Bebas Neue', sans-serif;
+    }
+
+    /* ── BADGE POST ── */
+    .badge-post-visual {
+      margin: 0 1.1rem 0.85rem;
+      background: linear-gradient(135deg, #1a2e1c, var(--navy), #3d6b42);
+      border-radius: 10px;
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .badge-post-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .badge-post-label {
+      font-family: 'Special Elite', serif;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge-post-svg {
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge-post-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      color: var(--ivory);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge-post-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── PHOTO POST ── */
+    .photo-post-visual {
+      margin: 0 1.1rem 0.85rem;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .photo-placeholder {
+      height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      position: relative;
+    }
+
+    .photo-location-tag {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.55);
+      color: white;
+      font-size: 0.74rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .photo-route-tag {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: var(--crimson);
+      color: white;
+      font-size: 0.72rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    /* Post caption */
+    .post-caption {
+      padding: 0 1.1rem 0.5rem;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .post-caption strong {
+      font-weight: 600;
+    }
+
+    .post-caption .hashtag {
+      color: var(--navy);
+      font-weight: 500;
+    }
+
+    /* Post actions */
+    .post-actions {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1.1rem 0.85rem;
+      gap: 0.25rem;
+      border-top: 1px solid var(--ivory);
+      margin-top: 0.25rem;
+    }
+
+    .post-action {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .post-action:hover {
+      background: var(--ivory);
+      color: var(--ink);
+    }
+
+    .post-action.liked {
+      color: #e53935;
+    }
+
+    .post-action.share-btn-post {
+      margin-left: auto;
+    }
+
+    .post-action.share-btn-post {
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 8px;
+    }
+
+    .post-action.share-btn-post:hover {
+      background: var(--navy);
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: sticky;
+      top: 80px;
+    }
+
+    .sidebar-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .sidebar-card-head {
+      background: var(--ivory);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      color: var(--navy);
+    }
+
+    .sidebar-card-body {
+      padding: 0.85rem 1rem;
+    }
+
+    /* Active riders */
+    .active-rider {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--ivory);
+    }
+
+    .active-rider:last-child {
+      border-bottom: none;
+    }
+
+    .ar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      border: 2px solid var(--muted);
+    }
+
+    .ar-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .ar-route {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .ar-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4CAF50;
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+
+    /* Route leaderboard */
+    .leaderboard-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--ivory);
+      font-size: 0.82rem;
+    }
+
+    .leaderboard-row:last-child {
+      border-bottom: none;
+    }
+
+    .lb-rank {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      color: var(--muted);
+      width: 20px;
+    }
+
+    .lb-name {
+      flex: 1;
+      color: var(--ink);
+      font-weight: 500;
+      padding: 0 0.5rem;
+    }
+
+    .lb-miles {
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    /* Tags */
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tag {
+      font-size: 0.74rem;
+      color: var(--navy);
+      font-weight: 500;
+      background: var(--ivory);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tag:hover {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    /* ── SHARE SHEET MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .share-sheet {
+      background: var(--ivory);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 520px;
+      padding: 1.5rem 1.5rem 2rem;
+      animation: slideUp 0.25s ease both;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .sheet-handle {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      margin: 0 auto 1.25rem;
+    }
+
+    .sheet-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      color: var(--navy);
+      margin-bottom: 0.3rem;
+    }
+
+    .sheet-sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* Share image preview */
+    .share-preview {
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      border: 1px solid var(--border);
+    }
+
+    .share-preview canvas {
+      display: block;
+      width: 100%;
+    }
+
+    .share-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .share-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.75rem 0.5rem;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .share-option:hover {
+      border-color: var(--navy);
+      background: var(--ivory);
+    }
+
+    .share-option-icon {
+      font-size: 1.4rem;
+    }
+
+    .share-option-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-align: center;
+    }
+
+    .share-download {
+      width: 100%;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background 0.15s;
+    }
+
+    .share-download:hover {
+      background: var(--navy);
+    }
+
+    .sheet-close {
+      position: absolute;
+      top: 1rem;
+      right: 1.25rem;
+      background: var(--ivory);
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── NEW POST MODAL ── */
+    .modal-center {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-center.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--ivory);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 480px;
+      padding: 1.75rem;
+      animation: popIn 0.2s ease both;
+      position: relative;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-box h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-box p {
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1.1rem;
+      background: var(--ivory);
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-field {
+      margin-bottom: 0.85rem;
+    }
+
+    .modal-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.3rem;
+    }
+
+    .modal-input,
+    .modal-select,
+    .modal-textarea {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.87rem;
+      background: var(--white);
+      color: var(--ink);
+      transition: border-color 0.15s;
+    }
+
+    .modal-input:focus,
+    .modal-select:focus,
+    .modal-textarea:focus {
+      outline: none;
+      border-color: var(--navy);
+    }
+
+    .modal-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .modal-post-btn {
+      width: 100%;
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-top: 0.25rem;
+    }
+
+    .modal-post-btn:hover {
+      background: var(--navy);
+    }
+
+    /* Post type selector */
+    .post-type-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .post-type-opt {
+      padding: 0.7rem 0.5rem;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .post-type-opt:hover {
+      border-color: var(--muted);
+    }
+
+    .post-type-opt.selected {
+      border-color: var(--navy);
+      background: var(--ivory);
+    }
+
+    .post-type-opt .pto-icon {
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .post-type-opt .pto-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    @media (max-width: 700px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .nav-tabs {
+        display: none;
+      }
+
+      .share-options {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-left">
+      <a class="nav-logo" href="index.html">Open<span>Ride</span></a>
+      <div class="nav-tabs">
+        <a class="nav-tab" href="index.html">Plan a Tour</a>
+        <a class="nav-tab active" href="#">Community</a>
+        <a class="nav-tab" href="profile.html">My Profile</a>
+      </div>
+    </div>
+    <button class="nav-btn" onclick="openNewPost()">+ New Post</button>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>Riders on the <em>Road</em></h1>
+    <p>Real check-ins, badges, and moments from the trail</p>
+    <div class="live-count"><span class="live-dot"></span> 7 riders currently on a tour</div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="layout">
+
+    <!-- FEED -->
+    <div id="feed">
+
+      <!-- COMPOSE BAR -->
+      <div class="compose">
+        <div class="compose-avatar">🚴</div>
+        <div class="compose-prompt" onclick="openNewPost()">Share a moment from the road...</div>
+        <div class="compose-actions">
+          <button class="compose-btn" onclick="openNewPost('checkin')">📍 Check-in</button>
+          <button class="compose-btn" onclick="openNewPost('photo')">📸 Photo</button>
+        </div>
+      </div>
+
+      <!-- FILTER TABS -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterPosts('all', this)">All Posts</button>
+        <button class="filter-tab" onclick="filterPosts('checkin', this)">📍 Check-ins</button>
+        <button class="filter-tab" onclick="filterPosts('badge', this)">🏅 Badges</button>
+        <button class="filter-tab" onclick="filterPosts('photo', this)">📸 Photos</button>
+        <button class="filter-tab" onclick="filterPosts('natchez', this)">Natchez Trace</button>
+      </div>
+
+      <!-- POSTS rendered by JS -->
+      <div id="postsContainer"></div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- Riding now -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-head">🟢 Riding Right Now</div>
+        <div class="sidebar-card-body">
+          <div class="active-rider">
+            <div class="ar-avatar">🧔</div>
+            <div style="flex:1">
+              <div class="ar-name">Mike T.</div>
+              <div class="ar-route">Natchez Trace · Day 2</div>
+            </div>
+            <div class="ar-dot"></div>
+          </div>
+          <div class="active-rider">
+            <div class="ar-avatar">👩</div>
+            <div style="flex:1">
+              <div class="ar-name">Jess & Paul</div>
+              <div class="ar-route">Natchez Trace · Day 1</div>
+            </div>
+            <div class="ar-dot"></div>
+          </div>
+          <div class="active-rider">
+            <div class="ar-avatar">🧑</div>
+            <div style="flex:1">
+              <div class="ar-name">Dave K.</div>
+              <div class="ar-route">GAP Trail · Day 4</div>
+            </div>
+            <div class="ar-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Miles leaderboard -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-head">🏆 Most Miles This Month</div>
+        <div class="sidebar-card-body">
+          <div class="leaderboard-row">
+            <div class="lb-rank">1</div>
+            <div class="lb-name">Sarah W.</div>
+            <div class="lb-miles">248 mi</div>
+          </div>
+          <div class="leaderboard-row">
+            <div class="lb-rank">2</div>
+            <div class="lb-name">Mike T.</div>
+            <div class="lb-miles">182 mi</div>
+          </div>
+          <div class="leaderboard-row">
+            <div class="lb-rank">3</div>
+            <div class="lb-name">Dave K.</div>
+            <div class="lb-miles">165 mi</div>
+          </div>
+          <div class="leaderboard-row">
+            <div class="lb-rank">4</div>
+            <div class="lb-name">Jess R.</div>
+            <div class="lb-miles">124 mi</div>
+          </div>
+          <div class="leaderboard-row">
+            <div class="lb-rank">5</div>
+            <div class="lb-name">Carol B.</div>
+            <div class="lb-miles">98 mi</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trending tags -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-head">🔥 Trending</div>
+        <div class="sidebar-card-body">
+          <div class="tag-cloud">
+            <span class="tag">#NatchezTrace</span>
+            <span class="tag">#EBikeTour</span>
+            <span class="tag">#WindsorRuins</span>
+            <span class="tag">#InnToInn</span>
+            <span class="tag">#GAPTrail</span>
+            <span class="tag">#SpringRiding</span>
+            <span class="tag">#OpenRide</span>
+            <span class="tag">#SelfGuided</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SHARE SHEET -->
+  <div class="modal-overlay" id="shareModal">
+    <div class="share-sheet" style="position:relative;">
+      <button class="sheet-close" onclick="closeShare()">✕</button>
+      <div class="sheet-handle"></div>
+      <div class="sheet-title" id="sheetTitle">Share this post</div>
+      <div class="sheet-sub">Download your shareable image — sized perfectly for Instagram, Facebook, and Stories.</div>
+      <div class="share-preview"><canvas id="shareCanvas" width="1080" height="1080"></canvas></div>
+      <div class="share-options">
+        <div class="share-option" onclick="shareTo('facebook')">
+          <div class="share-option-icon">𝐟</div>
+          <div class="share-option-label">Facebook</div>
+        </div>
+        <div class="share-option" onclick="shareTo('instagram')">
+          <div class="share-option-icon">◎</div>
+          <div class="share-option-label">Instagram</div>
+        </div>
+        <div class="share-option" onclick="shareTo('twitter')">
+          <div class="share-option-icon">𝕏</div>
+          <div class="share-option-label">X / Twitter</div>
+        </div>
+        <div class="share-option" onclick="copyPostLink()">
+          <div class="share-option-icon">🔗</div>
+          <div class="share-option-label">Copy link</div>
+        </div>
+      </div>
+      <button class="share-download" onclick="downloadShareImage()">⬇ Download Share Image (1080×1080)</button>
+    </div>
+  </div>
+
+  <!-- NEW POST MODAL -->
+  <div class="modal-center" id="newPostModal">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeNewPost()">✕</button>
+      <h3>New Post</h3>
+      <p>Share a moment from your ride with the OpenRide community.</p>
+      <div class="post-type-grid">
+        <div class="post-type-opt selected" onclick="selectType('checkin',this)">
+          <div class="pto-icon">📍</div>
+          <div class="pto-label">Check-in</div>
+        </div>
+        <div class="post-type-opt" onclick="selectType('photo',this)">
+          <div class="pto-icon">📸</div>
+          <div class="pto-label">Photo</div>
+        </div>
+        <div class="post-type-opt" onclick="selectType('badge',this)">
+          <div class="pto-icon">🏅</div>
+          <div class="pto-label">Badge</div>
+        </div>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Route</div>
+        <select class="modal-select">
+          <option>Natchez Trace — Lower Trace</option>
+          <option>GAP Trail</option>
+          <option>Pacific Coast Highway</option>
+        </select>
+      </div>
+      <div class="modal-field" id="waypointField">
+        <div class="modal-label">Waypoint / Location</div>
+        <select class="modal-select">
+          <option>Windsor Ruins (MP 41.0)</option>
+          <option>Emerald Mound (MP 10.3)</option>
+          <option>Port Gibson (MP 39.2)</option>
+          <option>Rocky Springs (MP 54.8)</option>
+          <option>Mount Locust (MP 15.5)</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <div class="modal-label">Caption</div>
+        <textarea class="modal-textarea"
+          placeholder="What's the moment? The view, the feeling, the tip for the next rider..."></textarea>
+      </div>
+      <button class="modal-post-btn" onclick="submitPost()">Post to Community →</button>
+    </div>
+  </div>
+
+
+  <script>
+    // ── BADGE DRAWING (same engine as profile.html) ───────────────────────────
+    function drawBadge(svgEl, badge, size = 90) {
+      const s = size || 90;
+      const cx = s / 2, cy = s / 2;
+      const r1 = s * 0.48, r2 = s * 0.44, r3 = s * 0.38;
+
+      const topTextR = r3 * 0.72;
+      const botTextR = r3 * 0.88;
+      const yr = badge.year ? `<text x="${cx}" y="${cy + r3 * 0.58}" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="${s * 0.12}" fill="${badge.color3}" font-weight="bold">${badge.year}</text>` : '';
+
+      const uid = badge.id + '-' + Math.round(Math.random() * 10000);
+      svgEl.setAttribute('viewBox', `0 0 ${s} ${s}`);
+      svgEl.innerHTML = `
+    <defs>
+      <path id="topArc${uid}" d="M ${cx - topTextR},${cy} a ${topTextR},${topTextR} 0 0,1 ${topTextR * 2},0"/>
+      <path id="botArc${uid}" d="M ${cx - botTextR},${cy} a ${botTextR},${botTextR} 0 0,0 ${botTextR * 2},0"/>
+      <clipPath id="mountainClip${uid}">
+        <polygon points="0,${s} 0,${cy * 1.15} ${cx * 0.25},${cy * 0.8} ${cx * 0.6},${cy * 1.1} ${cx},${cy * 0.65} ${cx * 1.45},${cy * 1.1} ${s},${cy * 0.7} ${s},${s}"/>
+      </clipPath>
+      <linearGradient id="gloss${uid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="white" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="white" stop-opacity="0.0"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Outer thick ranger border -->
+    <circle cx="${cx}" cy="${cy}" r="${r1}" fill="${badge.color3}"/>
+    <!-- Inner sky background -->
+    <circle cx="${cx}" cy="${cy}" r="${r2}" fill="${badge.color1}"/>
+    
+    <!-- Mountain silhouette -->
+    <circle cx="${cx}" cy="${cy}" r="${r2}" fill="${badge.color2}" clip-path="url(#mountainClip${uid})"/>
+
+    <!-- Center inner ring -->
+    <circle cx="${cx}" cy="${cy}" r="${r3}" fill="none" stroke="${badge.color3}" stroke-width="${s * 0.015}"/>
+
+    <!-- Center icon -->
+    <text x="${cx}" y="${cy - r3 * 0.2}" text-anchor="middle" dominant-baseline="middle" font-size="${s * 0.35}">${badge.icon || ''}</text>
+
+    <!-- Year -->
+    ${yr}
+
+    <!-- Curved top text -->
+    <text font-family="'Bebas Neue', sans-serif" font-weight="bold" font-size="${s * 0.11}" fill="${badge.color3}" letter-spacing="${s * 0.01}">
+      <textPath href="#topArc${uid}" startOffset="50%" text-anchor="middle">${badge.textTop || ''}</textPath>
+    </text>
+
+    <!-- Curved bottom text -->
+    <text font-family="'Bebas Neue', sans-serif" font-weight="bold" font-size="${s * 0.1}" fill="${badge.color3}" letter-spacing="${s * 0.01}">
+      <textPath href="#botArc${uid}" startOffset="50%" text-anchor="middle">${badge.textBot || ''}</textPath>
+    </text>
+
+    <!-- Glossy Overlay -->
+    <path d="M ${cx - r1},${cy} A ${r1},${r1} 0 0,1 ${cx + r1},${cy} A ${r1},${r1 * 0.4} 0 0,0 ${cx - r1},${cy} Z" fill="url(#gloss${uid})"/>
+  `;
+    }
+
+    // ── POST DATA ─────────────────────────────────────────────────────────────
+    const BADGE_DEF = {
+      id: 'natchez-finisher', icon: '🏛', color1: '#E2E8F0', color2: '#94A3B8', color3: 'var(--navy)',
+      textTop: 'NATCHEZ TRACE', textBot: 'FINISHER', year: '2025'
+    };
+    const BADGE_FIRST = {
+      id: 'first-tour', icon: '🚴', color1: '#FEF3C7', color2: '#FCD34D', color3: 'var(--navy)',
+      textTop: 'FIRST TOUR', textBot: 'OPEN ROAD', year: '2025'
+    };
+
+    const POSTS = [
+      {
+        id: 'p1', type: 'checkin', route: 'natchez',
+        author: 'Sarah W.', avatar: '👩', time: '2 hours ago',
+        waypoint: 'Windsor Ruins', milepost: 'MP 41.0',
+        miles_today: '24', caption: 'Twenty-three columns standing in the middle of the forest, completely silent except for birds. I\'ve ridden a lot of roads but nothing quite prepares you for this. Worth every mile.',
+        hashtags: ['#WindsorRuins', '#NatchezTrace', '#OpenRide'],
+        likes: 34, comments: 8,
+        bg: 'linear-gradient(135deg,#2d4a1e,#4a7c3a,#6a9a5a)',
+      },
+      {
+        id: 'p2', type: 'badge', route: 'natchez',
+        author: 'Mike T.', avatar: '🧔', time: '5 hours ago',
+        badge: BADGE_DEF,
+        caption: 'Three days, 82 miles, one very happy e-bike. Rolled into Rocky Springs this afternoon. The ghost town trail at dusk was the perfect ending to the best tour I\'ve ever done.',
+        hashtags: ['#NatchezTraceFinisher', '#EBikeTour', '#OpenRide'],
+        likes: 67, comments: 14,
+      },
+      {
+        id: 'p3', type: 'photo', route: 'natchez',
+        author: 'Jess R.', avatar: '👩‍🦰', time: '1 day ago',
+        photo_emoji: '🌅', photo_bg: 'linear-gradient(160deg,#ff9a3c,#ff6b35,#c0392b,#8b1a1a)',
+        location: 'Emerald Mound, MS',
+        caption: 'Sunrise from the top of Emerald Mound. Got here at 6:45am and had it completely to myself for 20 minutes. Second largest Native American mound in the US and not a single other person. This is what self-guided touring is all about.',
+        hashtags: ['#EmeraldMound', '#NatchezTrace', '#Sunrise'],
+        likes: 89, comments: 21,
+      },
+      {
+        id: 'p4', type: 'checkin', route: 'natchez',
+        author: 'Dave K.', avatar: '🧑‍🦱', time: '1 day ago',
+        waypoint: 'Isabella B&B, Port Gibson', milepost: 'Night 2',
+        miles_today: '42', caption: 'Carol had sweet tea and cheese straws waiting on the porch when I rolled up. Locked bike storage, charging for the e-bike, and she already had tomorrow\'s weather pulled up. This is the place.',
+        hashtags: ['#IsabellaBnB', '#PortGibson', '#InnToInn'],
+        likes: 45, comments: 17,
+        bg: 'linear-gradient(135deg,#1a3a5c,#2e6da4,#4a8fc4)',
+      },
+      {
+        id: 'p5', type: 'badge', route: 'natchez',
+        author: 'Carol B.', avatar: '👩‍🦳', time: '2 days ago',
+        badge: BADGE_FIRST,
+        caption: 'First ever multi-day bike tour at 61 years old. My daughter said I was crazy. I said watch me. Natchez Trace — you changed my life.',
+        hashtags: ['#FirstTour', '#NeverTooLate', '#NatchezTrace', '#OpenRide'],
+        likes: 214, comments: 52,
+      },
+    ];
+
+    let currentSharePost = null;
+    let activeFilter = 'all';
+
+    // ── RENDER FEED ───────────────────────────────────────────────────────────
+    function renderFeed(posts) {
+      const container = document.getElementById('postsContainer');
+      container.innerHTML = '';
+      posts.forEach((post, i) => {
+        const el = buildPost(post);
+        el.style.animationDelay = (i * 0.07) + 's';
+        container.appendChild(el);
+      });
+    }
+
+    function buildPost(post) {
+      const div = document.createElement('div');
+      div.className = 'post';
+      div.dataset.type = post.type;
+      div.dataset.route = post.route;
+
+      const typeLabels = { checkin: '📍 Check-in', badge: '🏅 Badge Earned', photo: '📸 Photo', report: '📖 Trip Report' };
+      const typePills = { checkin: 'pill-checkin', badge: 'pill-badge', photo: 'pill-photo', report: 'pill-report' };
+
+      // Header
+      div.innerHTML += `
+    <div class="post-header">
+      <div class="post-avatar">${post.avatar}</div>
+      <div class="post-meta">
+        <div class="post-name">
+          ${post.author}
+          <span class="post-type-pill ${typePills[post.type]}">${typeLabels[post.type]}</span>
+        </div>
+        <div class="post-time">${post.time}</div>
+      </div>
+      <div class="post-more">⋯</div>
+    </div>`;
+
+      // Body by type
+      if (post.type === 'checkin') {
+        div.innerHTML += `
+      <div class="checkin-card">
+        <div class="checkin-map" style="background:${post.bg}">
+          <div class="checkin-map-line"></div>
+          <div class="checkin-pin"><span>📍</span></div>
+          <div class="checkin-milepost">${post.milepost}</div>
+        </div>
+        <div class="checkin-info">
+          <div><div class="checkin-name">${post.waypoint}</div><div class="checkin-route">Natchez Trace Pkwy</div></div>
+          <div class="checkin-stat"><strong>${post.miles_today}</strong>mi today</div>
+        </div>
+      </div>`;
+      } else if (post.type === 'badge') {
+        const svgId = 'badgeSvg_' + post.id;
+        div.innerHTML += `
+      <div class="badge-post-visual">
+        <div class="badge-post-label">✦ Badge Earned ✦</div>
+        <svg class="badge-post-svg" id="${svgId}" width="120" height="120" viewBox="0 0 90 90"></svg>
+        <div class="badge-post-name">${post.badge.textTop} ${post.badge.textBot}</div>
+        <div class="badge-post-sub">openride.bike</div>
+      </div>`;
+        // Draw badge after insertion
+        setTimeout(() => {
+          const svg = document.getElementById(svgId);
+          if (svg) drawBadge(svg, post.badge, 90);
+        }, 10);
+      } else if (post.type === 'photo') {
+        div.innerHTML += `
+      <div class="photo-post-visual">
+        <div class="photo-placeholder" style="background:${post.photo_bg}">
+          <span style="font-size:5rem;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))">${post.photo_emoji}</span>
+          <div class="photo-location-tag">📍 ${post.location}</div>
+          <div class="photo-route-tag">Natchez Trace</div>
+        </div>
+      </div>`;
+      }
+
+      // Caption + hashtags
+      const tags = (post.hashtags || []).map(h => `<span class="hashtag">${h}</span>`).join(' ');
+      div.innerHTML += `<div class="post-caption">${post.caption} ${tags}</div>`;
+
+      // Actions
+      div.innerHTML += `
+    <div class="post-actions">
+      <button class="post-action" onclick="toggleLike(this, ${post.likes})">
+        <span>♡</span> <span class="like-count">${post.likes}</span>
+      </button>
+      <button class="post-action">
+        <span>💬</span> ${post.comments}
+      </button>
+      <button class="post-action share-btn-post" onclick="openShare('${post.id}')">
+        ↗ Share
+      </button>
+    </div>`;
+
+      return div;
+    }
+
+    // ── INTERACTIONS ─────────────────────────────────────────────────────────
+    function toggleLike(btn, baseCount) {
+      const liked = btn.classList.toggle('liked');
+      btn.querySelector('.like-count').textContent = liked ? baseCount + 1 : baseCount;
+      btn.querySelector('span').textContent = liked ? '♥' : '♡';
+    }
+
+    function filterPosts(filter, btn) {
+      activeFilter = filter;
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      const filtered = POSTS.filter(p => {
+        if (filter === 'all') return true;
+        if (filter === 'natchez') return p.route === 'natchez';
+        return p.type === filter;
+      });
+      renderFeed(filtered);
+    }
+
+    // ── SHARE SHEET ───────────────────────────────────────────────────────────
+    function openShare(postId) {
+      currentSharePost = POSTS.find(p => p.id === postId) || POSTS[0];
+      document.getElementById('shareModal').classList.add('open');
+      generateShareImage(currentSharePost);
+    }
+
+    function closeShare() {
+      document.getElementById('shareModal').classList.remove('open');
+    }
+
+    function generateShareImage(post) {
+      const canvas = document.getElementById('shareCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = 1080, H = 1080;
+      canvas.width = W; canvas.height = H;
+
+      // Background
+      if (post.type === 'badge') {
+        const grad = ctx.createLinearGradient(0, 0, W, H);
+        grad.addColorStop(0, '#1a2e1c');
+        grad.addColorStop(0.5, 'var(--navy)');
+        grad.addColorStop(1, '#1a3a20');
+        ctx.fillStyle = grad;
+      } else if (post.type === 'checkin') {
+        const grad = ctx.createLinearGradient(0, 0, W, H);
+        grad.addColorStop(0, '#1e3420');
+        grad.addColorStop(1, 'var(--navy)');
+        ctx.fillStyle = grad;
+      } else {
+        const grad = ctx.createLinearGradient(0, 0, W, H);
+        grad.addColorStop(0, '#1a1a2e');
+        grad.addColorStop(1, 'var(--navy)');
+        ctx.fillStyle = grad;
+      }
+      ctx.fillRect(0, 0, W, H);
+
+      // Noise texture simulation (subtle dots)
+      for (let i = 0; i < 2000; i++) {
+        ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.03})`;
+        ctx.beginPath();
+        ctx.arc(Math.random() * W, Math.random() * H, Math.random() * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Terrain silhouette at bottom
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.beginPath();
+      ctx.moveTo(0, H);
+      ctx.lineTo(0, H * 0.72);
+      ctx.lineTo(W * 0.06, H * 0.62);
+      ctx.lineTo(W * 0.14, H * 0.68);
+      ctx.lineTo(W * 0.24, H * 0.55);
+      ctx.lineTo(W * 0.36, H * 0.65);
+      ctx.lineTo(W * 0.48, H * 0.50);
+      ctx.lineTo(W * 0.60, H * 0.60);
+      ctx.lineTo(W * 0.72, H * 0.48);
+      ctx.lineTo(W * 0.84, H * 0.58);
+      ctx.lineTo(W * 0.94, H * 0.46);
+      ctx.lineTo(W, H * 0.55);
+      ctx.lineTo(W, H);
+      ctx.closePath();
+      ctx.fill();
+
+      // OpenRide branding top
+      ctx.fillStyle = 'var(--muted)';
+      ctx.font = `500 ${W * 0.028}px "DM Sans", sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('OPENRIDE.BIKE', W / 2, W * 0.075);
+
+      // Decorative line under brand
+      ctx.strokeStyle = 'var(--navy)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(W * 0.35, W * 0.088);
+      ctx.lineTo(W * 0.65, W * 0.088);
+      ctx.stroke();
+
+      // Main content by type
+      if (post.type === 'badge') {
+        // Big badge emoji in center
+        ctx.font = `${W * 0.22}px serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(post.badge.icon, W / 2, H * 0.48);
+
+        // Badge name
+        ctx.fillStyle = 'var(--ivory)';
+        ctx.font = `700 ${W * 0.065}px "Playfair Display", serif`;
+        ctx.fillText(post.badge.textTop, W / 2, H * 0.625);
+        ctx.font = `400 italic ${W * 0.05}px "Playfair Display", serif`;
+        ctx.fillStyle = 'var(--muted)';
+        ctx.fillText(post.badge.textBot, W / 2, H * 0.685);
+
+        // Concentric circles decoration
+        ctx.strokeStyle = 'var(--crimson)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.arc(W / 2, H * 0.42, W * 0.28, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.arc(W / 2, H * 0.42, W * 0.32, 0, Math.PI * 2);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(193,127,58,0.4)';
+        ctx.stroke();
+
+      } else if (post.type === 'checkin') {
+        // Map pin icon
+        ctx.font = `${W * 0.15}px serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText('📍', W / 2, H * 0.38);
+
+        // Waypoint name
+        ctx.fillStyle = 'var(--ivory)';
+        ctx.font = `700 ${W * 0.072}px "Playfair Display", serif`;
+        ctx.fillText(post.waypoint, W / 2, H * 0.52);
+
+        // Route
+        ctx.fillStyle = 'var(--muted)';
+        ctx.font = `400 ${W * 0.038}px "DM Sans", sans-serif`;
+        ctx.fillText('Natchez Trace Parkway', W / 2, H * 0.585);
+
+        // Milepost badge
+        ctx.fillStyle = 'var(--crimson)';
+        const mpW = W * 0.22, mpH = W * 0.07;
+        const mpX = (W - mpW) / 2, mpY = H * 0.63;
+        roundRect(ctx, mpX, mpY, mpW, mpH, 8);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.font = `600 ${W * 0.032}px "DM Sans", sans-serif`;
+        ctx.fillText(post.milepost + ' · ' + post.miles_today + ' mi today', W / 2, mpY + mpH * 0.65);
+
+      } else {
+        // Photo post
+        ctx.font = `${W * 0.18}px serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(post.photo_emoji, W / 2, H * 0.44);
+
+        ctx.fillStyle = 'var(--ivory)';
+        ctx.font = `700 ${W * 0.055}px "Playfair Display", serif`;
+        ctx.fillText(post.location || 'On the Road', W / 2, H * 0.57);
+
+        ctx.fillStyle = 'var(--muted)';
+        ctx.font = `400 italic ${W * 0.036}px "Playfair Display", serif`;
+        ctx.fillText('Natchez Trace Parkway', W / 2, H * 0.625);
+      }
+
+      // Author
+      ctx.fillStyle = 'rgba(244,239,228,0.7)';
+      ctx.font = `400 ${W * 0.03}px "DM Sans", sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('— ' + post.author, W / 2, H * 0.785);
+
+      // Caption snippet (truncated)
+      const capShort = post.caption.length > 80 ? post.caption.slice(0, 80) + '...' : post.caption;
+      ctx.fillStyle = 'rgba(244,239,228,0.55)';
+      ctx.font = `300 ${W * 0.026}px "DM Sans", sans-serif`;
+      wrapText(ctx, '"' + capShort + '"', W / 2, H * 0.83, W * 0.75, W * 0.036);
+
+      // Bottom bar
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      ctx.fillRect(0, H * 0.91, W, H * 0.09);
+      ctx.fillStyle = 'var(--crimson)';
+      ctx.font = `700 ${W * 0.032}px "Playfair Display", serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('OpenRide', W / 2 - W * 0.04, H * 0.957);
+      ctx.fillStyle = 'var(--muted)';
+      ctx.font = `400 ${W * 0.025}px "DM Sans", sans-serif`;
+      ctx.fillText('.bike  ·  Your route. Your pace. Your adventure.', W / 2 + W * 0.08, H * 0.957);
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    function wrapText(ctx, text, x, y, maxW, lineH) {
+      const words = text.split(' ');
+      let line = '', lines = [];
+      words.forEach(word => {
+        const test = line + word + ' ';
+        if (ctx.measureText(test).width > maxW && line) {
+          lines.push(line.trim());
+          line = word + ' ';
+        } else { line = test; }
+      });
+      if (line) lines.push(line.trim());
+      lines.slice(0, 2).forEach((l, i) => ctx.fillText(l, x, y + i * lineH));
+    }
+
+    function downloadShareImage() {
+      const canvas = document.getElementById('shareCanvas');
+      const link = document.createElement('a');
+      link.download = 'openride-share.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    function shareTo(platform) {
+      const msgs = {
+        facebook: 'Opens Facebook share dialog with your post link in the live version.',
+        instagram: 'In the live version: downloads your share image, then opens Instagram so you can post it directly.',
+        twitter: 'Opens X/Twitter with a pre-written caption and your profile link.'
+      };
+      alert(msgs[platform] || 'Sharing...');
+    }
+
+    function copyPostLink() {
+      navigator.clipboard.writeText('openride.bike/community/' + (currentSharePost?.id || 'p1'))
+        .then(() => alert('Post link copied!'))
+        .catch(() => alert('openride.bike/community/' + (currentSharePost?.id || 'p1')));
+    }
+
+    // ── NEW POST ──────────────────────────────────────────────────────────────
+    let selectedPostType = 'checkin';
+
+    function openNewPost(type) {
+      selectedPostType = type || 'checkin';
+      document.querySelectorAll('.post-type-opt').forEach(el => el.classList.remove('selected'));
+      const opts = { 'checkin': 0, 'photo': 1, 'badge': 2 };
+      document.querySelectorAll('.post-type-opt')[opts[selectedPostType] || 0].classList.add('selected');
+      document.getElementById('newPostModal').classList.add('open');
+    }
+
+    function closeNewPost() {
+      document.getElementById('newPostModal').classList.remove('open');
+    }
+
+    function selectType(type, el) {
+      selectedPostType = type;
+      document.querySelectorAll('.post-type-opt').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('waypointField').style.display = type === 'badge' ? 'none' : '';
+    }
+
+    function submitPost() {
+      closeNewPost();
+      // Prepend a new post to feed
+      const newPost = {
+        id: 'new_' + Date.now(), type: selectedPostType, route: 'natchez',
+        author: 'You', avatar: '🚴', time: 'Just now',
+        waypoint: 'Windsor Ruins', milepost: 'MP 41.0', miles_today: '24',
+        badge: BADGE_DEF,
+        photo_emoji: '🌿', photo_bg: 'linear-gradient(160deg,#2d5a2d,#4a8a4a,#6aaa6a)',
+        location: 'Natchez Trace Pkwy',
+        caption: 'Out on the road. What a day.',
+        hashtags: ['#NatchezTrace', '#OpenRide'],
+        likes: 0, comments: 0,
+      };
+      const currentPosts = [newPost, ...POSTS];
+      renderFeed(currentPosts);
+      window.scrollTo({ top: 400, behavior: 'smooth' });
+    }
+
+    // Close modals on overlay click
+    document.getElementById('shareModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('shareModal')) closeShare();
+    });
+    document.getElementById('newPostModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('newPostModal')) closeNewPost();
+    });
+
+    // ── INIT ─────────────────────────────────────────────────────────────────
+    renderFeed(POSTS);
+  </script>
+</body>
+
+</html>

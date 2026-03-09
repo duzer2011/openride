@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenRide — Rider Profile</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy: #1A2B4C;
+      --yellow: #F4D03F;
+      --crimson: #8B1E28;
+      --ivory: #F9F6F0;
+      --cream: #F2EBE1;
+      --ink: #2C3E50;
+      --white: #FFFFFF;
+      --sand: #E5D9C5;
+      --muted: #7F8C8D;
+      --border: #D5C8B5;
+    }
+
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--ivory);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 2rem;
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--ivory);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--crimson);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .nav-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-btn.ghost {
+      background: transparent;
+      border: 1.5px solid var(--muted);
+      color: var(--ivory);
+    }
+
+    .nav-btn.ghost:hover {
+      background: var(--muted);
+      color: var(--navy);
+    }
+
+    .nav-btn.solid {
+      background: var(--crimson);
+      border: none;
+      color: var(--white);
+    }
+
+    .nav-btn.solid:hover {
+      opacity: 0.88;
+    }
+
+    /* ── HERO BANNER ── */
+    .profile-banner {
+      background: var(--cream);
+      padding: 3rem 2rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* Terrain silhouette */
+    .profile-banner::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: var(--ivory);
+      clip-path: polygon(0 100%, 0 60%, 5% 40%, 12% 55%, 20% 30%, 30% 50%, 40% 20%, 52% 45%, 60% 25%, 70% 42%, 80% 18%, 90% 38%, 100% 22%, 100% 100%);
+    }
+
+    .profile-header {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-end;
+      padding-bottom: 4rem;
+    }
+
+    .avatar-wrap {
+      flex-shrink: 0;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid var(--crimson);
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      box-shadow: 0 0 0 6px rgba(193, 127, 58, 0.2);
+      position: relative;
+    }
+
+    .avatar-edit {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--crimson);
+      border: 2px solid var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      cursor: pointer;
+      color: white;
+    }
+
+    .profile-meta {
+      flex: 1;
+      padding-bottom: 0.5rem;
+    }
+
+    .profile-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+
+    .profile-tagline {
+      font-size: 0.85rem;
+      color: var(--navy);
+      margin-bottom: 0.75rem;
+      font-style: italic;
+    }
+
+    .profile-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .ptag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(26, 43, 76, 0.4);
+      color: var(--navy);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
+    }
+
+    .profile-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-bottom: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .share-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: transparent;
+      border: 1.5px solid var(--navy);
+      color: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.45rem 1rem;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.04em;
+    }
+
+    .share-btn:hover {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: -1px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-cell {
+      background: var(--white);
+      padding: 1.1rem 1rem;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 2rem;
+    }
+
+    /* ── SECTION HEADERS ── */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-action {
+      font-size: 0.78rem;
+      color: var(--navy);
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* ── BADGES ── */
+    .badges-section {
+      margin-bottom: 2rem;
+    }
+
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    /* National Park Stamp Badge */
+    .badge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .badge-wrap:hover {
+      transform: scale(1.04);
+    }
+
+    .badge-wrap.locked {
+      opacity: 0.38;
+      filter: grayscale(0.6);
+    }
+
+    .badge-wrap.locked:hover {
+      transform: none;
+    }
+
+    .badge-svg-wrap {
+      width: 90px;
+      height: 90px;
+      position: relative;
+    }
+
+    .badge-name {
+      font-family: 'Special Elite', serif;
+      font-size: 0.7rem;
+      color: var(--ink);
+      text-align: center;
+      line-height: 1.3;
+      max-width: 90px;
+    }
+
+    .badge-wrap.locked .badge-name {
+      color: var(--muted);
+    }
+
+    /* ── TOUR JOURNAL ── */
+    .tour-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      transition: box-shadow 0.2s;
+    }
+
+    .tour-card:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .tour-card-header {
+      background: var(--navy);
+      padding: 0.85rem 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tour-card-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      color: var(--ivory);
+    }
+
+    .tour-card-badge-mini {
+      width: 32px;
+      height: 32px;
+    }
+
+    .tour-card-body {
+      padding: 1rem 1.1rem;
+    }
+
+    .tour-meta {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .tour-meta strong {
+      color: var(--ink);
+    }
+
+    .tour-note {
+      font-size: 0.87rem;
+      color: var(--ink);
+      line-height: 1.6;
+      font-style: italic;
+      border-left: 3px solid var(--muted);
+      padding-left: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    /* Photo strip */
+    .photo-strip {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+    }
+
+    .photo-strip::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .photo-strip::-webkit-scrollbar-thumb {
+      background: var(--border);
+    }
+
+    .photo-thumb {
+      width: 70px;
+      height: 70px;
+      border-radius: 7px;
+      background: var(--ivory);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .photo-thumb:hover {
+      opacity: 0.85;
+    }
+
+    .photo-add {
+      border: 2px dashed var(--muted);
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .tour-card-footer {
+      padding: 0.65rem 1.1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.75rem;
+      background: var(--ivory);
+    }
+
+    .tour-action {
+      font-size: 0.75rem;
+      color: var(--navy);
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.3rem 0.7rem;
+      border-radius: 5px;
+      transition: background 0.15s;
+    }
+
+    .tour-action:hover {
+      background: var(--border);
+    }
+
+    /* Log ride CTA */
+    .log-ride-card {
+      background: var(--ivory);
+      border: 2px dashed var(--muted);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .log-ride-card:hover {
+      background: var(--border);
+      border-color: var(--navy);
+    }
+
+    .log-ride-card .icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .log-ride-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .log-ride-card strong {
+      color: var(--navy);
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .sidebar-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .sidebar-card-head {
+      background: var(--ivory);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.9rem;
+      color: var(--navy);
+    }
+
+    .sidebar-card-body {
+      padding: 0.85rem 1rem;
+    }
+
+    /* Riding profile */
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--ivory);
+      font-size: 0.83rem;
+    }
+
+    .profile-row:last-child {
+      border-bottom: none;
+    }
+
+    .profile-row-label {
+      color: var(--navy);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .profile-row-val {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    /* Currently planning */
+    .planning-card {
+      background: linear-gradient(135deg, var(--navy), var(--navy));
+      border-radius: 9px;
+      padding: 0.85rem;
+      color: var(--white);
+    }
+
+    .planning-route {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .planning-detail {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      margin-bottom: 0.75rem;
+    }
+
+    .planning-btn {
+      display: inline-block;
+      background: var(--crimson);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .planning-btn:hover {
+      opacity: 0.88;
+    }
+
+    /* Miles to next badge */
+    .next-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .next-badge-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    .next-badge-info {
+      flex: 1;
+    }
+
+    .next-badge-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--navy);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Share / social */
+    .social-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .social-btn {
+      flex: 1;
+      min-width: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .social-btn:hover {
+      opacity: 0.85;
+    }
+
+    .social-btn.fb {
+      background: #1877F2;
+      color: white;
+    }
+
+    .social-btn.ig {
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: white;
+    }
+
+    .social-btn.copy {
+      background: var(--ivory);
+      color: var(--navy);
+      border: 1px solid var(--border);
+    }
+
+    /* ── MODAL OVERLAY ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--ivory);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalIn 0.2s ease both;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+
+    .modal p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .modal-close {
+      float: right;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--muted);
+      margin-top: -0.25rem;
+    }
+
+    .modal-badge-display {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0 1.5rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-up {
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .fade-up-2 {
+      animation: fadeUp 0.5s 0.1s ease both;
+    }
+
+    .fade-up-3 {
+      animation: fadeUp 0.5s 0.2s ease both;
+    }
+
+    @media (max-width: 700px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .badges-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a class="nav-logo" href="index.html">Open<span>Ride</span></a>
+    <div class="nav-actions">
+      <button class="nav-btn ghost" onclick="openLogRide()">+ Log a Ride</button>
+      <button class="nav-btn solid">Plan Next Tour</button>
+    </div>
+  </nav>
+
+  <!-- PROFILE BANNER -->
+  <div class="profile-banner">
+    <div class="profile-header fade-up">
+      <div class="avatar-wrap">
+        🚴
+        <div class="avatar-edit">✏</div>
+      </div>
+      <div class="profile-meta">
+        <div class="profile-name">Sarah Whitmore</div>
+        <div class="profile-tagline">E-bike adventurer · Inn-to-inn touring · Mississippi & beyond</div>
+        <div class="profile-tags">
+          <span class="ptag">⚡ E-Bike Rider</span>
+          <span class="ptag">🏨 Inn Hopper</span>
+          <span class="ptag">🌿 Spring Tourer</span>
+          <span class="ptag">👥 Couple</span>
+          <span class="ptag">🗺 2 Routes</span>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="share-btn" onclick="openShare()">
+          <span>↗</span> Share Profile
+        </button>
+        <button class="share-btn" onclick="window.location='index.html'">
+          ✏ Edit Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div style="max-width:900px;margin:0 auto;padding:0 2rem;">
+    <div class="stats-bar fade-up-2">
+      <div class="stat-cell">
+        <div class="stat-num">124</div>
+        <div class="stat-label">Miles Ridden</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Routes Complete</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Days on Road</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Badges Earned</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main fade-up-3">
+
+    <!-- LEFT COLUMN -->
+    <div>
+
+      <!-- BADGES -->
+      <div class="badges-section">
+        <div class="section-head">
+          <div class="section-title">🏅 Badges Earned</div>
+          <span class="section-action" onclick="openBadgeAll()">View all badges →</span>
+        </div>
+        <div class="badges-grid" id="badgesGrid"></div>
+      </div>
+
+      <!-- TOUR JOURNAL -->
+      <div>
+        <div class="section-head">
+          <div class="section-title">📖 Tour Journal</div>
+          <span class="section-action" onclick="openLogRide()">+ Log a ride</span>
+        </div>
+
+        <!-- Tour 1 -->
+        <div class="tour-card">
+          <div class="tour-card-header">
+            <div class="tour-card-name">Natchez Trace Parkway — Lower Trace</div>
+            <svg class="tour-card-badge-mini" viewBox="0 0 90 90" id="miniB1"></svg>
+          </div>
+          <div class="tour-card-body">
+            <div class="tour-meta">
+              <span>📅 <strong>March 14–17, 2025</strong></span>
+              <span>🚴 <strong>82 mi</strong></span>
+              <span>🌤 <strong>Spring</strong></span>
+              <span>⚡ <strong>E-Bike</strong></span>
+            </div>
+            <div class="tour-note">
+              "Windsor Ruins at golden hour was genuinely one of the most beautiful things I've ever seen on a bike. The
+              Isabella B&B in Port Gibson is a must — Carol had sweet tea waiting on the porch."
+            </div>
+            <div class="photo-strip">
+              <div class="photo-thumb">🏛️</div>
+              <div class="photo-thumb">🌲</div>
+              <div class="photo-thumb">🌅</div>
+              <div class="photo-thumb">🏡</div>
+              <div class="photo-thumb photo-add">+</div>
+            </div>
+          </div>
+          <div class="tour-card-footer">
+            <span class="tour-action" onclick="openShare()">↗ Share</span>
+            <span class="tour-action">✏ Edit notes</span>
+            <span class="tour-action">📄 Download PDF</span>
+            <span class="tour-action">🗺 View route</span>
+          </div>
+        </div>
+
+        <!-- Tour 2 -->
+        <div class="tour-card">
+          <div class="tour-card-header">
+            <div class="tour-card-name">Natchez Trace Parkway — Lower Trace</div>
+            <svg class="tour-card-badge-mini" viewBox="0 0 90 90" id="miniB2"></svg>
+          </div>
+          <div class="tour-card-body">
+            <div class="tour-meta">
+              <span>📅 <strong>Oct 3–5, 2024</strong></span>
+              <span>🚴 <strong>42 mi</strong></span>
+              <span>🍂 <strong>Fall</strong></span>
+              <span>⚡ <strong>E-Bike</strong></span>
+            </div>
+            <div class="tour-note">
+              "First time on the Trace — only did the first two days. Fall color was starting. Did the full trip again
+              in spring and it was even better."
+            </div>
+            <div class="photo-strip">
+              <div class="photo-thumb">🍂</div>
+              <div class="photo-thumb">🌿</div>
+              <div class="photo-thumb photo-add">+</div>
+            </div>
+          </div>
+          <div class="tour-card-footer">
+            <span class="tour-action" onclick="openShare()">↗ Share</span>
+            <span class="tour-action">✏ Edit notes</span>
+            <span class="tour-action">📄 Download PDF</span>
+            <span class="tour-action">🗺 View route</span>
+          </div>
+        </div>
+
+        <!-- Log ride CTA -->
+        <div class="log-ride-card" onclick="openLogRide()">
+          <div class="icon">🚵</div>
+          <p><strong>Just completed a tour?</strong><br>Log your ride to earn badges, save your memories, and share your
+            experience with the OpenRide community.</p>
+        </div>
+      </div>
+
+    </div><!-- /left -->
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- Currently planning -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-head">🗺 Currently Planning</div>
+        <div class="sidebar-card-body">
+          <div class="planning-card">
+            <div class="planning-route">GAP Trail — Pittsburgh to DC</div>
+            <div class="planning-detail">335 miles · 7–10 days · Rail trail · Summer 2025</div>
+            <button class="planning-btn" onclick="window.location='index.html'">Continue Planning →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next badge -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-head">🎯 Next Badge</div>
+        <div class="sidebar-card-body">
+          <div class="next-badge">
+            <svg class="next-badge-icon" viewBox="0 0 90 90" id="nextBadgeSvg"></svg>
+            <div class="next-badge-info">
+              <div class="next-badge-name">500 Miles Club</div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width:25%"></div>
+              </div>
+              <div class="progress-label">124 of 500 miles — 376 to go</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Riding profile -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-head">🚴 Riding Profile</div>
+        <div class="sidebar-card-body">
+          <div class="profile-row">
+            <span class="profile-row-label">Bike Type</span>
+            <span class="profile-row-val">⚡ E-Bike</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-row-label">Fitness</span>
+            <span class="profile-row-val">Relaxed pace</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-row-label">Lodging</span>
+            <span class="profile-row-val">B&Bs & inns</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-row-label">Food</span>
+            <span class="profile-row-val">Local & regional</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-row-label">Travel style</span>
+            <span class="profile-row-val">Couple</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-row-label">Best seasons</span>
+            <span class="profile-row-val">Spring & Fall</span>
+          </div>
+          <div style="margin-top:0.75rem;">
+            <span class="section-action">Edit profile →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Share -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-head">↗ Share Your Profile</div>
+        <div class="sidebar-card-body">
+          <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.75rem;line-height:1.5;">Share your tours and
+            badges with your cycling community.</p>
+          <div class="social-row">
+            <button class="social-btn fb" onclick="shareToFB()">f Facebook</button>
+            <button class="social-btn ig" onclick="shareToIG()">◎ Instagram</button>
+          </div>
+          <div style="margin-top:0.5rem;">
+            <button class="social-btn copy" style="width:100%" onclick="copyLink()">🔗 Copy profile link</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sidebar -->
+  </div><!-- /main -->
+
+
+  <!-- ── BADGE DETAIL MODAL ── -->
+  <div class="modal-overlay" id="badgeModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('badgeModal')">✕</button>
+      <h3 id="modalBadgeName">Badge Name</h3>
+      <p id="modalBadgeDesc">Badge description goes here.</p>
+      <div class="modal-badge-display">
+        <svg width="160" height="160" viewBox="0 0 90 90" id="modalBadgeSvg"></svg>
+      </div>
+      <p id="modalBadgeEarned" style="font-size:0.82rem;color:var(--navy);font-weight:500;text-align:center;"></p>
+      <div style="display:flex;gap:0.75rem;margin-top:1.25rem;">
+        <button class="social-btn fb" style="flex:1" onclick="shareToFB()">f Share</button>
+        <button class="social-btn ig" style="flex:1" onclick="shareToIG()">◎ Post</button>
+        <button class="social-btn copy" style="flex:1" onclick="copyLink()">🔗 Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SHARE MODAL ── -->
+  <div class="modal-overlay" id="shareModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('shareModal')">✕</button>
+      <h3>Share Your Profile</h3>
+      <p>Show the community where you've ridden. Every share brings new riders to the trail.</p>
+      <div
+        style="background:var(--ivory);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;font-size:0.82rem;color:var(--ink);margin-bottom:1rem;word-break:break-all;">
+        openride.bike/riders/sarah-whitmore
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <button class="social-btn fb" style="flex:1" onclick="shareToFB()">f Facebook</button>
+        <button class="social-btn ig" style="flex:1" onclick="shareToIG()">◎ Instagram</button>
+        <button class="social-btn copy" style="flex:1" onclick="copyLink()">🔗 Copy link</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LOG RIDE MODAL ── -->
+  <div class="modal-overlay" id="logModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('logModal')">✕</button>
+      <h3>Log a Completed Ride</h3>
+      <p>Record your tour to earn badges and add it to your journal.</p>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;">
+        <select
+          style="padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.87rem;background:var(--cream);color:var(--ink);">
+          <option>Natchez Trace — Lower Trace (82 mi)</option>
+          <option>GAP Trail — Full (335 mi)</option>
+          <option>Pacific Coast Highway</option>
+          <option>Other / Custom route</option>
+        </select>
+        <input type="text" placeholder="Start date (e.g. June 3, 2025)"
+          style="padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.87rem;background:var(--cream);color:var(--ink);">
+        <input type="text" placeholder="End date"
+          style="padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.87rem;background:var(--cream);color:var(--ink);">
+        <textarea placeholder="Trip notes — your highlight moment, best meal, lodging tip..." rows="3"
+          style="padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.87rem;background:var(--cream);color:var(--ink);resize:vertical;"></textarea>
+        <button onclick="logRide()"
+          style="background:var(--navy);color:var(--white);border:none;border-radius:8px;padding:0.75rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;">
+          🏅 Log Ride &amp; Earn Badge
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    // ── BADGE DATA ─────────────────────────────────────────────────────────────
+    const BADGES = [
+      {
+        id: 'natchez-finisher',
+        name: 'Natchez Trace\nFinisher',
+        desc: 'Completed the full Lower Trace self-guided tour — 82 miles from Natchez to Rocky Springs.',
+        earned: true,
+        earnedDate: 'March 17, 2025',
+        icon: '🏛',
+        color1: '#E2E8F0', color2: '#94A3B8', color3: 'var(--navy)',
+        textTop: 'NATCHEZ TRACE', textBot: 'FINISHER',
+        year: '2025',
+      },
+      {
+        id: 'first-tour',
+        name: 'First Tour',
+        desc: 'Completed your very first OpenRide self-guided tour. The road ahead is wide open.',
+        earned: true,
+        earnedDate: 'October 5, 2024',
+        icon: '🚴',
+        color1: '#FEF3C7', color2: '#FCD34D', color3: 'var(--navy)',
+        textTop: 'FIRST TOUR', textBot: 'OPEN ROAD',
+        year: '2024',
+      },
+      {
+        id: 'ebike-explorer',
+        name: 'E-Bike\nExplorer',
+        desc: 'Completed a tour on an e-bike. Proof that the best technology gets you further into the world.',
+        earned: true,
+        earnedDate: 'October 5, 2024',
+        icon: '⚡',
+        color1: '#E0F2FE', color2: '#7DD3FC', color3: '#0284C7',
+        textTop: 'E-BIKE', textBot: 'EXPLORER',
+        year: '2024',
+      },
+      {
+        id: '500-miles',
+        name: '500 Miles\nClub',
+        desc: 'Ride 500 total miles across any combination of OpenRide routes.',
+        earned: false,
+        earnedDate: null,
+        icon: '💫',
+        color1: '#FFEDD5', color2: '#FDBA74', color3: '#C2410C',
+        textTop: '500 MILES', textBot: 'CLUB',
+        year: '2025',
+      },
+      {
+        id: 'inn-hopper',
+        name: 'Inn\nHopper',
+        desc: 'Stay at 5 different B&Bs or inns across your tours.',
+        earned: false,
+        earnedDate: null,
+        icon: '🏡',
+        color1: '#ECFCCB', color2: '#BEF264', color3: '#4D7C0F',
+        textTop: 'INN', textBot: 'HOPPER',
+        year: '2025',
+      },
+      {
+        id: 'all-seasons',
+        name: 'All Seasons\nRider',
+        desc: 'Complete tours in all four seasons — spring, summer, fall, and winter.',
+        earned: false,
+        earnedDate: null,
+        icon: '🌿',
+        color1: '#D1FAE5', color2: '#6EE7B7', color3: '#047857',
+        textTop: 'ALL SEASONS', textBot: 'RIDER',
+        year: '2025',
+      },
+    ];
+
+    // ── SVG BADGE RENDERER ────────────────────────────────────────────────────
+    function drawBadge(svgEl, badge, size = 90) {
+      const s = size || 90;
+      const cx = s / 2, cy = s / 2;
+      const r1 = s * 0.48, r2 = s * 0.44, r3 = s * 0.38;
+
+      const topTextR = r3 * 0.72;
+      const botTextR = r3 * 0.88;
+      const yr = badge.year ? `<text x="${cx}" y="${cy + r3 * 0.58}" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="${s * 0.12}" fill="${badge.color3}" font-weight="bold">${badge.year}</text>` : '';
+
+      const uid = badge.id + '-' + Math.round(Math.random() * 10000);
+      svgEl.setAttribute('viewBox', `0 0 ${s} ${s}`);
+      svgEl.innerHTML = `
+    <defs>
+      <path id="topArc${uid}" d="M ${cx - topTextR},${cy} a ${topTextR},${topTextR} 0 0,1 ${topTextR * 2},0"/>
+      <path id="botArc${uid}" d="M ${cx - botTextR},${cy} a ${botTextR},${botTextR} 0 0,0 ${botTextR * 2},0"/>
+      <clipPath id="mountainClip${uid}">
+        <polygon points="0,${s} 0,${cy * 1.15} ${cx * 0.25},${cy * 0.8} ${cx * 0.6},${cy * 1.1} ${cx},${cy * 0.65} ${cx * 1.45},${cy * 1.1} ${s},${cy * 0.7} ${s},${s}"/>
+      </clipPath>
+      <linearGradient id="gloss${uid}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="white" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="white" stop-opacity="0.0"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Outer thick ranger border -->
+    <circle cx="${cx}" cy="${cy}" r="${r1}" fill="${badge.color3}"/>
+    <!-- Inner sky background -->
+    <circle cx="${cx}" cy="${cy}" r="${r2}" fill="${badge.color1}"/>
+    
+    <!-- Mountain silhouette -->
+    <circle cx="${cx}" cy="${cy}" r="${r2}" fill="${badge.color2}" clip-path="url(#mountainClip${uid})"/>
+
+    <!-- Center inner ring -->
+    <circle cx="${cx}" cy="${cy}" r="${r3}" fill="none" stroke="${badge.color3}" stroke-width="${s * 0.015}"/>
+
+    <!-- Center icon -->
+    <text x="${cx}" y="${cy - r3 * 0.2}" text-anchor="middle" dominant-baseline="middle" font-size="${s * 0.35}">${badge.icon || ''}</text>
+
+    <!-- Year -->
+    ${yr}
+
+    <!-- Curved top text -->
+    <text font-family="'Bebas Neue', sans-serif" font-weight="bold" font-size="${s * 0.11}" fill="${badge.color3}" letter-spacing="${s * 0.01}">
+      <textPath href="#topArc${uid}" startOffset="50%" text-anchor="middle">${badge.textTop || ''}</textPath>
+    </text>
+
+    <!-- Curved bottom text -->
+    <text font-family="'Bebas Neue', sans-serif" font-weight="bold" font-size="${s * 0.1}" fill="${badge.color3}" letter-spacing="${s * 0.01}">
+      <textPath href="#botArc${uid}" startOffset="50%" text-anchor="middle">${badge.textBot || ''}</textPath>
+    </text>
+
+    <!-- Glossy Overlay -->
+    <path d="M ${cx - r1},${cy} A ${r1},${r1} 0 0,1 ${cx + r1},${cy} A ${r1},${r1 * 0.4} 0 0,0 ${cx - r1},${cy} Z" fill="url(#gloss${uid})"/>
+  `;
+    }
+
+    // ── RENDER BADGES GRID ────────────────────────────────────────────────────
+    function renderBadges() {
+      const grid = document.getElementById('badgesGrid');
+      BADGES.forEach(badge => {
+        const wrap = document.createElement('div');
+        wrap.className = 'badge-wrap' + (badge.earned ? '' : ' locked');
+        wrap.onclick = () => openBadge(badge);
+
+        const svgWrap = document.createElement('div');
+        svgWrap.className = 'badge-svg-wrap';
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '90');
+        svg.setAttribute('height', '90');
+        drawBadge(svg, badge, 90);
+        svgWrap.appendChild(svg);
+
+        const name = document.createElement('div');
+        name.className = 'badge-name';
+        name.textContent = badge.name;
+
+        wrap.appendChild(svgWrap);
+        wrap.appendChild(name);
+
+        if (!badge.earned) {
+          const lock = document.createElement('div');
+          lock.style.cssText = 'font-size:0.7rem;color:var(--muted);';
+          lock.textContent = '🔒 Locked';
+          wrap.appendChild(lock);
+        }
+
+        grid.appendChild(wrap);
+      });
+
+      // Mini badges in tour cards
+      const mini1 = document.getElementById('miniB1');
+      if (mini1) drawBadge(mini1, BADGES[0], 90);
+      const mini2 = document.getElementById('miniB2');
+      if (mini2) drawBadge(mini2, BADGES[1], 90);
+
+      // Next badge in sidebar
+      const nextSvg = document.getElementById('nextBadgeSvg');
+      if (nextSvg) drawBadge(nextSvg, BADGES[3], 90);
+    }
+
+    // ── BADGE MODAL ───────────────────────────────────────────────────────────
+    function openBadge(badge) {
+      document.getElementById('modalBadgeName').textContent = badge.name.replace('\n', ' ');
+      document.getElementById('modalBadgeDesc').textContent = badge.desc;
+      document.getElementById('modalBadgeEarned').textContent = badge.earned
+        ? `✅ Earned on ${badge.earnedDate}`
+        : '🔒 Not yet earned — keep riding!';
+      const svg = document.getElementById('modalBadgeSvg');
+      drawBadge(svg, badge, 90);
+      document.getElementById('badgeModal').classList.add('open');
+    }
+
+    function openBadgeAll() { openBadge(BADGES[0]); }
+    function openShare() { document.getElementById('shareModal').classList.add('open'); }
+    function openLogRide() { document.getElementById('logModal').classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    // Close on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(el => {
+      el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+    });
+
+    function logRide() {
+      closeModal('logModal');
+      // Flash a success state — in production this would write to Supabase
+      setTimeout(() => {
+        openBadge(BADGES[0]);
+      }, 300);
+    }
+
+    function shareToFB() { alert('In the live version this opens Facebook share with your profile link and latest badge.'); }
+    function shareToIG() { alert('In the live version this opens Instagram with your badge image pre-loaded.'); }
+    function copyLink() {
+      navigator.clipboard.writeText('openride.bike/riders/sarah-whitmore')
+        .then(() => alert('Profile link copied!'))
+        .catch(() => alert('openride.bike/riders/sarah-whitmore'));
+    }
+
+    // ── INIT ─────────────────────────────────────────────────────────────────
+    renderBadges();
+  </script>
+</body>
+
+</html>

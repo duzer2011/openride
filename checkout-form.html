@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenRide | One last thing before checkout</title>
+    <style>
+        :root {
+            --forest-green: #2C4A2E;
+            --sage-green: #4A7C59;
+            --parchment: #F4EFE4;
+            --accent-rust: #C17F3A;
+            --text-dark: #1F2937;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--parchment);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .form-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--forest-green);
+            font-family: 'Playfair Display', serif;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .subheading {
+            color: #6B7280;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--forest-green);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            background-color: #F9FAFB;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+        }
+
+        .helper-text {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #6B7280;
+            line-height: 1.4;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-skip {
+            background-color: white;
+            color: #6B7280;
+            border: 1px solid #D1D5DB;
+        }
+
+        .btn-skip:hover {
+            background-color: #F9FAFB;
+            color: var(--text-dark);
+        }
+
+        .btn-add {
+            background-color: var(--accent-rust);
+            color: white;
+        }
+
+        .btn-add:hover {
+            background-color: #a86c30;
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-container">
+        <h1>One last thing before checkout</h1>
+        <p class="subheading">Want your riding partners to get packing tips and logistics info?</p>
+
+        <form id="checkoutForm">
+            <div class="form-group">
+                <label for="partner_emails">Partner emails <span
+                        style="font-weight:normal; color:#6B7280;">(optional)</span></label>
+                <input type="text" id="partner_emails" name="partner_emails"
+                    placeholder="jane@email.com, mike@email.com">
+                <span class="helper-text">They won't get the PDF — that's yours. Just prep info so everyone shows up
+                    ready.</span>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn-skip" id="btnSkip">Skip & Checkout &rarr;</button>
+                <button type="submit" class="btn-add" id="btnAdd">Add & Checkout &rarr;</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Parse session data from URL arguments
+        const urlParams = new URLSearchParams(window.location.search);
+
+        let sessionData = {};
+        if (urlParams.has('pace')) {
+            sessionData = {
+                pace: urlParams.get('pace'),
+                accommodation: urlParams.get('accommodation'),
+                season: urlParams.get('season'),
+                party_size: urlParams.get('party_size')
+            };
+        } else {
+            // Fallback mock (for when testing the form directly without params)
+            sessionData = {
+                pace: 'moderate',
+                accommodation: 'mixed',
+                season: 'fall',
+                party_size: 'group'
+            };
+        }
+
+        async function processCheckout(partnerEmails) {
+            const btnAdd = document.getElementById('btnAdd');
+            const btnSkip = document.getElementById('btnSkip');
+            btnAdd.disabled = true;
+            btnSkip.disabled = true;
+            btnAdd.textContent = 'Preparing Checkout...';
+
+            const payload = {
+                sessionData: sessionData,
+                formData: {
+                    partner_emails: partnerEmails
+                }
+            };
+
+            try {
+                // In production, this would point to /.netlify/functions/checkout
+                const response = await fetch('http://localhost:8889/.netlify/functions/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error(data.error || 'Failed to create checkout session');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Something went wrong. Please try again.');
+                btnAdd.disabled = false;
+                btnSkip.disabled = false;
+                btnAdd.textContent = 'Add & Checkout →';
+            }
+        }
+
+        document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emails = document.getElementById('partner_emails').value;
+            processCheckout(emails);
+        });
+
+        document.getElementById('btnSkip').addEventListener('click', () => {
+            // Send empty string for skipped execution
+            processCheckout('');
+        });
+    </script>
+</body>
+
+</html>
