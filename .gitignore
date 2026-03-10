@@ -33,3 +33,6 @@ test_checkout.js
 config.js
 generate_audio.html
 schema.sql
+
+# Local Netlify folder
+.netlify
