@@ -1,6 +1,6 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY.trim());
 const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY.trim());
 const fs = require('fs');
 const path = require('path');
 
@@ -62,7 +62,7 @@ exports.handler = async (event) => {
         stripeEvent = stripe.webhooks.constructEvent(
             event.body,
             sig,
-            process.env.STRIPE_WEBHOOK_SECRET
+            process.env.STRIPE_WEBHOOK_SECRET.trim()
         );
     } catch (err) {
         console.error(`Webhook Signature Error: ${err.message}`);
