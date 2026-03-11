@@ -215,159 +215,174 @@
 
  /* MAP + SIDEBAR SECTION */
  .route-section {
- display: grid;
- grid-template-columns: 380px 1fr;
- min-height: 600px;
-   align-items: stretch;
- }
+    display: flex;
+    flex-direction: column;
+  }
 
- @media (max-width: 900px) {
- .route-section { grid-template-columns: 1fr;   align-items: stretch;
- }
- }
+ 
 
- #map {
-  height: 100%;
-  min-height: 500px;
-  width: 100%;
-  background: rgb(26, 46, 27);
- }
+ 
+  /* ── STATS BAR ── */
+  .stats-bar {
+    background: #F4EFE4;
+    display: flex;
+    align-items: stretch;
+    border-top: 1px solid rgba(44, 74, 46, 0.12);
+    border-bottom: 1px solid rgba(44, 74, 46, 0.12);
+  }
 
- .sidebar {
- background: #fff;
- color: var(--text);
- padding: 2.5rem 2rem;
- display: flex;
- flex-direction: column;
- gap: 2rem;
- overflow-y: auto;
- border-left: 1px solid rgba(44,74,46,0.1);
- }
+  .stats-bar-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.1rem 0.75rem;
+    border-right: 1px solid rgba(44, 74, 46, 0.1);
+    gap: 0.2rem;
+  }
 
- .sidebar-section-label {
- font-family: 'DM Mono', monospace;
- font-size: 0.65rem;
- letter-spacing: 0.2em;
- text-transform: uppercase;
- color: var(--moss);
- margin-bottom: 0.75rem;
- }
+  .stats-bar-item:last-child {
+    border-right: none;
+  }
 
- .stat-grid {
- display: grid;
- grid-template-columns: 1fr 1fr;
- gap: 1px;
- background: rgba(44,74,46,0.1);
- border: 1px solid rgba(44,74,46,0.1);
- }
- .stat {
- background: var(--parch);
- padding: 1rem;
- }
- .stat-value {
- font-family: 'Bebas Neue', sans-serif;
- font-size: 2.2rem;
- color: var(--forest);
- line-height: 1;
- letter-spacing: 0.03em;
- }
- .stat-label {
- font-size: 0.7rem;
- letter-spacing: 0.1em;
- text-transform: uppercase;
- color: var(--muted);
- margin-top: 0.3rem;
- }
+  .stats-bar-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: #2C4A2E;
+    line-height: 1;
+    letter-spacing: 0.03em;
+  }
 
- .segment-list {
- display: flex;
- flex-direction: column;
- gap: 0;
- }
- .segment-item {
- padding: 0.85rem 0;
- border-bottom: 1px solid rgba(44,74,46,0.1);
- display: flex;
- justify-content: space-between;
- align-items: flex-start;
- gap: 1rem;
- }
- .segment-item:last-child { border-bottom: none; }
- .segment-name {
- font-size: 0.88rem;
- font-weight: 500;
- color: var(--forest);
- }
- .segment-desc {
- font-size: 0.75rem;
- color: var(--muted);
- margin-top: 0.2rem;
- }
- .segment-miles {
- font-family: 'DM Mono', monospace;
- font-size: 0.8rem;
- color: var(--accent);
- white-space: nowrap;
- }
+  .stats-bar-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6b7c6b;
+  }
 
- .season-row {
- display: flex;
- gap: 0.5rem;
- }
- .season-badge {
- flex: 1;
- text-align: center;
- padding: 0.6rem 0.3rem;
- border-radius: 4px;
- font-size: 0.7rem;
- }
- .season-badge .icon { font-size: 1.1rem; display: block; margin-bottom: 0.25rem; }
- .season-badge.best { background: rgba(74,124,89,0.12); color: var(--moss); }
- .season-badge.ok { background: rgba(193,127,58,0.1); color: var(--accent); }
- .season-badge.bad { background: rgba(44,74,46,0.05); color: var(--muted); }
+  /* ── MAP (full width, no sidebar) ── */
+  #map {
+    width: 100%;
+    height: 520px;
+    background: #1a2e1b;
+  }
 
- .buy-block {
- background: var(--forest);
- padding: 1.5rem;
- border-radius: 4px;
- }
- .buy-block h3 {
- font-family: 'Bebas Neue', sans-serif;
- font-size: 1.4rem;
- letter-spacing: 0.04em;
- color: #fff;
- margin-bottom: 0.4rem;
- }
- .buy-block p {
- font-size: 0.78rem;
- color: rgba(255,255,255,0.7);
- margin-bottom: 1rem;
- line-height: 1.5;
- }
- .buy-btn {
- display: block;
- width: 100%;
- padding: 0.85rem;
- background: var(--accent);
- color: #fff;
- border: none;
- font-family: 'DM Sans', sans-serif;
- font-size: 0.9rem;
- font-weight: 500;
- letter-spacing: 0.03em;
- cursor: pointer;
- border-radius: 2px;
- transition: background 0.2s;
- text-align: center;
- text-decoration: none;
- }
- .buy-btn:hover { background: #a86c2e; }
- .buy-compat {
- font-size: 0.68rem;
- color: rgba(255,255,255,0.4);
- text-align: center;
- margin-top: 0.6rem;
- }
+  /* ── BUY BLOCK ── */
+  .buy-block {
+    background: #F4EFE4;
+    border-top: 1px solid rgba(44,74,46,0.12);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .buy-block-details {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .buy-block-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .buy-block-detail-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #4A7C59;
+  }
+
+  .buy-block-detail-value {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: #2C4A2E;
+    font-weight: 500;
+  }
+
+  .buy-block-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .buy-block-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    color: #2C4A2E;
+  }
+
+  .buy-block-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    color: #777;
+    text-align: right;
+    max-width: 280px;
+  }
+
+  .buy-block-btn {
+    background: #C17F3A;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s;
+  }
+
+  .buy-block-btn:hover {
+    background: #a86b2e;
+  }
+
+  .buy-block-compat {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: #aaa;
+    text-align: right;
+  }
+
+  @media (max-width: 768px) {
+    .stats-bar {
+      flex-wrap: wrap;
+    }
+    .stats-bar-item {
+      flex: 1 1 33%;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .buy-block {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 1.5rem;
+    }
+    .buy-block-right {
+      align-items: flex-start;
+      width: 100%;
+    }
+    .buy-block-desc {
+      text-align: left;
+    }
+    .buy-block-btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
 
  /* CONTENT SECTIONS */
  .content {
@@ -667,129 +682,68 @@
  </div>
  </section>
 
- <!-- MAP + SIDEBAR -->
- <section class="route-section">
- <aside class="sidebar">
+   <section class="route-section">
 
- <!-- Stats -->
- <div>
- <p class="sidebar-section-label">Route Overview</p>
- <div class="stat-grid">
- <div class="stat">
- <div class="stat-value">444</div>
- <div class="stat-label">Total Miles</div>
- </div>
- <div class="stat">
- <div class="stat-value">3</div>
- <div class="stat-label">States</div>
- </div>
- <div class="stat">
- <div class="stat-value">3–10</div>
- <div class="stat-label">Days</div>
- </div>
- <div class="stat">
- <div class="stat-value">0</div>
- <div class="stat-label">Trucks/Semis</div>
- </div>
- </div>
- </div>
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+      <div class="stats-bar-item">
+        <span class="stats-bar-value">444</span>
+        <span class="stats-bar-label">Total Miles</span>
+      </div>
+      <div class="stats-bar-item">
+        <span class="stats-bar-value">3</span>
+        <span class="stats-bar-label">States</span>
+      </div>
+      <div class="stats-bar-item">
+        <span class="stats-bar-value">3–10</span>
+        <span class="stats-bar-label">Days</span>
+      </div>
+      <div class="stats-bar-item">
+        <span class="stats-bar-value">0</span>
+        <span class="stats-bar-label">Trucks / Semis</span>
+      </div>
+      <div class="stats-bar-item">
+        <span class="stats-bar-value" style="font-size:1.4rem;">Road / Gravel</span>
+        <span class="stats-bar-label">Best Bike</span>
+      </div>
+      <div class="stats-bar-item">
+        <span class="stats-bar-value" style="font-size:1.4rem;">Beginner</span>
+        <span class="stats-bar-label">Difficulty</span>
+      </div>
+    </div>
 
- <!-- Quick facts -->
- <div>
- <p class="sidebar-section-label">Details</p>
- <div class="segment-list">
- <div class="segment-item">
- <div>
- <div class="segment-name">Start</div>
- <div class="segment-desc">Natchez, MS</div>
- </div>
- </div>
- <div class="segment-item">
- <div>
- <div class="segment-name">End</div>
- <div class="segment-desc">Nashville, TN</div>
- </div>
- </div>
- <div class="segment-item">
- <div>
- <div class="segment-name">Surface</div>
- <div class="segment-desc">Smooth NPS pavement</div>
- </div>
- </div>
- <div class="segment-item">
- <div>
- <div class="segment-name">Best Bike</div>
- <div class="segment-desc">Road or gravel</div>
- </div>
- </div>
- <div class="segment-item">
- <div>
- <div class="segment-name">Difficulty</div>
- <div class="segment-desc">Beginner friendly</div>
- </div>
- </div>
- </div>
- </div>
+    <!-- MAP — full width -->
+    <div id="map"></div>
 
- <!-- Segments -->
- <div>
- <p class="sidebar-section-label">Segments</p>
- <div class="segment-list">
- <div class="segment-item">
- <div>
- <div class="segment-name">Lower Trace</div>
- <div class="segment-desc">Natchez → Jackson, MS</div>
- </div>
- <div class="segment-miles">~100 mi</div>
- </div>
- <div class="segment-item">
- <div>
- <div class="segment-name">Middle Trace</div>
- <div class="segment-desc">Jackson → Tupelo, MS</div>
- </div>
- <div class="segment-miles">~180 mi</div>
- </div>
- <div class="segment-item">
- <div>
- <div class="segment-name">Upper Trace</div>
- <div class="segment-desc">Tupelo, MS → Nashville, TN</div>
- </div>
- <div class="segment-miles">~164 mi</div>
- </div>
- <div class="segment-item">
- <div>
- <div class="segment-name">Full Trace</div>
- <div class="segment-desc">Natchez → Nashville</div>
- </div>
- <div class="segment-miles">444 mi</div>
- </div>
- </div>
- </div>
+    <!-- BUY BLOCK -->
+    <div class="buy-block">
+      <div class="buy-block-details">
+        <div class="buy-block-detail">
+          <span class="buy-block-detail-label">Start</span>
+          <span class="buy-block-detail-value">Natchez, MS</span>
+        </div>
+        <div class="buy-block-detail">
+          <span class="buy-block-detail-label">End</span>
+          <span class="buy-block-detail-value">Nashville, TN</span>
+        </div>
+        <div class="buy-block-detail">
+          <span class="buy-block-detail-label">Surface</span>
+          <span class="buy-block-detail-value">Smooth NPS pavement</span>
+        </div>
+        <div class="buy-block-detail">
+          <span class="buy-block-detail-label">Best Seasons</span>
+          <span class="buy-block-detail-value">Spring &amp; Fall</span>
+        </div>
+      </div>
+      <div class="buy-block-right">
+        <span class="buy-block-title">Complete Route Package</span>
+        <span class="buy-block-desc">Personalized PDF guide + GPX file + cue sheet. Works offline. Compatible with Garmin, Wahoo, Komoot, Apple Maps.</span>
+        <a href="#" class="buy-block-btn" id="checkoutBtn">Download Guide — $19</a>
+        <span class="buy-block-compat">Garmin · Wahoo · Komoot · Apple Maps · Google Maps</span>
+      </div>
+    </div>
 
- <!-- Seasons -->
- <div>
- <p class="sidebar-section-label">Best Seasons</p>
- <div class="season-row">
- <div class="season-badge ok"><span class="icon"></span>Winter</div>
- <div class="season-badge best"><span class="icon"></span>Spring</div>
- <div class="season-badge bad"><span class="icon"></span>Summer</div>
- <div class="season-badge best"><span class="icon"></span>Fall</div>
- </div>
- </div>
-
- <!-- Buy -->
- <div class="buy-block" id="buy">
- <h3>Complete Route Package</h3>
- <p>Personalized PDF guide + GPX file + cue sheet. Works offline. Compatible with Garmin, Wahoo, Komoot, Apple Maps.</p>
- <a href="checkout-form.html?pace=moderate&accommodation=bnb&season=fall&party_size=couple" class="buy-btn">
- Download Guide — $19
- </a>
- <p class="buy-compat">Garmin · Wahoo · Komoot · Apple Maps · Google Maps</p>
- </div>
-
- </aside>
- <div id="map"></div>
- </section>
+  </section>
 
  <!-- CONTENT -->
  <main class="content">

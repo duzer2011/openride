@@ -1,0 +1,6 @@
+[2026-03-10 21:25:57] MOVED: template-annual-verify.md → Vendor Outreach\Email Templates
+[2026-03-10 21:25:57] MOVED: template-bnb-midroute.md → Vendor Outreach\Email Templates
+[2026-03-10 21:25:57] MOVED: template-bnb-start-end.md → Vendor Outreach\Email Templates
+[2026-03-10 21:25:57] MOVED: template-car-rental.md → Vendor Outreach\Email Templates
+[2026-03-10 21:25:57] MOVED: template-chain-hotel.md → Vendor Outreach\Email Templates
+[2026-03-10 21:25:57] MOVED: template-food-stop.md → Vendor Outreach\Email Templates
