@@ -218,16 +218,19 @@
  display: grid;
  grid-template-columns: 1fr 380px;
  min-height: 600px;
+   align-items: stretch;
  }
 
  @media (max-width: 900px) {
- .route-section { grid-template-columns: 1fr; }
+ .route-section { grid-template-columns: 1fr;   align-items: stretch;
+ }
  }
 
  #map {
- height: 600px;
- width: 100%;
- background: #1a2e1b;
+  height: 100%;
+  min-height: 500px;
+  width: 100%;
+  background: rgb(26, 46, 27);
  }
 
  .sidebar {
@@ -1030,6 +1033,7 @@
  zoom: 6,
  attributionControl: false
  });
+  map.on('load', function() { map.resize(); });
 
  map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
  map.addControl(new mapboxgl.AttributionControl({ compact: true }));
