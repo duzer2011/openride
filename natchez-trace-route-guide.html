@@ -1,1534 +1,864 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>Natchez Trace Parkway — OpenRide.bike Route Guide</title>
- <link rel="preconnect" href="https://fonts.googleapis.com" />
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
- <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital@1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
- <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
- <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
- <script src="/config.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natchez Trace Parkway — OpenRide.bike Route Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,600;1,400&family=Lora:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
 
- <style>
- *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
- :root {
- --forest: #2C4A2E;
- --moss: #4A7C59;
- --sage: #8AAF8A;
- --parch: #F4EFE4;
- --accent: #C17F3A;
- --dark: #1a2e1b;
- --text: #2a2a2a;
- --muted: #6b7c6b;
- }
-
- html { scroll-behavior: smooth; }
-
- body {
- font-family: 'DM Sans', sans-serif;
- background: var(--parch);
- color: var(--text);
- overflow-x: hidden;
- }
-
- /* NAV */
- nav {
- position: fixed;
- top: 0; left: 0; right: 0;
- z-index: 100;
- display: flex;
- align-items: center;
- justify-content: space-between;
- padding: 1rem 2rem;
- background: transparent;
- transition: background 0.4s, backdrop-filter 0.4s;
- }
- nav.scrolled {
- background: rgba(244, 239, 228, 0.96);
- backdrop-filter: blur(12px);
- box-shadow: 0 1px 0 rgba(44,74,46,0.1);
- }
- .nav-logo {
- font-family: 'DM Mono', monospace;
- font-size: 0.85rem;
- letter-spacing: 0.12em;
- color: #fff;
- text-decoration: none;
- text-transform: uppercase;
- transition: color 0.4s;
- }
- nav.scrolled .nav-logo { color: var(--forest); }
- .nav-buy {
- background: var(--accent);
- color: #fff;
- border: none;
- padding: 0.55rem 1.4rem;
- font-family: 'DM Sans', sans-serif;
- font-size: 0.85rem;
- font-weight: 500;
- letter-spacing: 0.04em;
- cursor: pointer;
- border-radius: 2px;
- transition: background 0.2s, transform 0.1s;
- text-decoration: none;
- }
- .nav-buy:hover { background: #a86c2e; transform: translateY(-1px); }
-
- /* HERO SLIDESHOW */
- .hero {
- position: relative;
- height: 100vh;
- min-height: 600px;
- overflow: hidden;
- }
-
- .slide {
- position: absolute;
- inset: 0;
- opacity: 0;
- transition: opacity 1.2s ease-in-out;
- background-size: cover;
- background-position: center;
- }
- .slide.active { opacity: 1; }
-
- /* Placeholder gradients until real images are delivered */
-
- /* When real images are added, Antigravity replaces the gradient classes with:
- style="background-image: url('/images/natchez-spanish-moss.jpg')" etc. */
-
- .hero-overlay {
- position: absolute;
- inset: 0;
- background: linear-gradient(
- to bottom,
- rgba(0,0,0,0.15) 0%,
- rgba(0,0,0,0.05) 40%,
- rgba(0,0,0,0.55) 100%
- );
- z-index: 1;
- }
-
- .hero-content {
- position: absolute;
- bottom: 0; left: 0; right: 0;
- z-index: 2;
- padding: 3rem 3rem 4rem;
- }
-
- .hero-label {
- font-family: 'DM Mono', monospace;
- font-size: 0.7rem;
- letter-spacing: 0.2em;
- text-transform: uppercase;
- color: rgba(255,255,255,0.65);
- margin-bottom: 0.75rem;
- }
-
- .hero-title {
- font-family: 'Bebas Neue', sans-serif;
- font-size: clamp(4rem, 9vw, 8rem);
- color: #fff;
- line-height: 0.95;
- letter-spacing: 0.02em;
- }
- .hero-title em {
- font-family: 'Bebas Neue', sans-serif;
- font-style: normal;
- color: var(--sage);
- }
-
- .hero-sub {
- font-size: 0.95rem;
- color: rgba(255,255,255,0.75);
- margin-top: 0.75rem;
- letter-spacing: 0.08em;
- text-transform: uppercase;
- }
-
- .hero-pills {
- display: flex;
- flex-wrap: wrap;
- gap: 0.5rem;
- margin-top: 1.5rem;
- }
- .pill {
- display: inline-flex;
- align-items: center;
- gap: 0.35rem;
- padding: 0.35rem 0.85rem;
- border: 1px solid rgba(255,255,255,0.3);
- border-radius: 100px;
- font-size: 0.78rem;
- color: rgba(255,255,255,0.85);
- backdrop-filter: blur(8px);
- background: rgba(255,255,255,0.08);
- }
-
- /* Slide indicators */
- .slide-dots {
- position: absolute;
- bottom: 2rem;
- right: 3rem;
- z-index: 3;
- display: flex;
- gap: 0.5rem;
- }
- .dot {
- width: 6px;
- height: 6px;
- border-radius: 50%;
- background: rgba(255,255,255,0.35);
- cursor: pointer;
- transition: background 0.3s, transform 0.3s;
- }
- .dot.active {
- background: #fff;
- transform: scale(1.4);
- }
-
- /* Scroll hint */
- .scroll-hint {
- position: absolute;
- bottom: 2rem;
- left: 50%;
- transform: translateX(-50%);
- z-index: 3;
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: 0.4rem;
- color: rgba(255,255,255,0.5);
- font-size: 0.65rem;
- letter-spacing: 0.15em;
- text-transform: uppercase;
- animation: nudge 2s ease-in-out infinite;
- }
- .scroll-hint svg { opacity: 0.5; }
- @keyframes nudge {
- 0%, 100% { transform: translateX(-50%) translateY(0); }
- 50% { transform: translateX(-50%) translateY(6px); }
- }
-
- /* MAP + SIDEBAR SECTION */
- .route-section {
-    display: flex;
-    flex-direction: column;
-  }
-
- 
-
- 
-  /* ── STATS BAR ── */
-  .stats-bar {
-    background: #F4EFE4;
-    display: flex;
-    align-items: stretch;
-    border-top: 1px solid rgba(44, 74, 46, 0.12);
-    border-bottom: 1px solid rgba(44, 74, 46, 0.12);
-  }
-
-  .stats-bar-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1.1rem 0.75rem;
-    border-right: 1px solid rgba(44, 74, 46, 0.1);
-    gap: 0.2rem;
-  }
-
-  .stats-bar-item:last-child {
-    border-right: none;
-  }
-
-  .stats-bar-value {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.2rem;
-    color: #2C4A2E;
-    line-height: 1;
-    letter-spacing: 0.03em;
-  }
-
-  .stats-bar-label {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #6b7c6b;
-  }
-
-  /* ── MAP (full width, no sidebar) ── */
-  #map {
-    width: 100%;
-    height: 520px;
-    background: #1a2e1b;
-  }
-
-  /* ── BUY BLOCK ── */
-  .buy-block {
-    background: #F4EFE4;
-    border-top: 1px solid rgba(44,74,46,0.12);
-    padding: 2rem 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    flex-wrap: wrap;
-  }
-
-  .buy-block-details {
-    display: flex;
-    gap: 2.5rem;
-    flex-wrap: wrap;
-  }
-
-  .buy-block-detail {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  .buy-block-detail-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: #4A7C59;
-  }
-
-  .buy-block-detail-value {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.92rem;
-    color: #2C4A2E;
-    font-weight: 500;
-  }
-
-  .buy-block-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-  }
-
-  .buy-block-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem;
-    letter-spacing: 0.1em;
-    color: #2C4A2E;
-  }
-
-  .buy-block-desc {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    color: #777;
-    text-align: right;
-    max-width: 280px;
-  }
-
-  .buy-block-btn {
-    background: #C17F3A;
-    color: #fff;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.1rem;
-    letter-spacing: 0.1em;
-    padding: 0.75rem 2rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: background 0.2s;
-  }
-
-  .buy-block-btn:hover {
-    background: #a86b2e;
-  }
-
-  .buy-block-compat {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    color: #aaa;
-    text-align: right;
-  }
-
-  @media (max-width: 768px) {
-    .stats-bar {
-      flex-wrap: wrap;
-    }
-    .stats-bar-item {
-      flex: 1 1 33%;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .buy-block {
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 1.5rem;
-    }
-    .buy-block-right {
-      align-items: flex-start;
-      width: 100%;
-    }
-    .buy-block-desc {
-      text-align: left;
-    }
-    .buy-block-btn {
-      width: 100%;
-      text-align: center;
-    }
-  }
-
-
- /* CONTENT SECTIONS */
- .content {
- max-width: 900px;
- margin: 0 auto;
- padding: 5rem 2rem;
- }
-
- .section-header {
- display: flex;
- align-items: baseline;
- gap: 1rem;
- margin-bottom: 2rem;
- }
- .section-icon {
- font-size: 1.1rem;
- }
- .section-title {
- font-family: 'Bebas Neue', sans-serif;
- font-size: 2rem;
- letter-spacing: 0.04em;
- color: var(--forest);
- }
- .section-rule {
- flex: 1;
- height: 1px;
- background: rgba(44,74,46,0.15);
- }
-
- .about-text {
- font-size: 1.05rem;
- line-height: 1.8;
- color: #3a3a3a;
- max-width: 680px;
- }
- .about-text + .about-text { margin-top: 1rem; }
-
- /* Itinerary */
- .itinerary {
- display: flex;
- flex-direction: column;
- gap: 0;
- border-left: 2px solid rgba(44,74,46,0.15);
- margin-left: 1rem;
- }
-
- .day-card {
- position: relative;
- padding: 0 0 2.5rem 2.5rem;
- }
- .day-card::before {
- content: '';
- position: absolute;
- left: -6px;
- top: 4px;
- width: 10px;
- height: 10px;
- border-radius: 50%;
- background: var(--forest);
- border: 2px solid var(--parch);
- box-shadow: 0 0 0 2px var(--forest);
- }
- .day-card:last-child { padding-bottom: 0; }
-
- .day-number {
- font-family: 'DM Mono', monospace;
- font-size: 0.7rem;
- letter-spacing: 0.15em;
- text-transform: uppercase;
- color: var(--muted);
- margin-bottom: 0.3rem;
- }
- .day-title {
- font-family: 'Bebas Neue', sans-serif;
- font-size: 1.4rem;
- letter-spacing: 0.04em;
- color: var(--forest);
- margin-bottom: 0.25rem;
- }
- .day-meta {
- font-family: 'DM Mono', monospace;
- font-size: 0.72rem;
- color: var(--accent);
- margin-bottom: 0.75rem;
- }
- .day-body {
- font-size: 0.92rem;
- line-height: 1.75;
- color: #3a3a3a;
- }
- .day-tags {
- display: flex;
- flex-wrap: wrap;
- gap: 0.4rem;
- margin-top: 0.85rem;
- }
- .day-tag {
- font-size: 0.72rem;
- padding: 0.25rem 0.65rem;
- background: rgba(44,74,46,0.08);
- color: var(--forest);
- border-radius: 100px;
- }
-
- /* Highlights grid */
- .highlights-grid {
- display: grid;
- grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
- gap: 1px;
- background: rgba(44,74,46,0.12);
- border: 1px solid rgba(44,74,46,0.12);
- }
- .highlight-card {
- background: var(--parch);
- padding: 1.5rem;
- transition: background 0.2s;
- }
- .highlight-card:hover { background: #ece7d8; }
- .highlight-name {
- font-family: 'Bebas Neue', sans-serif;
- font-size: 1.1rem;
- letter-spacing: 0.04em;
- color: var(--forest);
- margin-bottom: 0.4rem;
- }
- .highlight-desc {
- font-size: 0.8rem;
- line-height: 1.6;
- color: var(--muted);
- }
- .highlight-mp {
- font-family: 'DM Mono', monospace;
- font-size: 0.68rem;
- color: var(--accent);
- margin-top: 0.5rem;
- }
-
- /* Practical info */
- .practical-grid {
- display: grid;
- grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
- gap: 2rem;
- }
- .practical-block h4 {
- font-family: 'DM Mono', monospace;
- font-size: 0.72rem;
- letter-spacing: 0.15em;
- text-transform: uppercase;
- color: var(--forest);
- margin-bottom: 0.75rem;
- padding-bottom: 0.5rem;
- border-bottom: 1px solid rgba(44,74,46,0.15);
- }
- .practical-block ul {
- list-style: none;
- display: flex;
- flex-direction: column;
- gap: 0.4rem;
- }
- .practical-block li {
- font-size: 0.85rem;
- color: #3a3a3a;
- line-height: 1.5;
- padding-left: 1rem;
- position: relative;
- }
- .practical-block li::before {
- content: '—';
- position: absolute;
- left: 0;
- color: var(--sage);
- font-size: 0.75rem;
- }
-
- /* Where to sleep */
- .sleep-grid {
- display: grid;
- grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
- gap: 1px;
- background: rgba(44,74,46,0.12);
- border: 1px solid rgba(44,74,46,0.12);
- margin-bottom: 2rem;
- }
- .sleep-card {
- background: var(--parch);
- padding: 1.25rem;
- }
- .sleep-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
- .sleep-type {
- font-weight: 500;
- font-size: 0.9rem;
- color: var(--forest);
- margin-bottom: 0.3rem;
- }
- .sleep-desc {
- font-size: 0.78rem;
- color: var(--muted);
- line-height: 1.5;
- }
-
- /* Bottom CTA */
- .cta-strip {
- background: var(--forest);
- padding: 4rem 2rem;
- text-align: center;
- }
- .cta-strip h2 {
- font-family: 'Bebas Neue', sans-serif;
- font-size: clamp(2rem, 5vw, 3.5rem);
- letter-spacing: 0.04em;
- color: #fff;
- margin-bottom: 0.75rem;
- }
- .cta-strip p {
- font-size: 0.95rem;
- color: rgba(255,255,255,0.6);
- margin-bottom: 2rem;
- max-width: 480px;
- margin-left: auto;
- margin-right: auto;
- }
- .cta-btn {
- display: inline-block;
- padding: 1rem 2.5rem;
- background: var(--accent);
- color: #fff;
- font-size: 0.95rem;
- font-weight: 500;
- letter-spacing: 0.03em;
- border-radius: 2px;
- text-decoration: none;
- cursor: pointer;
- border: none;
- transition: background 0.2s, transform 0.1s;
- }
- .cta-btn:hover { background: #a86c2e; transform: translateY(-2px); }
-
- /* Footer */
- footer {
- background: var(--dark);
- padding: 2rem;
- text-align: center;
- font-size: 0.75rem;
- color: rgba(255,255,255,0.3);
- letter-spacing: 0.05em;
- }
- footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
-
- /* Divider */
- .divider {
- height: 1px;
- background: rgba(44,74,46,0.12);
- margin: 4rem 0;
- }
- 
-/* ═══════════════════════════════════════════════
-   OPENRIDE — SECTION REDESIGN STYLES
-═══════════════════════════════════════════════ */
-
-/* Suppress old dividers */
-.divider { display: none !important; }
-.section-rule { display: none !important; }
-
-/* ── ABOUT SECTION ── */
-.about-section {
-  background: #F4EFE4;
-  padding: 5rem 0 4rem;
+<style>
+/* ── TOKENS ── */
+:root {
+  --forest: #2C4A2E;
+  --moss:   #4A7C59;
+  --sage:   #8AAF8A;
+  --parch:  #F4EFE4;
+  --parch2: #EDE8D8;
+  --accent: #C17F3A;
+  --ink:    #1e2a1f;
 }
-.about-inner {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 0 2rem;
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans-serif; }
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 60px;
+  background: rgba(28, 42, 31, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(138,175,138,0.15);
 }
-.section-eyebrow {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #C17F3A;
-  margin-bottom: 0.75rem;
-  display: block;
-}
-.section-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-.about-section h2 {
+.nav-logo {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.2rem;
-  color: #2C4A2E;
-  letter-spacing: 0.03em;
-  margin: 0 0 2rem;
-  line-height: 1;
+  font-size: 1.4rem; letter-spacing: 0.1em;
+  color: var(--parch); text-decoration: none;
 }
-.about-section .about-text {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1.1rem;
-  line-height: 1.8;
-  color: #3a3a3a;
+.nav-logo span { color: var(--accent); }
+.nav-buy {
+  background: var(--accent); color: white; border: none;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem; letter-spacing: 0.12em;
+  padding: 0.55rem 1.4rem; border-radius: 2px; cursor: pointer;
+  text-decoration: none;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative; height: 90vh; min-height: 560px;
+  background: linear-gradient(160deg, #1a2a1c 0%, #2C4A2E 50%, #3d6b41 100%);
+  display: flex; align-items: flex-end;
+  overflow: hidden;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+}
+.hero-content {
+  position: relative; z-index: 1;
+  padding: 0 3.5rem 4rem;
+  max-width: 780px;
+}
+.hero-label {
+  font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 0.75rem; display: block;
+}
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  color: var(--parch); line-height: 0.95; letter-spacing: 0.02em;
   margin-bottom: 1.25rem;
 }
-
-/* ── ITINERARY SECTION ── */
-.itinerary-section {
-  background: #2C4A2E;
-  padding: 5rem 0;
-}
-.itinerary-section h2 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.2rem;
-  color: #F4EFE4;
-  letter-spacing: 0.03em;
-  margin: 0 0 0.5rem;
-  line-height: 1;
-}
-.itinerary-section .section-sub {
+.hero-sub {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
-  color: #8AAF8A;
-  margin-bottom: 3rem;
-  letter-spacing: 0.05em;
+  font-size: 1rem; color: rgba(244,239,228,0.75);
+  line-height: 1.6; max-width: 480px; margin-bottom: 2rem;
 }
-.day-cards-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-.day-card-new {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(138,175,138,0.2);
-  border-radius: 4px;
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  overflow: hidden;
-  transition: background 0.2s;
-}
-.day-card-new:hover { background: rgba(255,255,255,0.1); }
-.day-card-number {
-  background: #C17F3A;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem 0;
-}
-.day-card-number .day-num {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 3rem;
-  color: #F4EFE4;
-  line-height: 1;
-}
-.day-card-number .day-word {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(244,239,228,0.7);
-}
-.day-card-body { padding: 1.5rem 2rem; }
-.day-card-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.5rem;
-  color: #F4EFE4;
-  letter-spacing: 0.05em;
-  line-height: 1;
-  margin-bottom: 0.3rem;
-}
-.day-card-meta {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.78rem;
-  color: #C17F3A;
-  letter-spacing: 0.08em;
-  margin-bottom: 0.75rem;
-}
-.day-card-desc {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
-  line-height: 1.65;
-  color: rgba(244,239,228,0.8);
-  margin-bottom: 0.75rem;
-}
-.day-card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.day-card-tag {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #8AAF8A;
-  border: 1px solid rgba(138,175,138,0.35);
-  padding: 0.25rem 0.6rem;
-  border-radius: 2px;
+.hero-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pill {
+  font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid rgba(244,239,228,0.3); color: rgba(244,239,228,0.75);
+  padding: 0.3rem 0.8rem; border-radius: 2px;
 }
 
-/* ── HIGHLIGHTS SECTION ── */
-.highlights-section {
-  background: #F4EFE4;
-  padding: 5rem 0;
+/* ── MAP SECTION ── */
+.map-section {
+  background: var(--ink);
+  position: relative;
 }
-.highlights-section h2 {
+.map-stats-band {
+  background: var(--forest);
+  display: flex; align-items: stretch;
+  border-bottom: 1px solid rgba(138,175,138,0.15);
+}
+.map-stat {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 1.1rem 0.5rem;
+  border-right: 1px solid rgba(138,175,138,0.12);
+  gap: 0.15rem;
+}
+.map-stat:last-child { border-right: none; }
+.map-stat-val {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.2rem;
-  color: #2C4A2E;
-  letter-spacing: 0.03em;
-  margin: 0 0 0.5rem;
-  line-height: 1;
+  font-size: 1.9rem; color: var(--parch);
+  line-height: 1; letter-spacing: 0.03em;
 }
-.highlights-section .section-sub {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
-  color: #6b7c6b;
-  margin-bottom: 3rem;
+.map-stat-lbl {
+  font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--sage);
 }
-.highlights-grid-new {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+#route-map { width: 100%; height: 520px; display: block; }
+
+/* ── ROUTE DETAILS STRIP ── */
+.route-strip {
+  background: var(--parch2);
+  border-top: 1px solid rgba(44,74,46,0.12);
+  border-bottom: 1px solid rgba(44,74,46,0.12);
+  display: flex; align-items: stretch;
 }
-.highlight-card-new {
-  background: #fff;
-  border: 1px solid rgba(44,74,46,0.1);
-  border-top: 3px solid #C17F3A;
-  padding: 1.75rem 1.5rem;
-  border-radius: 2px;
+.route-strip-item {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 1.4rem 1rem; gap: 0.15rem; text-align: center;
+  border-right: 1px solid rgba(44,74,46,0.1);
+  flex: 1;
 }
-.highlight-card-mp {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #C17F3A;
-  margin-bottom: 0.5rem;
+.route-strip-item:last-child { border-right: none; }
+.route-strip-lbl {
+  font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #999;
 }
-.highlight-card-name {
+.route-strip-val {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.4rem;
-  color: #2C4A2E;
-  letter-spacing: 0.04em;
+  font-size: 1.15rem; color: var(--forest); letter-spacing: 0.04em;
   line-height: 1.1;
-  margin-bottom: 0.6rem;
-}
-.highlight-card-desc {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.85rem;
-  line-height: 1.6;
-  color: #4a4a4a;
 }
 
-/* ── SLEEP SECTION ── */
-.sleep-section {
-  background: #4A7C59;
-  padding: 5rem 0;
+/* ── EDITORIAL — ABOUT ── */
+.a-editorial {
+  background: var(--parch);
+  padding: 5rem 0 4.5rem;
 }
-.sleep-section h2 {
+.a-editorial-inner {
+  max-width: 1100px; margin: 0 auto; padding: 0 3rem;
+  display: grid; grid-template-columns: 1fr 380px;
+  gap: 5rem; align-items: start;
+}
+.a-eyebrow {
+  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 0.6rem; display: block;
+}
+.a-headline {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.2rem;
-  color: #F4EFE4;
-  letter-spacing: 0.03em;
-  margin: 0 0 0.5rem;
-  line-height: 1;
+  font-size: 2.8rem; color: var(--forest);
+  letter-spacing: 0.03em; line-height: 1;
+  margin-bottom: 2rem;
 }
-.sleep-section .section-eyebrow { color: rgba(244,239,228,0.6); }
-.sleep-section .section-sub {
+.a-editorial-text p {
+  font-family: 'Lora', serif;
+  font-size: 1.05rem; line-height: 1.85;
+  color: #3a3a3a; margin-bottom: 1.5rem;
+}
+.a-editorial-text p:first-of-type::first-letter {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4.5rem; float: left;
+  line-height: 0.75; margin-right: 0.08em;
+  color: var(--forest);
+}
+.a-pullquote {
+  border-left: 3px solid var(--accent);
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  margin: 2rem 0;
+}
+.a-pullquote p {
+  font-family: 'Lora', serif !important;
+  font-size: 1.15rem !important; font-style: italic !important;
+  color: var(--forest) !important; line-height: 1.6 !important;
+  margin-bottom: 0 !important;
+}
+.a-pullquote p::first-letter { font-size: 1.15rem !important; float: none !important; }
+
+/* Sticky sidebar */
+.a-sidebar {
+  background: var(--forest); padding: 2rem; border-radius: 2px;
+  position: sticky; top: 80px;
+}
+.a-sidebar-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.35rem; color: var(--parch);
+  letter-spacing: 0.06em; margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(138,175,138,0.25);
+}
+.a-stat-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(138,175,138,0.1);
+}
+.a-stat-row:last-of-type { border-bottom: none; }
+.a-stat-lbl { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage); }
+.a-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--parch); letter-spacing: 0.03em; }
+.a-buy-btn {
+  width: 100%; background: var(--accent); color: white; border: none;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.25rem; letter-spacing: 0.1em;
+  padding: 0.9rem; border-radius: 2px;
+  cursor: pointer; margin-top: 1.5rem;
+  display: block; text-align: center; text-decoration: none;
+}
+.a-sidebar-note {
+  font-size: 0.68rem; color: rgba(138,175,138,0.7);
+  text-align: center; margin-top: 0.75rem; line-height: 1.5;
+}
+
+/* ── SAMPLE DOC MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: var(--parch); border-radius: 3px;
+  width: 90vw; max-width: 860px; height: 88vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: var(--forest);
+  border-bottom: 1px solid rgba(138,175,138,0.2);
+  flex-shrink: 0;
+}
+.modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem; letter-spacing: 0.1em; color: var(--parch);
+}
+.modal-tag {
+  font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--sage); margin-left: 0.75rem;
+}
+.modal-close {
+  background: none; border: none; color: var(--sage);
+  font-size: 1.4rem; cursor: pointer; line-height: 1;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--parch); }
+.modal-body { flex: 1; overflow: hidden; }
+.modal-body iframe {
+  width: 100%; height: 100%; border: none; display: block;
+}
+.modal-note {
+  padding: 0.75rem 1.5rem; font-size: 0.7rem;
+  color: #888; letter-spacing: 0.06em;
+  border-top: 1px solid rgba(44,74,46,0.1);
+  flex-shrink: 0;
+}
+
+/* Sample doc trigger links in sidebar */
+.sample-links { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem; }
+.sample-link {
+  font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); text-decoration: none;
+  border-bottom: 1px solid rgba(193,127,58,0.3);
+  cursor: pointer; background: none; border-top: none;
+  border-left: none; border-right: none;
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
+  padding: 0;
+  transition: color 0.15s, border-color 0.15s;
+}
+.sample-link:hover { color: var(--parch); border-bottom-color: var(--parch); }
+.sample-link-sep { font-size: 0.65rem; color: rgba(138,175,138,0.3); }
+
+.a-photo-break {
+  width: 100%; height: 380px;
+  background: linear-gradient(160deg, #1a3a1c 0%, #2C4A2E 40%, #3d6b41 70%, #5a8a5e 100%);
+  display: flex; align-items: flex-end;
+  padding: 2rem 3rem;
+  position: relative; overflow: hidden;
+}
+.a-photo-break::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.45), transparent 60%);
+}
+.a-photo-caption {
+  position: relative; z-index: 1;
+  font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
   color: rgba(244,239,228,0.65);
-  margin-bottom: 3rem;
 }
-.sleep-grid-new {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+.a-photo-caption strong { color: var(--parch); }
+
+/* ── ITINERARY ── */
+.a-days-section {
+  background: #f8f3ea; padding: 5rem 0;
 }
-.sleep-card-new {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 4px;
-  padding: 1.75rem 1.5rem;
+.a-days-inner { max-width: 1100px; margin: 0 auto; padding: 0 3rem; }
+.a-section-head {
+  display: flex; align-items: baseline; gap: 1.5rem;
+  margin-bottom: 2.5rem; padding-bottom: 1rem;
+  border-bottom: 2px solid var(--forest);
 }
-.sleep-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; display: block; }
-.sleep-card-type {
+.a-section-head h2 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.2rem;
-  letter-spacing: 0.06em;
-  color: #F4EFE4;
-  margin-bottom: 0.5rem;
+  font-size: 2.2rem; color: var(--forest); letter-spacing: 0.03em;
 }
-.sleep-card-desc {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.82rem;
-  line-height: 1.6;
-  color: rgba(244,239,228,0.75);
+.a-section-head span {
+  font-size: 0.72rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent);
+}
+.a-day-row {
+  display: grid; grid-template-columns: 60px 1fr 280px;
+  gap: 2rem; padding: 2rem 0;
+  border-bottom: 1px solid rgba(44,74,46,0.1);
+  align-items: start;
+}
+.a-day-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 4rem; color: rgba(44,74,46,0.12); line-height: 1;
+}
+.a-day-content h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem; color: var(--forest); letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
+}
+.a-day-meta { font-size: 0.78rem; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+.a-day-content p {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem; line-height: 1.75; color: #444;
+  margin-bottom: 0.75rem;
+}
+.a-day-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.25rem; }
+.a-day-tag {
+  font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--moss); border: 1px solid rgba(74,124,89,0.3);
+  padding: 0.2rem 0.55rem; border-radius: 2px;
+}
+.a-day-img {
+  height: 170px; border-radius: 2px;
+  background: linear-gradient(135deg, #2C4A2E, #4A7C59);
+  position: relative; overflow: hidden;
+}
+.a-day-img-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+  display: flex; align-items: flex-end; padding: 0.75rem 0.9rem;
+}
+.a-day-img-overlay span {
+  font-size: 0.62rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.75);
 }
 
-/* ── PRACTICAL INFO SECTION ── */
-.practical-section {
-  background: #F4EFE4;
+/* ── PHOTO MOSAIC ── */
+.a-mosaic {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 200px 200px;
+  gap: 3px; background: var(--ink);
+}
+.a-mosaic-cell { overflow: hidden; }
+.a-mosaic-cell:nth-child(1) { grid-row: 1 / 3; background: linear-gradient(160deg, #1a3a1c, #3d6b41); }
+.a-mosaic-cell:nth-child(2) { background: linear-gradient(135deg, #4A7C59, #2C4A2E); }
+.a-mosaic-cell:nth-child(3) { background: linear-gradient(135deg, #8AAF8A, #4A7C59); }
+.a-mosaic-cell:nth-child(4) { background: linear-gradient(135deg, #C17F3A, #7a4f20); }
+.a-mosaic-cell:nth-child(5) { background: linear-gradient(135deg, #2C4A2E, #1a2a1c); }
+
+/* ── HIGHLIGHTS ── */
+.a-highlights {
+  background: var(--forest);
   padding: 5rem 0;
 }
-.practical-section h2 {
+.a-highlights-inner { max-width: 1100px; margin: 0 auto; padding: 0 3rem; }
+.a-highlights-head { margin-bottom: 2.5rem; }
+.a-highlights-head .ey { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.5rem; }
+.a-highlights-head h2 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.2rem;
-  color: #2C4A2E;
-  letter-spacing: 0.03em;
-  margin: 0 0 0.5rem;
-  line-height: 1;
+  font-size: 2.2rem; color: var(--parch); letter-spacing: 0.03em;
 }
-.practical-section .section-sub {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
-  color: #6b7c6b;
-  margin-bottom: 3rem;
+.a-highlights-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
 }
-.practical-grid-new {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-}
-.practical-block-new {
-  background: #fff;
-  border: 1px solid rgba(44,74,46,0.1);
-  border-left: 4px solid #2C4A2E;
-  border-radius: 0 4px 4px 0;
-  padding: 1.75rem 2rem;
-}
-.practical-block-title {
+.a-hl { border-left: 2px solid var(--accent); padding-left: 1.25rem; }
+.a-hl-mp { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.25rem; }
+.a-hl-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--parch); letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.a-hl-desc { font-size: 0.82rem; line-height: 1.65; color: rgba(244,239,228,0.6); }
+
+/* ── PRACTICAL ── */
+.a-practical { background: var(--parch); padding: 5rem 0; }
+.a-practical-inner { max-width: 1100px; margin: 0 auto; padding: 0 3rem; }
+.a-practical-head { margin-bottom: 2.5rem; border-bottom: 2px solid var(--forest); padding-bottom: 1rem; display: flex; align-items: baseline; gap: 1.5rem; }
+.a-practical-head h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--forest); letter-spacing: 0.03em; }
+.a-practical-head span { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.a-practical-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.5rem; }
+.a-pblock-title {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.1rem;
-  color: #2C4A2E;
-  letter-spacing: 0.1em;
-  margin-bottom: 1rem;
+  font-size: 1.05rem; color: var(--forest); letter-spacing: 0.1em;
+  margin-bottom: 0.75rem; padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent);
 }
-.practical-block-list { list-style: none; padding: 0; margin: 0; }
-.practical-block-list li {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: #3a3a3a;
-  padding: 0.45rem 0 0.45rem 1.1rem;
+.a-pblock ul { list-style: none; }
+.a-pblock li {
+  font-size: 0.84rem; line-height: 1.55; color: #444;
+  padding: 0.35rem 0 0.35rem 1.1rem;
   border-bottom: 1px solid rgba(44,74,46,0.07);
   position: relative;
 }
-.practical-block-list li::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-  color: #C17F3A;
-  font-size: 0.75rem;
-}
-.practical-block-list li:last-child { border-bottom: none; }
+.a-pblock li::before { content: '—'; position: absolute; left: 0; color: var(--accent); }
+.a-pblock li:last-child { border-bottom: none; }
 
-/* ── TESTIMONIALS SECTION ── */
-.testimonials-section {
-  background: #2C4A2E;
-  padding: 5rem 0;
+/* ── REVIEWS ── */
+.a-reviews { background: #f8f3ea; padding: 5rem 0; }
+.a-reviews-inner { max-width: 1100px; margin: 0 auto; padding: 0 3rem; }
+.a-reviews-head { margin-bottom: 2.5rem; border-bottom: 2px solid var(--forest); padding-bottom: 1rem; display: flex; align-items: baseline; gap: 1.5rem; }
+.a-reviews-head h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--forest); letter-spacing: 0.03em; }
+.a-reviews-head span { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.a-reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.a-review {
+  background: white; padding: 2rem; border-radius: 2px;
+  border-top: 3px solid var(--accent);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.05);
 }
-.testimonials-section h2 {
+.a-stars { color: var(--accent); font-size: 0.78rem; letter-spacing: 3px; margin-bottom: 1rem; }
+.a-review-text {
+  font-family: 'Lora', serif;
+  font-size: 0.9rem; line-height: 1.8;
+  color: #3a3a3a; margin-bottom: 1.5rem; font-style: italic;
+}
+.a-reviewer { display: flex; gap: 0.75rem; align-items: center; }
+.a-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--moss); display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; color: white; flex-shrink: 0;
+}
+.a-reviewer-name { font-size: 0.82rem; font-weight: 600; color: var(--forest); }
+.a-reviewer-route { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: #999; }
+
+/* ── CTA ── */
+.cta-strip {
+  background: var(--forest); padding: 4rem 3rem;
+  text-align: center;
+}
+.cta-strip h2 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.2rem;
-  color: #F4EFE4;
-  letter-spacing: 0.03em;
-  margin: 0 0 0.5rem;
-  line-height: 1;
-}
-.testimonials-section .section-eyebrow { color: #C17F3A; }
-.testimonials-section .section-sub {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
-  color: #8AAF8A;
-  margin-bottom: 3rem;
-}
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-}
-.testimonial-card {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(138,175,138,0.2);
-  border-radius: 4px;
-  padding: 2rem 1.75rem;
-  display: flex;
-  flex-direction: column;
-}
-.testimonial-stars {
-  color: #C17F3A;
-  font-size: 0.85rem;
-  letter-spacing: 2px;
-  margin-bottom: 1rem;
-}
-.testimonial-quote-mark {
-  font-family: Georgia, serif;
-  font-size: 4rem;
-  color: rgba(193,127,58,0.25);
-  line-height: 0.8;
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: var(--parch); letter-spacing: 0.04em;
   margin-bottom: 0.5rem;
-  display: block;
 }
-.testimonial-text {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.92rem;
-  line-height: 1.7;
-  color: rgba(244,239,228,0.85);
-  margin-bottom: 1.5rem;
-  flex: 1;
-}
-.testimonial-text em { color: #F4EFE4; font-style: italic; }
-.testimonial-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  margin-top: auto;
-  padding-top: 1.25rem;
-  border-top: 1px solid rgba(138,175,138,0.15);
-}
-.testimonial-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #4A7C59;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.cta-strip p { font-size: 0.9rem; color: var(--sage); margin-bottom: 1.75rem; }
+.cta-btn {
+  display: inline-block; background: var(--accent); color: white;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.95rem;
-  color: #F4EFE4;
-  flex-shrink: 0;
-}
-.testimonial-name {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.82rem;
-  color: #F4EFE4;
-  font-weight: 600;
-}
-.testimonial-route-badge {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #8AAF8A;
+  font-size: 1.3rem; letter-spacing: 0.12em;
+  padding: 0.9rem 2.5rem; border-radius: 2px;
+  text-decoration: none; cursor: pointer; border: none;
 }
 </style>
 </head>
 <body>
 
- <!-- NAV -->
- <nav id="nav">
- <a href="/" class="nav-logo">OpenRide.bike</a>
- <a href="#buy" class="nav-buy">Buy Guide — $19</a>
- </nav>
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
+  <a class="nav-buy" href="/plan">Start Planning Your Tour →</a>
+</nav>
 
- <!-- HERO SLIDESHOW -->
- <section class="hero">
- <!-- Slides: replace gradient classes with background-image once Imagen images are ready -->
- <div class="slide active" id="slide-0" style="background-image: url('/images/natchez-hero-spanish-moss.jpg')"></div>
- <div class="slide"        id="slide-1" style="background-image: url('/images/natchez-hero-windsor-ruins.jpg')"></div>
- <div class="slide"        id="slide-2" style="background-image: url('/images/natchez-hero-emerald-mound.jpg')"></div>
- <div class="slide"        id="slide-3" style="background-image: url('/images/natchez-hero-rocky-springs.jpg')"></div>
- <div class="slide"        id="slide-4" style="background-image: url('/images/natchez-hero-road-ahead.jpg')"></div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-label">National Scenic Byway · Mississippi to Tennessee</span>
+    <h1 class="hero-title">Natchez<br>Trace<br>Parkway</h1>
+    <p class="hero-sub">Ten thousand years of American history. One perfectly quiet road.</p>
+    <div class="hero-pills">
+      <span class="pill">Antebellum South</span>
+      <span class="pill">Ancient Forest</span>
+      <span class="pill">Ghost Towns</span>
+      <span class="pill">Southern Hospitality</span>
+    </div>
+  </div>
+</section>
 
- <div class="hero-overlay"></div>
+<!-- MAP -->
+<section class="map-section">
+  <div class="map-stats-band">
+    <div class="map-stat"><span class="map-stat-val">444</span><span class="map-stat-lbl">Total Miles</span></div>
+    <div class="map-stat"><span class="map-stat-val">3</span><span class="map-stat-lbl">States</span></div>
+    <div class="map-stat"><span class="map-stat-val">3–10</span><span class="map-stat-lbl">Days</span></div>
+    <div class="map-stat"><span class="map-stat-val">NPS</span><span class="map-stat-lbl">Protected Parkway</span></div>
+    <div class="map-stat"><span class="map-stat-val">Road</span><span class="map-stat-lbl">Best Bike</span></div>
+    <div class="map-stat"><span class="map-stat-val">Beginner</span><span class="map-stat-lbl">Difficulty</span></div>
+  </div>
+  <div id="route-map"></div>
+</section>
 
- <div class="hero-content">
- <p class="hero-label">OpenRide.bike · Self-Guided Route Guide</p>
- <h1 class="hero-title">Natchez Trace<br><em>Parkway</em></h1>
- <p class="hero-sub">Mississippi · Alabama · Tennessee</p>
- <div class="hero-pills">
- <span class="pill">Road Bike</span>
- <span class="pill">Beginner Friendly</span>
- <span class="pill">Historical</span>
- <span class="pill">Wildlife</span>
- <span class="pill">Food &amp; Culture</span>
- <span class="pill">Free Camping</span>
- </div>
- </div>
+<!-- ROUTE DETAILS STRIP -->
+<div class="route-strip">
+  <div class="route-strip-item"><span class="route-strip-lbl">Start</span><span class="route-strip-val">Natchez, MS</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">End</span><span class="route-strip-val">Nashville, TN</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Best Seasons</span><span class="route-strip-val">Spring &amp; Fall</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Fly-In Airport</span><span class="route-strip-val">Jackson, MS (JAN)</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Shuttle Needed</span><span class="route-strip-val">Point-to-Point</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Camping</span><span class="route-strip-val">Free NPS Sites</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Surface</span><span class="route-strip-val">NPS Pavement</span></div>
+</div>
 
- <div class="slide-dots" id="dots"></div>
-
- <div class="scroll-hint">
- <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
- <path d="M7 2v10M3 8l4 4 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
- </svg>
- Scroll
- </div>
- </section>
-
-   <section class="route-section">
-
-    <!-- STATS BAR -->
-    <div class="stats-bar">
-      <div class="stats-bar-item">
-        <span class="stats-bar-value">444</span>
-        <span class="stats-bar-label">Total Miles</span>
+<!-- ABOUT — EDITORIAL TWO-COL -->
+<section class="a-editorial">
+  <div class="a-editorial-inner">
+    <div class="a-editorial-text">
+      <span class="a-eyebrow">Route Overview</span>
+      <h2 class="a-headline">About This Route</h2>
+      <p>Before it was a road, it was a footpath. The Choctaw and Chickasaw walked it for centuries. Then came the Kaintuck boatmen — traders who floated their flatboats down the Mississippi to New Orleans and walked the 500 miles home. The same worn corridor through the Mississippi and Tennessee wilderness, used by armies, explorers, and outlaws, is now a National Scenic Byway managed by the National Park Service.</p>
+      <div class="a-pullquote">
+        <p>"By Day 2 you stop waiting for the roar that never comes. The silence is the whole point."</p>
       </div>
-      <div class="stats-bar-item">
-        <span class="stats-bar-value">3</span>
-        <span class="stats-bar-label">States</span>
+      <p>For cyclists it's close to perfect. The grades are gentle, the pavement smooth, and the towns along the way still run on Southern time — unhurried diners, front-porch conversations, and locals who'll ask where you're headed before you've locked your bike.</p>
+    </div>
+    <div class="a-sidebar">
+      <div class="a-sidebar-title">Plan Your Trip</div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Best For</span><span class="a-stat-val">First-timers</span></div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Pace</span><span class="a-stat-val">40–55 mi/day</span></div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Budget / Day</span><span class="a-stat-val">$60–$180</span></div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Best Months</span><span class="a-stat-val">Mar · Apr · Oct</span></div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Avg Temp</span><span class="a-stat-val">55–75°F</span></div>
+      <div class="a-stat-row" style="flex-direction:column; align-items:flex-start; gap:0.4rem;">
+        <span class="a-stat-lbl">Guide Includes</span>
+        <div class="sample-links">
+          <button class="sample-link" onclick="openModal('modal-guide')">Sample Guide</button>
+          <span class="sample-link-sep">·</span>
+          <button class="sample-link" onclick="openModal('modal-cues')">Cue Sheet</button>
+          <span class="sample-link-sep">·</span>
+          <button class="sample-link" onclick="openModal('modal-gpx')">GPX Preview</button>
+        </div>
       </div>
-      <div class="stats-bar-item">
-        <span class="stats-bar-value">3–10</span>
-        <span class="stats-bar-label">Days</span>
+      <a href="/plan" class="a-buy-btn">Start Planning Your Tour →</a>
+      <div class="a-sidebar-note">We'll build your guide based on<br>your pace, style &amp; dates</div>
+    </div>
+  </div>
+</section>
+
+<!-- FULL-BLEED PHOTO BREAK -->
+<div class="a-photo-break">
+  <div class="a-photo-caption"><strong>Spanish moss on the Trace</strong> · Milepost 15, Mississippi</div>
+</div>
+
+<!-- ITINERARY -->
+<section class="a-days-section">
+  <div class="a-days-inner">
+    <div class="a-section-head">
+      <h2>Sample Itinerary — Lower Trace</h2>
+      <span>3 Days · Natchez to Rocky Springs</span>
+    </div>
+
+    <div class="a-day-row">
+      <div class="a-day-num">1</div>
+      <div class="a-day-content">
+        <h3>Arrival &amp; Natchez City</h3>
+        <div class="a-day-meta">0 miles · Natchez, MS</div>
+        <p>Arrive in Natchez — one of the oldest cities on the Mississippi River and the southern terminus of the Trace. Historic downtown, bluffs overlooking the river, antebellum mansions. Don't miss the Mississippi catfish.</p>
+        <div class="a-day-tags">
+          <span class="a-day-tag">Antebellum mansions</span>
+          <span class="a-day-tag">Mississippi bluffs</span>
+          <span class="a-day-tag">B&amp;B recommended</span>
+        </div>
       </div>
-      <div class="stats-bar-item">
-        <span class="stats-bar-value">0</span>
-        <span class="stats-bar-label">Trucks / Semis</span>
-      </div>
-      <div class="stats-bar-item">
-        <span class="stats-bar-value" style="font-size:1.4rem;">Road / Gravel</span>
-        <span class="stats-bar-label">Best Bike</span>
-      </div>
-      <div class="stats-bar-item">
-        <span class="stats-bar-value" style="font-size:1.4rem;">Beginner</span>
-        <span class="stats-bar-label">Difficulty</span>
+      <div class="a-day-img" style="background:linear-gradient(135deg,#2C4A2E,#4A7C59)">
+        <div class="a-day-img-overlay"><span>Natchez, Mississippi</span></div>
       </div>
     </div>
 
-    <!-- MAP — full width -->
-    <div id="map"></div>
-
-    <!-- BUY BLOCK -->
-    <div class="buy-block">
-      <div class="buy-block-details">
-        <div class="buy-block-detail">
-          <span class="buy-block-detail-label">Start</span>
-          <span class="buy-block-detail-value">Natchez, MS</span>
-        </div>
-        <div class="buy-block-detail">
-          <span class="buy-block-detail-label">End</span>
-          <span class="buy-block-detail-value">Nashville, TN</span>
-        </div>
-        <div class="buy-block-detail">
-          <span class="buy-block-detail-label">Surface</span>
-          <span class="buy-block-detail-value">Smooth NPS pavement</span>
-        </div>
-        <div class="buy-block-detail">
-          <span class="buy-block-detail-label">Best Seasons</span>
-          <span class="buy-block-detail-value">Spring &amp; Fall</span>
+    <div class="a-day-row">
+      <div class="a-day-num">2</div>
+      <div class="a-day-content">
+        <h3>Natchez to Port Gibson</h3>
+        <div class="a-day-meta">~42 miles · ~2,100 ft elevation</div>
+        <p>Spanish moss–draped forest, Emerald Mound at sunrise, and Port Gibson — the town Ulysses Grant declared "too beautiful to burn." The first miles feel like riding through a tunnel of green.</p>
+        <div class="a-day-tags">
+          <span class="a-day-tag">Emerald Mound</span>
+          <span class="a-day-tag">Civil War history</span>
+          <span class="a-day-tag">Old Trace paths</span>
         </div>
       </div>
-      <div class="buy-block-right">
-        <span class="buy-block-title">Complete Route Package</span>
-        <span class="buy-block-desc">Personalized PDF guide + GPX file + cue sheet. Works offline. Compatible with Garmin, Wahoo, Komoot, Apple Maps.</span>
-        <a href="#" class="buy-block-btn" id="checkoutBtn">Download Guide — $19</a>
-        <span class="buy-block-compat">Garmin · Wahoo · Komoot · Apple Maps · Google Maps</span>
+      <div class="a-day-img" style="background:linear-gradient(135deg,#4A7C59,#2C4A2E)">
+        <div class="a-day-img-overlay"><span>Emerald Mound · Milepost 10.3</span></div>
       </div>
     </div>
 
-  </section>
-
- <!-- CONTENT -->
-  <main>
-
-    <!-- ABOUT SECTION -->
-    <section class="about-section">
-      <div class="about-inner">
-        <span class="section-eyebrow">The Experience</span>
-        <h2>Deep South Discovery</h2>
-        <p class="about-text">
-          The Natchez Trace Parkway is one of America's most iconic and beginner-friendly long-distance cycling routes. Stretching 444 miles from Natchez, Mississippi to Nashville, Tennessee, this federally protected two-lane road carries no commercial traffic — no trucks, no semis, no billboards. Just smooth pavement, ancient forests, and 10,000 years of American history unfolding mile by mile.
-        </p>
-        <p class="about-text">
-          Originally a series of trails used by the Choctaw and Chickasaw peoples, later walked by Kaintuck flatboatmen returning home from New Orleans, the Trace is now a National Scenic Byway managed by the National Park Service. For cyclists, it's close to perfect: gentle rolling terrain, designated free campsites, and a pace that invites deep exploration of the Deep South's food, culture, and past.
-        </p>
-      </div>
-    </section>
-
-    <!-- ITINERARY SECTION -->
-    <section class="itinerary-section">
-      <div class="section-inner">
-        <span class="section-eyebrow">The Journey</span>
-        <h2>The 10-Day Slow Burn</h2>
-        <p class="section-sub">Our recommended pace for those who want to see it all.</p>
-
-        <div class="day-cards-stack">
-          <!-- Day 1 -->
-          <div class="day-card-new">
-            <div class="day-card-number">
-              <span class="day-num">01</span>
-              <span class="day-word">Day</span>
-            </div>
-            <div class="day-card-body">
-              <h3 class="day-card-title">Arrival in Natchez</h3>
-              <p class="day-card-meta">0 miles · Orientation</p>
-              <p class="day-card-desc">Start your journey in the oldest settlement on the Mississippi River. Natchez is famous for its stunning antebellum architecture and legendary Southern hospitality. Check into a historic B&amp;B and enjoy a sunset over the river from the bluff.</p>
-              <div class="day-card-tags">
-                <span class="day-card-tag">Natchez Bluff</span>
-                <span class="day-card-tag">Stanton Hall</span>
-                <span class="day-card-tag">Southern Dining</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Day 2 -->
-          <div class="day-card-new">
-            <div class="day-card-number">
-              <span class="day-num">02</span>
-              <span class="day-word">Day</span>
-            </div>
-            <div class="day-card-body">
-              <h3 class="day-card-title">Natchez to Port Gibson</h3>
-              <p class="day-card-meta">~40 miles · ~1,800 ft elevation</p>
-              <p class="day-card-desc">Leave the city behind as you enter the Parkway. Today's highlights include Emerald Mound, the second-largest Native American ceremonial mound in the US, and Mt. Locust, a perfectly preserved 18th-century "stand" (inn).</p>
-              <div class="day-card-tags">
-                <span class="day-card-tag">Emerald Mound</span>
-                <span class="day-card-tag">Mt. Locust Stand</span>
-                <span class="day-card-tag">Loess Bluffs</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Day 3 -->
-          <div class="day-card-new">
-            <div class="day-card-number">
-              <span class="day-num">03</span>
-              <span class="day-word">Day</span>
-            </div>
-            <div class="day-card-body">
-              <h3 class="day-card-title">Port Gibson to Rocky Springs</h3>
-              <p class="day-card-meta">~40 miles · ~2,400 ft elevation</p>
-              <p class="day-card-desc">Today's highlight: a short detour to the Windsor Ruins — the hauntingly beautiful columns of what was once Mississippi's largest antebellum plantation house. End your day at Rocky Springs — a ghost town free NPS campsite that is atmospheric and well maintained.</p>
-              <div class="day-card-tags">
-                <span class="day-card-tag">Windsor Ruins</span>
-                <span class="day-card-tag">Ghost Town</span>
-                <span class="day-card-tag">Free Camping</span>
-              </div>
-            </div>
-          </div>
+    <div class="a-day-row">
+      <div class="a-day-num">3</div>
+      <div class="a-day-content">
+        <h3>Port Gibson to Rocky Springs</h3>
+        <div class="a-day-meta">~40 miles · ~2,400 ft elevation</div>
+        <p>The Windsor Ruins detour — 23 Corinthian columns standing in the forest, wrapped in vines. End at Rocky Springs, a ghost town free NPS campsite that's atmospheric and well-maintained.</p>
+        <div class="a-day-tags">
+          <span class="a-day-tag">Windsor Ruins</span>
+          <span class="a-day-tag">Free NPS camping</span>
+          <span class="a-day-tag">Photography</span>
         </div>
       </div>
-    </section>
-
-    <!-- HIGHLIGHTS SECTION -->
-    <section class="highlights-section">
-      <div class="section-inner">
-        <span class="section-eyebrow">The Best Bits</span>
-        <h2>Curated Highlights</h2>
-        <p class="section-sub">Must-stop locations along the 444-mile corridor.</p>
-
-        <div class="highlights-grid-new">
-          <div class="highlight-card-new">
-            <span class="highlight-card-mp">Milepost 10.3</span>
-            <h3 class="highlight-card-name">Emerald Mound</h3>
-            <p class="highlight-card-desc">Second largest Native American ceremonial mound in the US. Built around 1400 CE by the ancestors of the Natchez Indians.</p>
-          </div>
-          <div class="highlight-card-new">
-            <span class="highlight-card-mp">Off Milepost 41</span>
-            <h3 class="highlight-card-name">Windsor Ruins</h3>
-            <p class="highlight-card-desc">23 haunting Corinthian columns — all that remains of Mississippi's grandest antebellum mansion, destroyed by fire in 1890.</p>
-          </div>
-          <div class="highlight-card-new">
-            <span class="highlight-card-mp">Milepost 39.2</span>
-            <h3 class="highlight-card-name">Port Gibson</h3>
-            <p class="highlight-card-desc">"A town too beautiful to burn." Stunning architecutre and the famous First Presbyterian Church with its golden hand steeple.</p>
-          </div>
-          <div class="highlight-card-new">
-            <span class="highlight-card-mp">Milepost 54.8</span>
-            <h3 class="highlight-card-name">Rocky Springs</h3>
-            <p class="highlight-card-desc">A ghost town reclaimed by nature. Free NPS campsite, historical markers, and an original 1837 church still standing.</p>
-          </div>
-          <div class="highlight-card-new">
-            <span class="highlight-card-mp">Milepost 259.7</span>
-            <h3 class="highlight-card-name">Tupelo Battlefield</h3>
-            <p class="highlight-card-desc">Site of the July 1864 battle — one of the Civil War's final major engagements in Mississippi.</p>
-          </div>
-          <div class="highlight-card-new">
-            <span class="highlight-card-mp">Milepost 385.9</span>
-            <h3 class="highlight-card-name">Meriwether Lewis</h3>
-            <p class="highlight-card-desc">The gravesite and death site of the famous explorer — one of the Trace's most moving and mysterious stops.</p>
-          </div>
-        </div>
+      <div class="a-day-img" style="background:linear-gradient(135deg,#8AAF8A,#3d6b41)">
+        <div class="a-day-img-overlay"><span>Windsor Ruins · Milepost 41</span></div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- SLEEP SECTION -->
-    <section class="sleep-section">
-      <div class="section-inner">
-        <span class="section-eyebrow">Overnight</span>
-        <h2>Where to Sleep</h2>
-        <p class="section-sub">From wild camps to historic antebellum mansions.</p>
+<!-- PHOTO MOSAIC -->
+<div class="a-mosaic">
+  <div class="a-mosaic-cell"></div>
+  <div class="a-mosaic-cell"></div>
+  <div class="a-mosaic-cell"></div>
+  <div class="a-mosaic-cell"></div>
+  <div class="a-mosaic-cell"></div>
+</div>
 
-        <div class="sleep-grid-new">
-          <div class="sleep-card-new">
-            <span class="sleep-card-icon">⛺</span>
-            <h3 class="sleep-card-type">NPS Camping</h3>
-            <p class="sleep-card-desc">Designated free campsites for cyclists. First come, first served. Clean, quiet, and perfectly spaced.</p>
-          </div>
-          <div class="sleep-card-new">
-            <span class="sleep-card-icon">🏡</span>
-            <h3 class="sleep-card-type">Historic B&amp;Bs</h3>
-            <p class="sleep-card-desc">Splurge on an antebellum home in Natchez or Tupelo. A quintessential Mississippi experience.</p>
-          </div>
-          <div class="sleep-card-new">
-            <span class="sleep-card-icon">🏨</span>
-            <h3 class="sleep-card-type">Town Motels</h3>
-            <p class="sleep-card-desc">Budget rural motels in Port Gibson, Jackson, and Kosciusko. Good for a mid-trip shower and AC.</p>
-          </div>
-          <div class="sleep-card-new">
-            <span class="sleep-card-icon">✨</span>
-            <h3 class="sleep-card-type">Wild Camping</h3>
-            <p class="sleep-card-desc">While discouraged by NPS, many gravel detours offer secluded spots for self-contained riders.</p>
-          </div>
-        </div>
+<!-- HIGHLIGHTS -->
+<section class="a-highlights">
+  <div class="a-highlights-inner">
+    <div class="a-highlights-head">
+      <span class="ey">Must-See</span>
+      <h2>Six Stops That Define the Trace</h2>
+    </div>
+    <div class="a-highlights-grid">
+      <div class="a-hl"><div class="a-hl-mp">Milepost 10.3</div><div class="a-hl-name">Emerald Mound</div><p class="a-hl-desc">Second largest Native American ceremonial mound in the US. Built around 1400 CE.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Just off Milepost 41</div><div class="a-hl-name">Windsor Ruins</div><p class="a-hl-desc">23 haunting Corinthian columns — all that remains of Mississippi's grandest antebellum mansion.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Milepost 39.2</div><div class="a-hl-name">Port Gibson</div><p class="a-hl-desc">Too beautiful to burn. Stunning antebellum architecture and the famous golden hand church steeple.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Milepost 54.8</div><div class="a-hl-name">Rocky Springs</div><p class="a-hl-desc">A ghost town reclaimed by nature. Free NPS campsite, original church still standing.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Milepost 259.7</div><div class="a-hl-name">Tupelo Battlefield</div><p class="a-hl-desc">Site of the July 1864 battle — one of the war's final major engagements in Mississippi.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Milepost 385.9</div><div class="a-hl-name">Meriwether Lewis Site</div><p class="a-hl-desc">The gravesite and death site of the famous explorer — one of the Trace's most moving stops.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRACTICAL INFO -->
+<section class="a-practical">
+  <div class="a-practical-inner">
+    <div class="a-practical-head">
+      <h2>Essential Information</h2>
+      <span>Before You Go</span>
+    </div>
+    <div class="a-practical-grid">
+      <div class="a-pblock">
+        <div class="a-pblock-title">Getting There</div>
+        <ul>
+          <li>Fly into Jackson, MS (JAN) or Nashville, TN (BNA)</li>
+          <li>Amtrak serves Natchez via City of New Orleans</li>
+          <li>Shuttle services for one-way trips</li>
+          <li>Most cyclists rent a car for shuttling</li>
+        </ul>
       </div>
-    </section>
-
-    <!-- PRACTICAL INFO SECTION -->
-    <section class="practical-section">
-      <div class="section-inner">
-        <span class="section-eyebrow">Preparation</span>
-        <h2>Essential Info</h2>
-        <p class="section-sub">What you need to know before you turn the pedals.</p>
-
-        <div class="practical-grid-new">
-          <div class="practical-block-new">
-            <h3 class="practical-block-title">Getting There</h3>
-            <ul class="practical-block-list">
-              <li>Fly into Jackson (JAN) or Nashville (BNA)</li>
-              <li>Amtrak service available to Jackson, MS</li>
-              <li>One-way rental cars are standard for shuttling</li>
-              <li>Shuttle services available from local outfitters</li>
-            </ul>
-          </div>
-          <div class="practical-block-new">
-            <h3 class="practical-block-title">Food &amp; Resupply</h3>
-            <ul class="practical-block-list">
-              <li>Limited resupply directly on the Parkway</li>
-              <li>Detours required for most grocery stores</li>
-              <li>Carry 2 days of food for the southern sections</li>
-              <li>Filtered water available at most NPS stops</li>
-            </ul>
-          </div>
-          <div class="practical-block-new">
-            <h3 class="practical-block-title">Road Conditions</h3>
-            <ul class="practical-block-list">
-              <li>Pavement is mostly glass-smooth</li>
-              <li>Strict 50mph speed limit — cars are slow</li>
-              <li>Cell service is spotty in the forests</li>
-              <li>No traffic signals or cross-traffic</li>
-            </ul>
-          </div>
-          <div class="practical-block-new">
-            <h3 class="practical-block-title">What to Pack</h3>
-            <ul class="practical-block-list">
-              <li>28mm+ tires recommended for comfort</li>
-              <li>Insect repellent (especially in May/June)</li>
-              <li>High-visibility lights for shaded sections</li>
-              <li>Lightweight rain shell for afternoon storms</li>
-            </ul>
-          </div>
-        </div>
+      <div class="a-pblock">
+        <div class="a-pblock-title">Food &amp; Resupply</div>
+        <ul>
+          <li>Resupply points are limited on the Trace</li>
+          <li>Stock up in Natchez, Port Gibson, Tupelo</li>
+          <li>Carry 2–3 days of food between towns</li>
+          <li>Bring cash — many towns are cash only</li>
+        </ul>
       </div>
-    </section>
-
-    <!-- TESTIMONIALS SECTION -->
-    <section class="testimonials-section">
-      <div class="section-inner">
-        <span class="section-eyebrow">Feedback</span>
-        <h2>Rider Stories</h2>
-        <p class="section-sub">What our community says about riding the Trace.</p>
-
-        <div class="testimonials-grid">
-          <div class="testimonial-card">
-            <div class="testimonial-stars">★★★★★</div>
-            <span class="testimonial-quote-mark">“</span>
-            <p class="testimonial-text">The Natchez Trace was my first bike tour, and I couldn't have asked for a better experience. <em>The lack of commercial traffic made it feel so safe.</em> The history at every milepost kept me engaged even on the hottest days.</p>
-            <div class="testimonial-meta">
-              <div class="testimonial-avatar">JD</div>
-              <div class="testimonial-info">
-                <p class="testimonial-name">John D.</p>
-                <p class="testimonial-route-badge">Class of '24</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="testimonial-card">
-            <div class="testimonial-stars">★★★★★</div>
-            <span class="testimonial-quote-mark">“</span>
-            <p class="testimonial-text">I've ridden a dozen long trails, but the Trace has a special soul. Crossing the Tennessee River Bridge at sunset was <em>a core memory I'll never forget.</em> Highly recommend the autumn season for the colors.</p>
-            <div class="testimonial-meta">
-              <div class="testimonial-avatar">SR</div>
-              <div class="testimonial-info">
-                <p class="testimonial-name">Sarah R.</p>
-                <p class="testimonial-route-badge">Class of '23</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="testimonial-card">
-            <div class="testimonial-stars">★★★★★</div>
-            <span class="testimonial-quote-mark">“</span>
-            <p class="testimonial-text">Don't miss Emerald Mound! The detour is tiny but the perspective it gives you on the history of this land is massive. <em>OpenRide's guide made navigation effortless.</em></p>
-            <div class="testimonial-meta">
-              <div class="testimonial-avatar">ML</div>
-              <div class="testimonial-info">
-                <p class="testimonial-name">Marcus L.</p>
-                <p class="testimonial-route-badge">Class of '25</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="a-pblock">
+        <div class="a-pblock-title">Road Conditions</div>
+        <ul>
+          <li>Federally protected — commercial traffic prohibited</li>
+          <li>Smooth NPS-maintained pavement</li>
+          <li>50 mph speed limit, courteous drivers</li>
+          <li>Paved shoulders vary by section</li>
+        </ul>
       </div>
-    </section>
+      <div class="a-pblock">
+        <div class="a-pblock-title">What to Pack</div>
+        <ul>
+          <li>Road or gravel bike, any gearing works</li>
+          <li>Panniers or bikepacking bags both fine</li>
+          <li>Insect repellent — essential in spring</li>
+          <li>Rain gear — afternoon storms common</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-  </main>
+<!-- REVIEWS -->
+<section class="a-reviews">
+  <div class="a-reviews-inner">
+    <div class="a-reviews-head">
+      <h2>What Riders Are Saying</h2>
+      <span>Early Rider Reviews</span>
+    </div>
+    <div class="a-reviews-grid">
+      <div class="a-review">
+        <div class="a-stars">★★★★★</div>
+        <p class="a-review-text">"Did the Lower Trace in 4 days with my wife. The guide had us totally dialed — we knew exactly where to eat, where to sleep, what to stop for. The Windsor Ruins at sunrise was worth the whole trip."</p>
+        <div class="a-reviewer"><div class="a-avatar">MK</div><div><div class="a-reviewer-name">Marcus K. — Nashville, TN</div><div class="a-reviewer-route">Lower Trace · 4 days</div></div></div>
+      </div>
+      <div class="a-review">
+        <div class="a-stars">★★★★★</div>
+        <p class="a-review-text">"Rode this solo after a rough year. By Day 3 the Trace had completely reset me. I wasn't expecting the silence — just open road, forest, and the occasional historic marker."</p>
+        <div class="a-reviewer"><div class="a-avatar">SL</div><div><div class="a-reviewer-name">Sarah L. — Atlanta, GA</div><div class="a-reviewer-route">Lower Trace · 3 days</div></div></div>
+      </div>
+      <div class="a-review">
+        <div class="a-stars">★★★★★</div>
+        <p class="a-review-text">"Flew into Jackson and did the whole thing point-to-point. The resupply notes were spot-on — knew exactly which towns to stock up in and which ones to ride through."</p>
+        <div class="a-reviewer"><div class="a-avatar">DP</div><div><div class="a-reviewer-name">Dave P. — Chicago, IL</div><div class="a-reviewer-route">Full Trace · 10 days</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- CTA -->
+<div class="cta-strip">
+  <h2>Ready to Ride the Trace?</h2>
+  <p>Tell us your pace, dates, and style — we'll build your personalized guide in minutes.</p>
+  <a href="/plan" class="cta-btn">Start Planning Your Tour →</a>
+</div>
 
- <!-- CTA STRIP -->
- <section class="cta-strip">
- <h2>Ready to Ride the Trace?</h2>
- <p>Your personalized guide includes cue sheets, GPX files, lodging recommendations, and day-by-day planning built around your pace and style.</p>
- <a href="checkout-form.html?pace=moderate&accommodation=bnb&season=fall&party_size=couple" class="cta-btn">
- Get Your Guide — $19
- </a>
- </section>
+<!-- MAPBOX -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script>
+(function() {
+  // TOKEN: Antigravity — replace with process.env.MAPBOX_TOKEN or inject from Netlify env
+  const token = window.MAPBOX_TOKEN || 'REPLACE_WITH_MAPBOX_TOKEN';
+  mapboxgl.accessToken = token;
 
- <!-- FOOTER -->
- <footer>
- <p>OpenRide.bike · Self-guided bicycle tours across America · <a href="/">Back to all routes</a></p>
- <p style="margin-top:0.5rem">Guide curated from years of professional bicycle tour experience on the Natchez Trace Parkway.</p>
- </footer>
+  const map = new mapboxgl.Map({
+    container: 'route-map',
+    style: 'mapbox://styles/mapbox/outdoors-v12',
+    center: [-89.5, 33.5],
+    zoom: 6,
+    attributionControl: false
+  });
 
- <script>
- // Nav scroll effect
- const nav = document.getElementById('nav');
- window.addEventListener('scroll', () => {
- nav.classList.toggle('scrolled', window.scrollY > 60);
- });
+  map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+  map.addControl(new mapboxgl.AttributionControl({ compact: true }));
 
- // Hero slideshow
- const slides = document.querySelectorAll('.slide');
- const dotsEl = document.getElementById('dots');
- let current = 0;
+  const stops = [
+    { name: 'Natchez, MS', coords: [-91.403, 31.560], type: 'start' },
+    { name: 'Emerald Mound · MP 10.3', coords: [-91.175, 31.683], type: 'stop' },
+    { name: 'Port Gibson · MP 39.2', coords: [-90.984, 31.958], type: 'stop' },
+    { name: 'Rocky Springs · MP 54.8', coords: [-90.897, 32.093], type: 'stop' },
+    { name: 'Kosciusko', coords: [-89.589, 33.058], type: 'stop' },
+    { name: 'Tupelo · MP 259.7', coords: [-88.703, 34.258], type: 'stop' },
+    { name: 'Meriwether Lewis · MP 385.9', coords: [-87.467, 35.458], type: 'stop' },
+    { name: 'Nashville, TN', coords: [-86.781, 36.166], type: 'end' },
+  ];
 
- // Build dots
- slides.forEach((_, i) => {
- const d = document.createElement('div');
- d.className = 'dot' + (i === 0 ? ' active' : '');
- d.addEventListener('click', () => goTo(i));
- dotsEl.appendChild(d);
- });
+  map.on('load', () => {
+    map.addSource('trace', {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: [
+            [-91.403,31.560],[-91.175,31.683],[-90.984,31.958],
+            [-90.897,32.093],[-90.650,32.350],[-90.200,32.650],
+            [-89.589,33.058],[-89.100,33.500],[-88.703,34.258],
+            [-88.200,34.700],[-87.800,35.100],[-87.467,35.458],
+            [-87.100,35.750],[-86.900,36.000],[-86.781,36.166]
+          ]
+        }
+      }
+    });
+    map.addLayer({
+      id: 'trace-line',
+      type: 'line', source: 'trace',
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: { 'line-color': '#C17F3A', 'line-width': 3.5, 'line-opacity': 0.95 }
+    });
 
- function goTo(n) {
- slides[current].classList.remove('active');
- dotsEl.children[current].classList.remove('active');
- current = n;
- slides[current].classList.add('active');
- dotsEl.children[current].classList.add('active');
- }
+    stops.forEach(s => {
+      const color = s.type === 'start' ? '#4CAF50' : s.type === 'end' ? '#C17F3A' : '#8AAF8A';
+      const size  = s.type !== 'stop' ? 14 : 9;
+      const el = document.createElement('div');
+      el.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;`;
+      new mapboxgl.Marker(el)
+        .setLngLat(s.coords)
+        .setPopup(new mapboxgl.Popup({ offset: 12, closeButton: false })
+          .setHTML(`<div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;color:#2C4A2E;padding:2px 4px;">${s.name}</div>`))
+        .addTo(map);
+    });
+  });
+})();
+</script>
 
- // Auto-advance every 5s
- setInterval(() => goTo((current + 1) % slides.length), 5000);
+<!-- MODAL: Sample Guide -->
+<div class="modal-overlay" id="modal-guide" onclick="closeModalOutside(event, 'modal-guide')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><span class="modal-title">Sample Route Guide</span><span class="modal-tag">Moderate Pace · B&amp;B · Spring</span></div>
+      <button class="modal-close" onclick="closeModal('modal-guide')">✕</button>
+    </div>
+    <div class="modal-body">
+      <iframe src="/pdfs/natchez-moderate-bnb-spring.pdf" title="Sample Route Guide"></iframe>
+    </div>
+    <div class="modal-note">Sample only — your purchased guide is customized to your pace, lodging style &amp; travel dates.</div>
+  </div>
+</div>
 
- // Mapbox map
- try {
- const token = window.MAPBOX_TOKEN || (typeof mapboxToken !== 'undefined' ? mapboxToken : null);
- if (token) {
- mapboxgl.accessToken = token;
- const map = new mapboxgl.Map({
- container: 'map',
- style: 'mapbox://styles/mapbox/outdoors-v12',
- center: [-89.5, 33.5],
- zoom: 6,
- attributionControl: false
- });
-  map.on('load', function() { map.resize(); });
+<!-- MODAL: Cue Sheet -->
+<div class="modal-overlay" id="modal-cues" onclick="closeModalOutside(event, 'modal-cues')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><span class="modal-title">Sample Cue Sheet</span><span class="modal-tag">Turn-by-Turn · Natchez Trace</span></div>
+      <button class="modal-close" onclick="closeModal('modal-cues')">✕</button>
+    </div>
+    <div class="modal-body">
+      <iframe src="/pdfs/natchez-trace-cue-sheet.pdf" title="Sample Cue Sheet"></iframe>
+    </div>
+    <div class="modal-note">Formatted for printing or phone screen. One page per day segment.</div>
+  </div>
+</div>
 
- map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
- map.addControl(new mapboxgl.AttributionControl({ compact: true }));
+<!-- MODAL: GPX Preview -->
+<div class="modal-overlay" id="modal-gpx" onclick="closeModalOutside(event, 'modal-gpx')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div><span class="modal-title">GPX File</span><span class="modal-tag">Works with Garmin · Wahoo · Komoot · RideWithGPS</span></div>
+      <button class="modal-close" onclick="closeModal('modal-gpx')">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.5rem; padding:2.5rem; background:var(--parch);">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:4rem; color:var(--forest); letter-spacing:0.05em; line-height:1;">444 mi</div>
+      <div style="font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--sage);">Natchez, MS → Nashville, TN</div>
+      <div style="display:flex; gap:2rem; text-align:center;">
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--forest);">3,200 ft</div><div style="font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:#999;">Total Elevation Gain</div></div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--forest);">3</div><div style="font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:#999;">States</div></div>
+        <div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--forest);">52</div><div style="font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:#999;">Waypoints</div></div>
+      </div>
+      <div style="font-size:0.75rem; color:#888; line-height:1.6; text-align:center; max-width:380px;">Your GPX file loads directly into Garmin, Wahoo, Komoot, or RideWithGPS. Includes all campsite waypoints, water sources, and Points of Interest.</div>
+    </div>
+    <div class="modal-note">GPX included with every guide purchase. Download immediately after checkout.</div>
+  </div>
+</div>
 
- map.on('load', () => {
- // Natchez Trace approximate route line
- map.addSource('trace', {
- type: 'geojson',
- data: {
- type: 'Feature',
- geometry: {
- type: 'LineString',
- coordinates: [
- [-91.3907, 31.5604], // Natchez
- [-90.6000, 32.0500],
- [-90.1800, 32.2900], // Rocky Springs area
- [-90.1200, 32.5700], // Port Gibson area
- [-90.0700, 32.9500], // Jackson area
- [-89.8500, 33.3000],
- [-89.5200, 33.7400], // Kosciusko area
- [-89.2800, 34.0000],
- [-88.7000, 34.2500], // Tupelo area
- [-88.5000, 34.5000],
- [-87.7000, 35.0000],
- [-87.2500, 35.4000],
- [-87.0000, 35.7000],
- [-86.7839, 36.1659] // Nashville
- ]
- }
- }
- });
+<script>
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeModalOutside(e, id) {
+    if (e.target === document.getElementById(id)) closeModal(id);
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(m => {
+        m.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    }
+  });
+</script>
 
- map.addLayer({
- id: 'trace-line',
- type: 'line',
- source: 'trace',
- layout: { 'line-join': 'round', 'line-cap': 'round' },
- paint: {
- 'line-color': '#C17F3A',
- 'line-width': 3,
- 'line-opacity': 0.9
- }
- });
-
- // Start marker — Natchez
- new mapboxgl.Marker({ color: '#2C4A2E' })
- .setLngLat([-91.3907, 31.5604])
- .setPopup(new mapboxgl.Popup({ offset: 10 }).setHTML('<strong>Start: Natchez, MS</strong>'))
- .addTo(map);
-
- // End marker — Nashville
- new mapboxgl.Marker({ color: '#C17F3A' })
- .setLngLat([-86.7839, 36.1659])
- .setPopup(new mapboxgl.Popup({ offset: 10 }).setHTML('<strong>End: Nashville, TN</strong>'))
- .addTo(map);
-
- // Key POI markers
- const pois = [
- { coords: [-91.2700, 31.6800], label: 'Emerald Mound' },
- { coords: [-91.0000, 31.9500], label: 'Windsor Ruins' },
- { coords: [-90.9800, 32.0000], label: 'Port Gibson' },
- { coords: [-90.1500, 32.3500], label: 'Rocky Springs' },
- { coords: [-88.7200, 34.2600], label: 'Tupelo' },
- { coords: [-87.4600, 35.4700], label: 'Meriwether Lewis Site' },
- ];
-
- pois.forEach(p => {
- new mapboxgl.Marker({ color: '#4A7C59', scale: 0.7 })
- .setLngLat(p.coords)
- .setPopup(new mapboxgl.Popup({ offset: 8 }).setText(p.label))
- .addTo(map);
- });
- });
- } else {
- // No token — show fallback
- document.getElementById('map').innerHTML =
- '<div style="height:100%;display:flex;align-items:center;justify-content:center;background:#1a2e1b;color:rgba(255,255,255,0.4);font-family:DM Mono,monospace;font-size:0.8rem;letter-spacing:0.1em">MAP LOADING</div>';
- }
- } catch(e) {
- console.warn('Map init error:', e);
- }
- </script>
 </body>
 </html>
