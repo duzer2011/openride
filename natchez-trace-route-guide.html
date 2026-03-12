@@ -637,7 +637,394 @@
  background: rgba(44,74,46,0.12);
  margin: 4rem 0;
  }
- </style>
+ 
+/* ═══════════════════════════════════════════════
+   OPENRIDE — SECTION REDESIGN STYLES
+═══════════════════════════════════════════════ */
+
+/* Suppress old dividers */
+.divider { display: none !important; }
+.section-rule { display: none !important; }
+
+/* ── ABOUT SECTION ── */
+.about-section {
+  background: #F4EFE4;
+  padding: 5rem 0 4rem;
+}
+.about-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.section-eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #C17F3A;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+.section-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.about-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.2rem;
+  color: #2C4A2E;
+  letter-spacing: 0.03em;
+  margin: 0 0 2rem;
+  line-height: 1;
+}
+.about-section .about-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #3a3a3a;
+  margin-bottom: 1.25rem;
+}
+
+/* ── ITINERARY SECTION ── */
+.itinerary-section {
+  background: #2C4A2E;
+  padding: 5rem 0;
+}
+.itinerary-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.2rem;
+  color: #F4EFE4;
+  letter-spacing: 0.03em;
+  margin: 0 0 0.5rem;
+  line-height: 1;
+}
+.itinerary-section .section-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #8AAF8A;
+  margin-bottom: 3rem;
+  letter-spacing: 0.05em;
+}
+.day-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.day-card-new {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(138,175,138,0.2);
+  border-radius: 4px;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+.day-card-new:hover { background: rgba(255,255,255,0.1); }
+.day-card-number {
+  background: #C17F3A;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 0;
+}
+.day-card-number .day-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  color: #F4EFE4;
+  line-height: 1;
+}
+.day-card-number .day-word {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(244,239,228,0.7);
+}
+.day-card-body { padding: 1.5rem 2rem; }
+.day-card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: #F4EFE4;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+.day-card-meta {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  color: #C17F3A;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+.day-card-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(244,239,228,0.8);
+  margin-bottom: 0.75rem;
+}
+.day-card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.day-card-tag {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8AAF8A;
+  border: 1px solid rgba(138,175,138,0.35);
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
+}
+
+/* ── HIGHLIGHTS SECTION ── */
+.highlights-section {
+  background: #F4EFE4;
+  padding: 5rem 0;
+}
+.highlights-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.2rem;
+  color: #2C4A2E;
+  letter-spacing: 0.03em;
+  margin: 0 0 0.5rem;
+  line-height: 1;
+}
+.highlights-section .section-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #6b7c6b;
+  margin-bottom: 3rem;
+}
+.highlights-grid-new {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.highlight-card-new {
+  background: #fff;
+  border: 1px solid rgba(44,74,46,0.1);
+  border-top: 3px solid #C17F3A;
+  padding: 1.75rem 1.5rem;
+  border-radius: 2px;
+}
+.highlight-card-mp {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #C17F3A;
+  margin-bottom: 0.5rem;
+}
+.highlight-card-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  color: #2C4A2E;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  margin-bottom: 0.6rem;
+}
+.highlight-card-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #4a4a4a;
+}
+
+/* ── SLEEP SECTION ── */
+.sleep-section {
+  background: #4A7C59;
+  padding: 5rem 0;
+}
+.sleep-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.2rem;
+  color: #F4EFE4;
+  letter-spacing: 0.03em;
+  margin: 0 0 0.5rem;
+  line-height: 1;
+}
+.sleep-section .section-eyebrow { color: rgba(244,239,228,0.6); }
+.sleep-section .section-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(244,239,228,0.65);
+  margin-bottom: 3rem;
+}
+.sleep-grid-new {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.sleep-card-new {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  padding: 1.75rem 1.5rem;
+}
+.sleep-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; display: block; }
+.sleep-card-type {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.06em;
+  color: #F4EFE4;
+  margin-bottom: 0.5rem;
+}
+.sleep-card-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: rgba(244,239,228,0.75);
+}
+
+/* ── PRACTICAL INFO SECTION ── */
+.practical-section {
+  background: #F4EFE4;
+  padding: 5rem 0;
+}
+.practical-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.2rem;
+  color: #2C4A2E;
+  letter-spacing: 0.03em;
+  margin: 0 0 0.5rem;
+  line-height: 1;
+}
+.practical-section .section-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #6b7c6b;
+  margin-bottom: 3rem;
+}
+.practical-grid-new {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+.practical-block-new {
+  background: #fff;
+  border: 1px solid rgba(44,74,46,0.1);
+  border-left: 4px solid #2C4A2E;
+  border-radius: 0 4px 4px 0;
+  padding: 1.75rem 2rem;
+}
+.practical-block-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  color: #2C4A2E;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+.practical-block-list { list-style: none; padding: 0; margin: 0; }
+.practical-block-list li {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #3a3a3a;
+  padding: 0.45rem 0 0.45rem 1.1rem;
+  border-bottom: 1px solid rgba(44,74,46,0.07);
+  position: relative;
+}
+.practical-block-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: #C17F3A;
+  font-size: 0.75rem;
+}
+.practical-block-list li:last-child { border-bottom: none; }
+
+/* ── TESTIMONIALS SECTION ── */
+.testimonials-section {
+  background: #2C4A2E;
+  padding: 5rem 0;
+}
+.testimonials-section h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.2rem;
+  color: #F4EFE4;
+  letter-spacing: 0.03em;
+  margin: 0 0 0.5rem;
+  line-height: 1;
+}
+.testimonials-section .section-eyebrow { color: #C17F3A; }
+.testimonials-section .section-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #8AAF8A;
+  margin-bottom: 3rem;
+}
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.testimonial-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(138,175,138,0.2);
+  border-radius: 4px;
+  padding: 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+}
+.testimonial-stars {
+  color: #C17F3A;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+}
+.testimonial-quote-mark {
+  font-family: Georgia, serif;
+  font-size: 4rem;
+  color: rgba(193,127,58,0.25);
+  line-height: 0.8;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.testimonial-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: rgba(244,239,228,0.85);
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+.testimonial-text em { color: #F4EFE4; font-style: italic; }
+.testimonial-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(138,175,138,0.15);
+}
+.testimonial-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #4A7C59;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  color: #F4EFE4;
+  flex-shrink: 0;
+}
+.testimonial-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: #F4EFE4;
+  font-weight: 600;
+}
+.testimonial-route-badge {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8AAF8A;
+}
+</style>
 </head>
 <body>
 
@@ -746,188 +1133,261 @@
   </section>
 
  <!-- CONTENT -->
- <main class="content">
+  <main>
 
- <!-- About -->
- <div class="section-header">
- <span class="section-icon"></span>
- <h2 class="section-title">About This Route</h2>
- <div class="section-rule"></div>
- </div>
- <p class="about-text">
- The Natchez Trace Parkway is one of America's most iconic and beginner-friendly long-distance cycling routes. Stretching 444 miles from Natchez, Mississippi to Nashville, Tennessee, this federally protected two-lane road carries no commercial traffic — no trucks, no semis, no billboards. Just smooth pavement, ancient forests, and 10,000 years of American history unfolding mile by mile.
- </p>
- <p class="about-text" style="margin-top:1rem">
- Originally a series of trails used by the Choctaw and Chickasaw peoples, later walked by Kaintuck flatboatmen returning home from New Orleans, the Trace is now a National Scenic Byway managed by the National Park Service. For cyclists, it's close to perfect: gentle rolling terrain, designated free campsites, and a pace that invites deep exploration of the Deep South's food, culture, and past.
- </p>
+    <!-- ABOUT SECTION -->
+    <section class="about-section">
+      <div class="about-inner">
+        <span class="section-eyebrow">The Experience</span>
+        <h2>Deep South Discovery</h2>
+        <p class="about-text">
+          The Natchez Trace Parkway is one of America's most iconic and beginner-friendly long-distance cycling routes. Stretching 444 miles from Natchez, Mississippi to Nashville, Tennessee, this federally protected two-lane road carries no commercial traffic — no trucks, no semis, no billboards. Just smooth pavement, ancient forests, and 10,000 years of American history unfolding mile by mile.
+        </p>
+        <p class="about-text">
+          Originally a series of trails used by the Choctaw and Chickasaw peoples, later walked by Kaintuck flatboatmen returning home from New Orleans, the Trace is now a National Scenic Byway managed by the National Park Service. For cyclists, it's close to perfect: gentle rolling terrain, designated free campsites, and a pace that invites deep exploration of the Deep South's food, culture, and past.
+        </p>
+      </div>
+    </section>
 
- <div class="divider"></div>
+    <!-- ITINERARY SECTION -->
+    <section class="itinerary-section">
+      <div class="section-inner">
+        <span class="section-eyebrow">The Journey</span>
+        <h2>The 10-Day Slow Burn</h2>
+        <p class="section-sub">Our recommended pace for those who want to see it all.</p>
 
- <!-- Itinerary -->
- <div class="section-header">
- <span class="section-icon"></span>
- <h2 class="section-title">Sample Itinerary — Lower Trace (3 Days)</h2>
- <div class="section-rule"></div>
- </div>
+        <div class="day-cards-stack">
+          <!-- Day 1 -->
+          <div class="day-card-new">
+            <div class="day-card-number">
+              <span class="day-num">01</span>
+              <span class="day-word">Day</span>
+            </div>
+            <div class="day-card-body">
+              <h3 class="day-card-title">Arrival in Natchez</h3>
+              <p class="day-card-meta">0 miles · Orientation</p>
+              <p class="day-card-desc">Start your journey in the oldest settlement on the Mississippi River. Natchez is famous for its stunning antebellum architecture and legendary Southern hospitality. Check into a historic B&amp;B and enjoy a sunset over the river from the bluff.</p>
+              <div class="day-card-tags">
+                <span class="day-card-tag">Natchez Bluff</span>
+                <span class="day-card-tag">Stanton Hall</span>
+                <span class="day-card-tag">Southern Dining</span>
+              </div>
+            </div>
+          </div>
 
- <div class="itinerary">
- <div class="day-card">
- <p class="day-number">Day 1</p>
- <h3 class="day-title">Arrival &amp; Natchez City Exploration</h3>
- <p class="day-meta">0 miles · Natchez, MS</p>
- <p class="day-body">Arrive in Natchez — one of the oldest cities on the Mississippi River and the southern terminus of the Trace. Spend the afternoon exploring the historic downtown, the bluffs overlooking the Mississippi, and the antebellum mansions that earned this city its reputation as one of the wealthiest in pre-Civil War America. Dinner on the bluffs. Natchez has a surprisingly vibrant food scene — don't miss the Mississippi catfish.</p>
- <div class="day-tags">
- <span class="day-tag">Antebellum mansions</span>
- <span class="day-tag">Mississippi bluffs</span>
- <span class="day-tag">Southern cuisine</span>
- <span class="day-tag">B&amp;B recommended</span>
- </div>
- </div>
+          <!-- Day 2 -->
+          <div class="day-card-new">
+            <div class="day-card-number">
+              <span class="day-num">02</span>
+              <span class="day-word">Day</span>
+            </div>
+            <div class="day-card-body">
+              <h3 class="day-card-title">Natchez to Port Gibson</h3>
+              <p class="day-card-meta">~40 miles · ~1,800 ft elevation</p>
+              <p class="day-card-desc">Leave the city behind as you enter the Parkway. Today's highlights include Emerald Mound, the second-largest Native American ceremonial mound in the US, and Mt. Locust, a perfectly preserved 18th-century "stand" (inn).</p>
+              <div class="day-card-tags">
+                <span class="day-card-tag">Emerald Mound</span>
+                <span class="day-card-tag">Mt. Locust Stand</span>
+                <span class="day-card-tag">Loess Bluffs</span>
+              </div>
+            </div>
+          </div>
 
- <div class="day-card">
- <p class="day-number">Day 2</p>
- <h3 class="day-title">Natchez to Port Gibson</h3>
- <p class="day-meta">~42 miles · ~2,100 ft elevation</p>
- <p class="day-body">Begin at the Natchez Visitor Center where the Parkway officially starts. The first miles wind through Spanish moss–draped forest before arriving at Emerald Mound — the second largest Native American ceremonial mound in the United States, built around 1400 CE. Standing atop it at sunrise is an experience you won't forget. Continue north to Port Gibson — a town Ulysses S. Grant reportedly declared "too beautiful to burn."</p>
- <div class="day-tags">
- <span class="day-tag">Emerald Mound</span>
- <span class="day-tag">Civil War history</span>
- <span class="day-tag">Port Gibson churches</span>
- <span class="day-tag">Old Trace paths</span>
- </div>
- </div>
+          <!-- Day 3 -->
+          <div class="day-card-new">
+            <div class="day-card-number">
+              <span class="day-num">03</span>
+              <span class="day-word">Day</span>
+            </div>
+            <div class="day-card-body">
+              <h3 class="day-card-title">Port Gibson to Rocky Springs</h3>
+              <p class="day-card-meta">~40 miles · ~2,400 ft elevation</p>
+              <p class="day-card-desc">Today's highlight: a short detour to the Windsor Ruins — the hauntingly beautiful columns of what was once Mississippi's largest antebellum plantation house. End your day at Rocky Springs — a ghost town free NPS campsite that is atmospheric and well maintained.</p>
+              <div class="day-card-tags">
+                <span class="day-card-tag">Windsor Ruins</span>
+                <span class="day-card-tag">Ghost Town</span>
+                <span class="day-card-tag">Free Camping</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
- <div class="day-card">
- <p class="day-number">Day 3</p>
- <h3 class="day-title">Port Gibson to Rocky Springs</h3>
- <p class="day-meta">~40 miles · ~2,400 ft elevation</p>
- <p class="day-body">Today's highlight: a short detour to the Windsor Ruins — the hauntingly beautiful columns of what was once Mississippi's largest antebellum plantation house, destroyed by fire in 1890. Twenty-three Corinthian columns still stand in the forest, wrapped in vines. End your day at Rocky Springs — a ghost town free NPS campsite that is atmospheric and well maintained.</p>
- <div class="day-tags">
- <span class="day-tag">Windsor Ruins</span>
- <span class="day-tag">Rocky Springs ghost town</span>
- <span class="day-tag">Free NPS camping</span>
- <span class="day-tag">Photography</span>
- </div>
- </div>
- </div>
+    <!-- HIGHLIGHTS SECTION -->
+    <section class="highlights-section">
+      <div class="section-inner">
+        <span class="section-eyebrow">The Best Bits</span>
+        <h2>Curated Highlights</h2>
+        <p class="section-sub">Must-stop locations along the 444-mile corridor.</p>
 
- <div class="divider"></div>
+        <div class="highlights-grid-new">
+          <div class="highlight-card-new">
+            <span class="highlight-card-mp">Milepost 10.3</span>
+            <h3 class="highlight-card-name">Emerald Mound</h3>
+            <p class="highlight-card-desc">Second largest Native American ceremonial mound in the US. Built around 1400 CE by the ancestors of the Natchez Indians.</p>
+          </div>
+          <div class="highlight-card-new">
+            <span class="highlight-card-mp">Off Milepost 41</span>
+            <h3 class="highlight-card-name">Windsor Ruins</h3>
+            <p class="highlight-card-desc">23 haunting Corinthian columns — all that remains of Mississippi's grandest antebellum mansion, destroyed by fire in 1890.</p>
+          </div>
+          <div class="highlight-card-new">
+            <span class="highlight-card-mp">Milepost 39.2</span>
+            <h3 class="highlight-card-name">Port Gibson</h3>
+            <p class="highlight-card-desc">"A town too beautiful to burn." Stunning architecutre and the famous First Presbyterian Church with its golden hand steeple.</p>
+          </div>
+          <div class="highlight-card-new">
+            <span class="highlight-card-mp">Milepost 54.8</span>
+            <h3 class="highlight-card-name">Rocky Springs</h3>
+            <p class="highlight-card-desc">A ghost town reclaimed by nature. Free NPS campsite, historical markers, and an original 1837 church still standing.</p>
+          </div>
+          <div class="highlight-card-new">
+            <span class="highlight-card-mp">Milepost 259.7</span>
+            <h3 class="highlight-card-name">Tupelo Battlefield</h3>
+            <p class="highlight-card-desc">Site of the July 1864 battle — one of the Civil War's final major engagements in Mississippi.</p>
+          </div>
+          <div class="highlight-card-new">
+            <span class="highlight-card-mp">Milepost 385.9</span>
+            <h3 class="highlight-card-name">Meriwether Lewis</h3>
+            <p class="highlight-card-desc">The gravesite and death site of the famous explorer — one of the Trace's most moving and mysterious stops.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
- <!-- Highlights -->
- <div class="section-header">
- <span class="section-icon"></span>
- <h2 class="section-title">Must-See Highlights</h2>
- <div class="section-rule"></div>
- </div>
+    <!-- SLEEP SECTION -->
+    <section class="sleep-section">
+      <div class="section-inner">
+        <span class="section-eyebrow">Overnight</span>
+        <h2>Where to Sleep</h2>
+        <p class="section-sub">From wild camps to historic antebellum mansions.</p>
 
- <div class="highlights-grid">
- <div class="highlight-card">
- <p class="highlight-name">Emerald Mound</p>
- <p class="highlight-desc">Second largest Native American ceremonial mound in the US. Built around 1400 CE.</p>
- <p class="highlight-mp">Milepost 10.3</p>
- </div>
- <div class="highlight-card">
- <p class="highlight-name">Windsor Ruins</p>
- <p class="highlight-desc">23 haunting Corinthian columns — all that remains of Mississippi's grandest antebellum mansion.</p>
- <p class="highlight-mp">Just off Milepost 41</p>
- </div>
- <div class="highlight-card">
- <p class="highlight-name">Port Gibson</p>
- <p class="highlight-desc">A town too beautiful to burn. Stunning antebellum architecture and the famous golden hand church steeple.</p>
- <p class="highlight-mp">Milepost 39.2</p>
- </div>
- <div class="highlight-card">
- <p class="highlight-name">Rocky Springs</p>
- <p class="highlight-desc">A ghost town reclaimed by nature. Free NPS campsite, original church still standing.</p>
- <p class="highlight-mp">Milepost 54.8</p>
- </div>
- <div class="highlight-card">
- <p class="highlight-name">Tupelo Battlefield</p>
- <p class="highlight-desc">Site of the July 1864 battle — one of the war's final major engagements in Mississippi.</p>
- <p class="highlight-mp">Milepost 259.7</p>
- </div>
- <div class="highlight-card">
- <p class="highlight-name">Meriwether Lewis Site</p>
- <p class="highlight-desc">The gravesite and death site of the famous explorer — one of the Trace's most moving and mysterious stops.</p>
- <p class="highlight-mp">Milepost 385.9</p>
- </div>
- </div>
+        <div class="sleep-grid-new">
+          <div class="sleep-card-new">
+            <span class="sleep-card-icon">⛺</span>
+            <h3 class="sleep-card-type">NPS Camping</h3>
+            <p class="sleep-card-desc">Designated free campsites for cyclists. First come, first served. Clean, quiet, and perfectly spaced.</p>
+          </div>
+          <div class="sleep-card-new">
+            <span class="sleep-card-icon">🏡</span>
+            <h3 class="sleep-card-type">Historic B&amp;Bs</h3>
+            <p class="sleep-card-desc">Splurge on an antebellum home in Natchez or Tupelo. A quintessential Mississippi experience.</p>
+          </div>
+          <div class="sleep-card-new">
+            <span class="sleep-card-icon">🏨</span>
+            <h3 class="sleep-card-type">Town Motels</h3>
+            <p class="sleep-card-desc">Budget rural motels in Port Gibson, Jackson, and Kosciusko. Good for a mid-trip shower and AC.</p>
+          </div>
+          <div class="sleep-card-new">
+            <span class="sleep-card-icon">✨</span>
+            <h3 class="sleep-card-type">Wild Camping</h3>
+            <p class="sleep-card-desc">While discouraged by NPS, many gravel detours offer secluded spots for self-contained riders.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
- <div class="divider"></div>
+    <!-- PRACTICAL INFO SECTION -->
+    <section class="practical-section">
+      <div class="section-inner">
+        <span class="section-eyebrow">Preparation</span>
+        <h2>Essential Info</h2>
+        <p class="section-sub">What you need to know before you turn the pedals.</p>
 
- <!-- Where to sleep -->
- <div class="section-header">
- <span class="section-icon"></span>
- <h2 class="section-title">Where to Sleep</h2>
- <div class="section-rule"></div>
- </div>
- <div class="sleep-grid">
- <div class="sleep-card">
- <div class="sleep-type">Free NPS Camping</div>
- <div class="sleep-desc">Designated campsites along the Parkway. First come, first served. No fee. Bear boxes at some sites.</div>
- </div>
- <div class="sleep-card">
- <div class="sleep-type">Bed &amp; Breakfasts</div>
- <div class="sleep-desc">Natchez and surrounding towns have exceptional B&amp;Bs, often in historic antebellum homes. Book ahead in spring.</div>
- </div>
- <div class="sleep-card">
- <div class="sleep-type">Small Town Motels</div>
- <div class="sleep-desc">Budget-friendly options in Port Gibson, Kosciusko, Tupelo, and other trail towns. Cash sometimes preferred.</div>
- </div>
- <div class="sleep-card">
- <div class="sleep-type">Mix &amp; Match</div>
- <div class="sleep-desc">Our recommended approach: camp 2–3 nights, splurge on a B&amp;B in Natchez. Best of both worlds.</div>
- </div>
- </div>
+        <div class="practical-grid-new">
+          <div class="practical-block-new">
+            <h3 class="practical-block-title">Getting There</h3>
+            <ul class="practical-block-list">
+              <li>Fly into Jackson (JAN) or Nashville (BNA)</li>
+              <li>Amtrak service available to Jackson, MS</li>
+              <li>One-way rental cars are standard for shuttling</li>
+              <li>Shuttle services available from local outfitters</li>
+            </ul>
+          </div>
+          <div class="practical-block-new">
+            <h3 class="practical-block-title">Food &amp; Resupply</h3>
+            <ul class="practical-block-list">
+              <li>Limited resupply directly on the Parkway</li>
+              <li>Detours required for most grocery stores</li>
+              <li>Carry 2 days of food for the southern sections</li>
+              <li>Filtered water available at most NPS stops</li>
+            </ul>
+          </div>
+          <div class="practical-block-new">
+            <h3 class="practical-block-title">Road Conditions</h3>
+            <ul class="practical-block-list">
+              <li>Pavement is mostly glass-smooth</li>
+              <li>Strict 50mph speed limit — cars are slow</li>
+              <li>Cell service is spotty in the forests</li>
+              <li>No traffic signals or cross-traffic</li>
+            </ul>
+          </div>
+          <div class="practical-block-new">
+            <h3 class="practical-block-title">What to Pack</h3>
+            <ul class="practical-block-list">
+              <li>28mm+ tires recommended for comfort</li>
+              <li>Insect repellent (especially in May/June)</li>
+              <li>High-visibility lights for shaded sections</li>
+              <li>Lightweight rain shell for afternoon storms</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
 
- <div class="divider"></div>
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials-section">
+      <div class="section-inner">
+        <span class="section-eyebrow">Feedback</span>
+        <h2>Rider Stories</h2>
+        <p class="section-sub">What our community says about riding the Trace.</p>
 
- <!-- Practical -->
- <div class="section-header">
- <span class="section-icon"></span>
- <h2 class="section-title">Essential Information</h2>
- <div class="section-rule"></div>
- </div>
- <div class="practical-grid">
- <div class="practical-block">
- <h4>Getting There</h4>
- <ul>
- <li>Fly into Jackson, MS (JAN) or Nashville, TN (BNA)</li>
- <li>Amtrak serves Natchez via the City of New Orleans</li>
- <li>Shuttle services available for one-way trips</li>
- <li>Most cyclists rent a car for shuttling</li>
- </ul>
- </div>
- <div class="practical-block">
- <h4>Food &amp; Resupply</h4>
- <ul>
- <li>Plan carefully — resupply points are limited on the Trace</li>
- <li>Stock up in Natchez, Port Gibson, Kosciusko, Tupelo</li>
- <li>Carry 2–3 days of food between towns</li>
- <li>Bring cash — many small towns are cash only</li>
- </ul>
- </div>
- <div class="practical-block">
- <h4>Road Conditions</h4>
- <ul>
- <li>No commercial trucks or vehicles — ever</li>
- <li>Smooth NPS-maintained pavement throughout</li>
- <li>Speed limit 50 mph — cars are generally courteous</li>
- <li>Paved shoulders vary in width by section</li>
- </ul>
- </div>
- <div class="practical-block">
- <h4>What to Pack</h4>
- <ul>
- <li>Road bike or gravel bike — any gearing works</li>
- <li>Panniers or bikepacking bags both fine</li>
- <li>Insect repellent — essential in spring</li>
- <li>Rain gear — afternoon storms common in spring</li>
- </ul>
- </div>
- </div>
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <span class="testimonial-quote-mark">“</span>
+            <p class="testimonial-text">The Natchez Trace was my first bike tour, and I couldn't have asked for a better experience. <em>The lack of commercial traffic made it feel so safe.</em> The history at every milepost kept me engaged even on the hottest days.</p>
+            <div class="testimonial-meta">
+              <div class="testimonial-avatar">JD</div>
+              <div class="testimonial-info">
+                <p class="testimonial-name">John D.</p>
+                <p class="testimonial-route-badge">Class of '24</p>
+              </div>
+            </div>
+          </div>
 
- </main>
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <span class="testimonial-quote-mark">“</span>
+            <p class="testimonial-text">I've ridden a dozen long trails, but the Trace has a special soul. Crossing the Tennessee River Bridge at sunset was <em>a core memory I'll never forget.</em> Highly recommend the autumn season for the colors.</p>
+            <div class="testimonial-meta">
+              <div class="testimonial-avatar">SR</div>
+              <div class="testimonial-info">
+                <p class="testimonial-name">Sarah R.</p>
+                <p class="testimonial-route-badge">Class of '23</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-stars">★★★★★</div>
+            <span class="testimonial-quote-mark">“</span>
+            <p class="testimonial-text">Don't miss Emerald Mound! The detour is tiny but the perspective it gives you on the history of this land is massive. <em>OpenRide's guide made navigation effortless.</em></p>
+            <div class="testimonial-meta">
+              <div class="testimonial-avatar">ML</div>
+              <div class="testimonial-info">
+                <p class="testimonial-name">Marcus L.</p>
+                <p class="testimonial-route-badge">Class of '25</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
 
  <!-- CTA STRIP -->
  <section class="cta-strip">
