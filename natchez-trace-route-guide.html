@@ -24,6 +24,15 @@
 html { scroll-behavior: smooth; }
 body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans-serif; }
 
+/* ── HERO SLIDER ── */
+.hero { position: relative; height: 90vh; min-height: 560px; overflow: hidden; display: flex; align-items: flex-end; }
+.slides { position: absolute; inset: 0; }
+.slide { position: absolute; inset: 0; background-size: cover; background-position: center center; opacity: 0; transition: opacity 1.2s ease; }
+.slide.active { opacity: 1; }
+.slide-dots { position: absolute; bottom: 1.5rem; right: 2rem; z-index: 10; display: flex; gap: 6px; }
+.slide-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; border: none; padding: 0; transition: background 0.3s; }
+.slide-dot.active { background: var(--accent); }
+
 /* ── NAV ── */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -47,13 +56,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   text-decoration: none;
 }
 
-/* ── HERO ── */
-.hero {
-  position: relative; height: 90vh; min-height: 560px;
-  background: linear-gradient(160deg, #1a2a1c 0%, #2C4A2E 50%, #3d6b41 100%);
-  display: flex; align-items: flex-end;
-  overflow: hidden;
-}
+/* hero-overlay & hero-content inherited from slider block */
 .hero-overlay {
   position: absolute; inset: 0;
   background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
@@ -280,7 +283,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 
 .a-photo-break {
   width: 100%; height: 380px;
-  background: linear-gradient(160deg, #1a3a1c 0%, #2C4A2E 40%, #3d6b41 70%, #5a8a5e 100%);
+  background: url('/images/natchez/natchez-trace-parkway-solo-woman.jpg') center 40% / cover no-repeat;
   display: flex; align-items: flex-end;
   padding: 2rem 3rem;
   position: relative; overflow: hidden;
@@ -365,11 +368,11 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   gap: 3px; background: var(--ink);
 }
 .a-mosaic-cell { overflow: hidden; }
-.a-mosaic-cell:nth-child(1) { grid-row: 1 / 3; background: linear-gradient(160deg, #1a3a1c, #3d6b41); }
-.a-mosaic-cell:nth-child(2) { background: linear-gradient(135deg, #4A7C59, #2C4A2E); }
-.a-mosaic-cell:nth-child(3) { background: linear-gradient(135deg, #8AAF8A, #4A7C59); }
-.a-mosaic-cell:nth-child(4) { background: linear-gradient(135deg, #C17F3A, #7a4f20); }
-.a-mosaic-cell:nth-child(5) { background: linear-gradient(135deg, #2C4A2E, #1a2a1c); }
+.a-mosaic-cell:nth-child(1) { grid-row: 1 / 3; background: url('/images/natchez/natchez-trace-monmouth-inn-arrival.jpg') center center / cover no-repeat; }
+.a-mosaic-cell:nth-child(2) { background: url('/images/natchez/natchez-trace-windsor-ruins-visit.jpg') center center / cover no-repeat; }
+.a-mosaic-cell:nth-child(3) { background: url('/images/natchez/natchez-trace-rocky-springs-camping.jpg') center center / cover no-repeat; }
+.a-mosaic-cell:nth-child(4) { background: url('/images/natchez/natchez-trace-emerald-mound-visit.jpg') center center / cover no-repeat; }
+.a-mosaic-cell:nth-child(5) { background: url('/images/natchez/natchez-trace-collina-house-arrival.jpg') center center / cover no-repeat; }
 
 /* ── HIGHLIGHTS ── */
 .a-highlights {
@@ -460,6 +463,91 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   padding: 0.9rem 2.5rem; border-radius: 2px;
   text-decoration: none; cursor: pointer; border: none;
 }
+.elev-section{background:#1e2a1f;display:block;width:100%;box-sizing:border-box;}
+.elev-header{display:flex;align-items:baseline;justify-content:space-between;padding:1.25rem 2rem 0.5rem;box-sizing:border-box;}
+.elev-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.12em;color:#F4EFE4;}
+.elev-stats{display:flex;gap:2rem;}
+.elev-stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:#C17F3A;}
+.elev-stat-lbl{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:#8AAF8A;display:block;}
+.elev-chart-wrap{padding:0 2rem 1.25rem;height:140px;width:100%;box-sizing:border-box;display:block;}
+#elev-chart{display:block;width:100%!important;height:100%!important;}
+.elev-endpoints{display:flex;justify-content:space-between;font-family:'DM Sans',sans-serif;font-size:0.7rem;letter-spacing:0.08em;color:#8AAF8A;padding:0.25rem 2rem 0;}
+/* ── UGC Strip ─────────────────────────────────────────── */
+.ugc-strip {
+  background: #1e2a1f;
+  padding: 60px 0 50px;
+  overflow: hidden;
+}
+
+.ugc-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 0 24px;
+}
+
+.ugc-label {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C17F3A;
+  margin-bottom: 8px;
+}
+
+.ugc-subhead {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.05rem;
+  color: #8AAF8A;
+  margin: 0;
+}
+
+.ugc-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 20px 40px 30px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+}
+
+.ugc-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.ugc-scroll:active {
+  cursor: grabbing;
+}
+
+.ugc-card {
+  flex: 0 0 auto;
+  width: 200px;
+  background: #fff;
+  padding: 10px 10px 36px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ugc-card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  transform: scale(1.04) rotate(0deg) !important;
+  z-index: 2;
+}
+
+.ugc-card img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  display: block;
+}
+
+.ugc-card--tilt-left  { transform: rotate(-2.5deg); }
+.ugc-card--tilt-right { transform: rotate(2deg); }
+.ugc-card--straight   { transform: rotate(-0.5deg); }
+
+.faq-section{background:#f9f5ee;padding:4rem 2rem;}.faq-inner{max-width:860px;margin:0 auto;}.faq-section h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;color:#2C4A2E;margin-bottom:2rem;}.faq-item{border-bottom:1px solid rgba(44,74,46,0.12);padding:1.25rem 0;}.faq-question{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;color:#2C4A2E;margin-bottom:0.5rem;}.faq-answer{font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#4a4a3a;line-height:1.7;}
 </style>
 </head>
 <body>
@@ -471,8 +559,22 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" aria-label="Natchez Trace Parkway cycling tour photo slider">
+  <div class="slides">
+    <div class="slide active" style="background-image:url('/images/natchez/natchez-trace-parkway-fall-foliage-cyclist.jpg')" aria-label="Fall foliage cyclist on the Natchez Trace Parkway"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-parkway-cycling-road-ahead.jpg')" aria-label="Open road ahead on the Natchez Trace Parkway"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-emerald-mound-cyclist-sunset.jpg')" aria-label="Cyclist at Emerald Mound on the Natchez Trace"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-windsor-ruins-visit.jpg')" aria-label="Cyclist at the Windsor Ruins on the Natchez Trace"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-natchez-city-antebellum-arrival.jpg')" aria-label="Arriving in historic Natchez, Mississippi"></div>
+  </div>
   <div class="hero-overlay"></div>
+  <div class="slide-dots">
+    <button class="slide-dot active" aria-label="Slide 1"></button>
+    <button class="slide-dot" aria-label="Slide 2"></button>
+    <button class="slide-dot" aria-label="Slide 3"></button>
+    <button class="slide-dot" aria-label="Slide 4"></button>
+    <button class="slide-dot" aria-label="Slide 5"></button>
+  </div>
   <div class="hero-content">
     <span class="hero-label">National Scenic Byway · Mississippi to Tennessee</span>
     <h1 class="hero-title">Natchez<br>Trace<br>Parkway</h1>
@@ -498,6 +600,8 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   </div>
   <div id="route-map"></div>
 </section>
+
+<!-- ELEVATION PROFILE --><div class="elev-section" style="width:100%;display:block"><div class="elev-header"><div class="elev-title">Elevation Profile</div><div class="elev-stats"><div><span class="elev-stat-val" id="elev-gain">-</span><span class="elev-stat-lbl">Total Gain</span></div><div><span class="elev-stat-val" id="elev-loss">-</span><span class="elev-stat-lbl">Total Loss</span></div><div><span class="elev-stat-val" id="elev-max">-</span><span class="elev-stat-lbl">Max Elevation</span></div><div><span class="elev-stat-val" id="elev-min">-</span><span class="elev-stat-lbl">Min Elevation</span></div></div></div><div class="elev-endpoints"><span>Nashville</span><span>Natchez</span></div><div class="elev-chart-wrap"><canvas id="elev-chart"></canvas></div></div>
 
 <!-- ROUTE DETAILS STRIP -->
 <div class="route-strip">
@@ -545,10 +649,41 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   </div>
 </section>
 
-<!-- FULL-BLEED PHOTO BREAK -->
-<div class="a-photo-break">
-  <div class="a-photo-caption"><strong>Spanish moss on the Trace</strong> · Milepost 15, Mississippi</div>
-</div>
+<section class="ugc-strip">
+  <div class="ugc-header">
+    <span class="ugc-label">📍 From the trail</span>
+    <p class="ugc-subhead">Real riders. Real phones. Real trip.</p>
+  </div>
+  <div class="ugc-scroll">
+    <div class="ugc-card ugc-card--tilt-left">
+      <img src="/images/natchez/ugc-natchez-trace-sign-selfie.jpg" alt="Cyclists at the Natchez Trace Parkway sign" loading="lazy">
+    </div>
+    <div class="ugc-card ugc-card--tilt-right">
+      <img src="/images/natchez/ugc-natchez-trace-road-ahead-pov.jpg" alt="POV shot from the bike looking down the Natchez Trace" loading="lazy">
+    </div>
+    <div class="ugc-card ugc-card--tilt-left">
+      <img src="/images/natchez/ugc-natchez-trace-milepost-photo.jpg" alt="Cyclist at a Natchez Trace milepost marker" loading="lazy">
+    </div>
+    <div class="ugc-card ugc-card--straight">
+      <img src="/images/natchez/ugc-natchez-trace-sunset-road.jpg" alt="Cyclist silhouetted against sunset on the Natchez Trace" loading="lazy">
+    </div>
+    <div class="ugc-card ugc-card--tilt-right">
+      <img src="/images/natchez/ugc-natchez-trace-bb-porch-morning.jpg" alt="Morning coffee on a B&B porch on the Natchez Trace" loading="lazy">
+    </div>
+    <div class="ugc-card ugc-card--tilt-right">
+      <img src="/images/natchez/ugc-natchez-trace-friends-finish.jpg" alt="Group of cyclists celebrating finishing the Natchez Trace" loading="lazy">
+    </div>
+    <div class="ugc-card ugc-card--straight">
+      <img src="/images/natchez/ugc-natchez-trace-dinner-table.jpg" alt="Post-ride dinner at a Mississippi restaurant" loading="lazy">
+    </div>
+    <div class="ugc-card ugc-card--tilt-left">
+      <img src="/images/natchez/ugc-natchez-trace-couple-timer.jpg" alt="Couple timer photo on the Natchez Trace Parkway" loading="lazy">
+    </div>
+    <div class="ugc-card ugc-card--tilt-right">
+      <img src="/images/natchez/ugc-natchez-trace-tent-morning.jpg" alt="Morning at Rocky Springs campground on the Natchez Trace" loading="lazy">
+    </div>
+  </div>
+</section>
 
 <!-- ITINERARY -->
 <section class="a-days-section">
@@ -570,7 +705,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
           <span class="a-day-tag">B&amp;B recommended</span>
         </div>
       </div>
-      <div class="a-day-img" style="background:linear-gradient(135deg,#2C4A2E,#4A7C59)">
+      <div class="a-day-img" style="background:url('/images/natchez/natchez-trace-natchez-city-arrival.jpg') center center / cover no-repeat" aria-label="Arriving in historic Natchez, Mississippi">
         <div class="a-day-img-overlay"><span>Natchez, Mississippi</span></div>
       </div>
     </div>
@@ -587,7 +722,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
           <span class="a-day-tag">Old Trace paths</span>
         </div>
       </div>
-      <div class="a-day-img" style="background:linear-gradient(135deg,#4A7C59,#2C4A2E)">
+      <div class="a-day-img" style="background:url('/images/natchez/natchez-trace-emerald-mound-visit.jpg') center center / cover no-repeat" aria-label="Cyclists at Emerald Mound on the Natchez Trace">
         <div class="a-day-img-overlay"><span>Emerald Mound · Milepost 10.3</span></div>
       </div>
     </div>
@@ -604,7 +739,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
           <span class="a-day-tag">Photography</span>
         </div>
       </div>
-      <div class="a-day-img" style="background:linear-gradient(135deg,#8AAF8A,#3d6b41)">
+      <div class="a-day-img" style="background:url('/images/natchez/natchez-trace-windsor-ruins-visit.jpg') center center / cover no-repeat" aria-label="Cyclist at the Windsor Ruins on the Natchez Trace">
         <div class="a-day-img-overlay"><span>Windsor Ruins · Milepost 41</span></div>
       </div>
     </div>
@@ -613,11 +748,11 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 
 <!-- PHOTO MOSAIC -->
 <div class="a-mosaic">
-  <div class="a-mosaic-cell"></div>
-  <div class="a-mosaic-cell"></div>
-  <div class="a-mosaic-cell"></div>
-  <div class="a-mosaic-cell"></div>
-  <div class="a-mosaic-cell"></div>
+  <div class="a-mosaic-cell" aria-label="Arriving at Monmouth Historic Inn in Natchez"></div>
+  <div class="a-mosaic-cell" aria-label="Cyclist at the Windsor Ruins on the Natchez Trace"></div>
+  <div class="a-mosaic-cell" aria-label="Camping at Rocky Springs on the Natchez Trace"></div>
+  <div class="a-mosaic-cell" aria-label="Cyclists at Emerald Mound on the Natchez Trace"></div>
+  <div class="a-mosaic-cell" aria-label="Arriving at Collina House in Port Gibson"></div>
 </div>
 
 <!-- HIGHLIGHTS -->
@@ -713,6 +848,22 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   </div>
 </section>
 
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-inner">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item"><div class="faq-question">Is the Natchez Trace suitable for beginners?</div><div class="faq-answer">Yes — the lower Natchez Trace is one of the best beginner cycling routes in the US. The parkway is closed to commercial traffic, the road surface is smooth NPS pavement, and the terrain is rolling rather than mountainous. The 82-mile lower section averages about 25 miles per day over 3-4 days, which is manageable for most riders with basic fitness. The biggest challenge isn't the hills — it's saddle conditioning. Start training your sit bones at least 4 weeks before your tour.</div></div>
+    <div class="faq-item"><div class="faq-question">What is the best time of year to cycle the Natchez Trace?</div><div class="faq-answer">Spring (March–May) and fall (October–November) are ideal. Spring brings dogwood blooms and mild temperatures in the 60s–70s°F. Fall delivers spectacular foliage and crisp riding weather. Summer is rideable but hot and humid — start riding by 7am and be done by noon. Winter is quiet and cool but some services close. Most experienced riders choose mid-October for the fall colors and perfect temperatures.</div></div>
+    <div class="faq-item"><div class="faq-question">Do I need a road bike or can I ride a hybrid or touring bike?</div><div class="faq-answer">Any bike works. The entire Natchez Trace Parkway is paved NPS road with no gravel or dirt sections. Road bikes are fastest but loaded touring bikes and hybrids are common and perfectly comfortable. What matters more than bike type is bike fit — a poorly fitted bike becomes unbearable by Day 2. Get a proper fit before your tour, not after.</div></div>
+    <div class="faq-item"><div class="faq-question">How do I handle the point-to-point logistics — what do I do with my car?</div><div class="faq-answer">The lower trace runs Natchez to Rocky Springs (54 miles) or further north. Most riders either: (1) shuttle — drive one car to the end point, drive together to the start; (2) fly into Jackson, MS and arrange a bike shuttle to Natchez; or (3) arrange a return shuttle with a local service. Our guide includes specific shuttle contacts and the best fly-in logistics through Jackson-Medgar Wiley Evers International Airport.</div></div>
+    <div class="faq-item"><div class="faq-question">What happens around miles 12–18 on Day 2?</div><div class="faq-answer">Every rider hits what we call the bad hour — usually somewhere in miles 12–18 of Day 2. Your legs are tired from Day 1, the saddle soreness peaks, and the initial excitement has worn off. It always passes. The riders who know it's coming get through it fine. The riders who don't know it's coming think something is wrong. Keep pedaling, eat something, and within 30–45 minutes you'll be back in the rhythm. This is the most important thing to know before your first multi-day tour.</div></div>
+    <div class="faq-item"><div class="faq-question">Can couples with different fitness levels ride together?</div><div class="faq-answer">Yes, but mismatched fitness is the most common reason tours go badly. The faster rider ends up waiting at every stop, gets cold, and grows resentful. The slower rider feels guilty and pushes too hard. The fix is simple: agree on a meeting system before you leave. Faster rider continues to the next waypoint, stops, eats, rests. Slower rider rides their own pace. You leapfrog the whole route and both riders have a great time. Our guide covers this in detail with specific waypoints for the Natchez Trace.</div></div>
+    <div class="faq-item"><div class="faq-question">Is camping available along the route?</div><div class="faq-answer">Yes — Rocky Springs at milepost 54.8 is a free NPS campsite with water, bear boxes, and a historic ghost town to explore. It's first-come, first-served and rarely full on weekdays. Several other primitive NPS sites exist further north. B&Bs and motels are available in Port Gibson (milepost 39.2) for riders who prefer a bed. Our guide includes lodging options at every overnight stop with booking links.</div></div>
+    <div class="faq-item"><div class="faq-question">How much does a self-guided Natchez Trace tour cost?</div><div class="faq-answer">A 3-4 day self-guided tour runs approximately $200–400 total depending on lodging choice — camping keeps costs near $200, B&Bs push it toward $400. This compares to $250–400 per person per day for organized cycling tours covering the same route. A couple saves $1,500–3,000 by going self-guided, because fixed costs like food and shuttles don't double the way per-person tour fees do. The $19 OpenRide guide pays for itself on the first night.</div></div>
+  </div>
+</section>
+
 <!-- CTA -->
 <div class="cta-strip">
   <h2>Ready to Ride the Trace?</h2>
@@ -724,8 +875,8 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 <script>
 (function() {
-  // TOKEN: Antigravity — replace with process.env.MAPBOX_TOKEN or inject from Netlify env
-  const token = window.MAPBOX_TOKEN || 'REPLACE_WITH_MAPBOX_TOKEN';
+  // TOKEN: Antigravity should replace this with process.env.MAPBOX_TOKEN
+  const token = window.MAPBOX_TOKEN || 'pk.eyJ1IjoidHJhaWxzaWRlYmlrZXMiLCJhIjoiY2l2cmJ2b3E5MDNkbDJ0bXU0cXRybDY4ayJ9.FJvNzMcj-daMXW2ol67LCw';
   mapboxgl.accessToken = token;
 
   const map = new mapboxgl.Map({
@@ -737,6 +888,10 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   });
 
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+  map.scrollZoom.disable();
+  map.dragPan.disable();
+  map.doubleClickZoom.disable();
+  map.touchZoomRotate.disable();
   map.addControl(new mapboxgl.AttributionControl({ compact: true }));
 
   const stops = [
@@ -753,26 +908,31 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   map.on('load', () => {
     map.addSource('trace', {
       type: 'geojson',
-      data: {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: [
-            [-91.403,31.560],[-91.175,31.683],[-90.984,31.958],
-            [-90.897,32.093],[-90.650,32.350],[-90.200,32.650],
-            [-89.589,33.058],[-89.100,33.500],[-88.703,34.258],
-            [-88.200,34.700],[-87.800,35.100],[-87.467,35.458],
-            [-87.100,35.750],[-86.900,36.000],[-86.781,36.166]
-          ]
-        }
-      }
+      data: '/routes/natchez-lower.geojson'
     });
+
+    map.addLayer({
+      id: 'trace-glow',
+      type: 'line', source: 'trace',
+      layout: { 'line-join': 'round', 'line-cap': 'round' },
+      paint: { 'line-color': '#C17F3A', 'line-width': 8, 'line-opacity': 0.15 }
+    });
+
     map.addLayer({
       id: 'trace-line',
       type: 'line', source: 'trace',
       layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': '#C17F3A', 'line-width': 3.5, 'line-opacity': 0.95 }
+      paint: { 'line-color': '#C17F3A', 'line-width': 3, 'line-opacity': 0.95 }
     });
+
+    fetch('/routes/natchez-lower.geojson')
+      .then(r => r.json())
+      .then(data => {
+        const coords = data.features[0].geometry.coordinates;
+        const bounds = coords.reduce((b, c) => b.extend(c),
+          new mapboxgl.LngLatBounds(coords[0], coords[0]));
+        map.fitBounds(bounds, { padding: 48, maxZoom: 8 });
+      });
 
     stops.forEach(s => {
       const color = s.type === 'start' ? '#4CAF50' : s.type === 'end' ? '#C17F3A' : '#8AAF8A';
@@ -788,7 +948,6 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   });
 })();
 </script>
-
 <!-- MODAL: Sample Guide -->
 <div class="modal-overlay" id="modal-guide" onclick="closeModalOutside(event, 'modal-guide')">
   <div class="modal-box">
@@ -858,6 +1017,89 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       });
     }
   });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><script>(function(){function distMiles(a,b){var R=3958.8,dLat=(b[1]-a[1])*Math.PI/180,dLon=(b[0]-a[0])*Math.PI/180;var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a[1]*Math.PI/180)*Math.cos(b[1]*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}function toFt(m){return Math.round(m*3.28084);}fetch('/routes/natchez-lower.geojson').then(function(r){return r.json();}).then(function(data){var coords=data.features[0].geometry.coordinates;var step=Math.max(1,Math.floor(coords.length/500));var pts=coords.filter(function(_,i){return i%step===0;});var dist=0,gain=0,loss=0,labels=[],elevs=[];pts.forEach(function(pt,i){if(i>0){dist+=distMiles(pts[i-1],pt);var d=(pt[2]||0)-(pts[i-1][2]||0);if(d>0)gain+=d;else loss+=Math.abs(d);}labels.push(dist.toFixed(1));elevs.push(pt[2]?toFt(pt[2]):null);});var valid=elevs.filter(function(e){return e!==null;});if(!valid.length){var s=document.querySelector('.elev-section');if(s)s.style.display='none';return;}var maxE=Math.max.apply(null,valid),minE=Math.min.apply(null,valid);document.getElementById('elev-gain').textContent=toFt(gain).toLocaleString()+' ft';document.getElementById('elev-loss').textContent=toFt(loss).toLocaleString()+' ft';document.getElementById('elev-max').textContent=maxE.toLocaleString()+' ft';document.getElementById('elev-min').textContent=minE.toLocaleString()+' ft';window._elevChart=new Chart(document.getElementById('elev-chart').getContext('2d'),{type:'line',data:{labels:labels,datasets:[{data:elevs,fill:true,borderColor:'#C17F3A',borderWidth:1.5,backgroundColor:'rgba(193,127,58,0.25)',pointRadius:0,tension:0.3,spanGaps:true}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{right:40}},interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2a1f',borderColor:'rgba(193,127,58,0.4)',borderWidth:1,titleColor:'#8AAF8A',bodyColor:'#F4EFE4',callbacks:{title:function(i){return 'Mile '+i[0].label;},label:function(i){return i.raw?i.raw.toLocaleString()+' ft':'-';}}}},scales:{x:{ticks:{color:'rgba(138,175,138,0.6)',font:{size:9},maxTicksLimit:12},grid:{color:'rgba(138,175,138,0.08)'},title:{display:true,text:'distance in miles',color:'rgba(138,175,138,0.5)',font:{size:9}},padding:{right:20}},y:{ticks:{color:'rgba(138,175,138,0.6)',font:{size:9},maxTicksLimit:5,callback:function(v){return v.toLocaleString()+' ft';}},grid:{color:'rgba(138,175,138,0.08)'},min:Math.max(0,minE-200)}}}});}).catch(function(){var s=document.querySelector('.elev-section');if(s)s.style.display='none';});setTimeout(function(){if(window._elevChart)window._elevChart.resize();},300);})();</script>
+
+<script>
+  // Hero slider auto-advance
+  (function() {
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.slide-dot');
+    let cur = 0;
+    function go(n) {
+      slides[cur].classList.remove('active');
+      dots[cur].classList.remove('active');
+      cur = (n + slides.length) % slides.length;
+      slides[cur].classList.add('active');
+      dots[cur].classList.add('active');
+    }
+    dots.forEach(function(dot, i) { dot.addEventListener('click', function() { go(i); }); });
+    setInterval(function() { go(cur + 1); }, 6000);
+  })();
+</script>
+
+<script>
+  // UGC strip drag scroll
+  const ugcScroll = document.querySelector('.ugc-scroll');
+  if (ugcScroll) {
+    let isDown = false, startX, scrollLeft;
+    ugcScroll.addEventListener('mousedown', e => {
+      isDown = true;
+      ugcScroll.classList.add('active');
+      startX = e.pageX - ugcScroll.offsetLeft;
+      scrollLeft = ugcScroll.scrollLeft;
+    });
+    ugcScroll.addEventListener('mouseleave', () => { isDown = false; });
+    ugcScroll.addEventListener('mouseup', () => { isDown = false; });
+    ugcScroll.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - ugcScroll.offsetLeft;
+      ugcScroll.scrollLeft = scrollLeft - (x - startX) * 1.5;
+    });
+  }
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TouristTrip",
+  "name": "Natchez Trace Parkway Self-Guided Cycling Tour",
+  "description": "A 3-4 day self-guided bicycle tour of the lower Natchez Trace Parkway from Natchez, MS to Rocky Springs. 82 miles of car-light NPS parkway through antebellum history, ancient forests, and ghost towns.",
+  "touristType": ["Cyclists", "Adventure Travelers", "History Enthusiasts"],
+  "itinerary": {
+    "@type": "ItemList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Natchez, MS — Southern Terminus"},
+      {"@type": "ListItem", "position": 2, "name": "Emerald Mound — Milepost 10.3"},
+      {"@type": "ListItem", "position": 3, "name": "Port Gibson — Milepost 39.2"},
+      {"@type": "ListItem", "position": 4, "name": "Windsor Ruins — Milepost 41.0"},
+      {"@type": "ListItem", "position": 5, "name": "Rocky Springs — Milepost 54.8"}
+    ]
+  },
+  "offers": {
+    "@type": "Offer",
+    "name": "Natchez Trace Self-Guided Cycling Guide",
+    "price": "19.00",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "url": "https://openride.bike/natchez-trace-route-guide.html"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "OpenRide.bike",
+    "url": "https://openride.bike",
+    "description": "Self-guided cycling tour guides from an experienced professional bicycle tour guide."
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "31.5499",
+    "longitude": "-91.3998"
+  },
+  "distance": "82 miles",
+  "sport": "Cycling"
+}
 </script>
 
 </body>
