@@ -606,7 +606,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 <!-- ROUTE DETAILS STRIP -->
 <div class="route-strip">
   <div class="route-strip-item"><span class="route-strip-lbl">Start</span><span class="route-strip-val">Natchez, MS</span></div>
-  <div class="route-strip-item"><span class="route-strip-lbl">End</span><span class="route-strip-val">Rocky Springs, MS</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">End</span><span class="route-strip-val">Jackson Area, MS</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Best Seasons</span><span class="route-strip-val">Spring &amp; Fall</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Fly-In Airport</span><span class="route-strip-val">Jackson, MS (JAN)</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Shuttle Needed</span><span class="route-strip-val">Point-to-Point</span></div>
@@ -901,7 +901,11 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       [-90.9840, 31.9580],
       [-90.9267, 31.9933],
       [-90.8967, 32.0933],
-      [-90.7700, 31.9800]
+      [-90.7700, 31.9800],
+      [-90.6200, 32.1200],
+      [-90.5100, 32.2800],
+      [-90.4400, 32.3900],
+      [-90.3600, 32.5000]
     ];
 
     const coords = waypoints.map(c => c.join(',')).join(';');
@@ -950,7 +954,8 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       { name: 'Natchez, MS', coords: [-91.3998, 31.5499], type: 'start' },
       { name: 'Emerald Mound · MP 10.3', coords: [-91.175, 31.683], type: 'stop' },
       { name: 'Port Gibson · MP 39.2', coords: [-90.984, 31.958], type: 'stop' },
-      { name: 'Rocky Springs · MP 54.8', coords: [-90.897, 32.093], type: 'end' },
+      { name: 'Rocky Springs · MP 54.8', coords: [-90.897, 32.093], type: 'stop' },
+      { name: 'Jackson Area · MP 105', coords: [-90.360, 32.500], type: 'end' },
     ];
 
     stops.forEach(s => {
