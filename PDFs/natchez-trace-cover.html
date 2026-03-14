@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natchez Trace Parkway — Complete Cycling Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital@0;1&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  @page { size: 8.5in 11in; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 8.5in;
+    height: 11in;
+    max-height: 11in;
+    background: #2C4A2E;
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+    position: relative;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Topographic texture overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 38px,
+        rgba(138,175,138,0.04) 38px,
+        rgba(138,175,138,0.04) 39px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 38px,
+        rgba(138,175,138,0.04) 38px,
+        rgba(138,175,138,0.04) 39px
+      );
+    pointer-events: none;
+  }
+
+  /* Top accent stripe */
+  .top-stripe {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: #C17F3A;
+  }
+
+  /* Large background route number */
+  .bg-miles {
+    position: absolute;
+    bottom: -0.5in;
+    right: -0.1in;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5.5in;
+    color: rgba(255,255,255,0.025);
+    line-height: 1;
+    user-select: none;
+    letter-spacing: -0.02em;
+  }
+
+  /* Diagonal accent band */
+  .diagonal-band {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2.8in;
+    height: 11in;
+    background: rgba(30,42,31,0.5);
+    clip-path: polygon(0.6in 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  /* Route line illustration */
+  .route-line {
+    position: absolute;
+    top: 1.2in;
+    right: 0.4in;
+    width: 1.8in;
+    opacity: 0.6;
+  }
+
+  /* Nav bar */
+  .nav {
+    position: absolute;
+    top: 0.3in;
+    left: 0.5in;
+    right: 0.5in;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.22in;
+    color: #F4EFE4;
+    letter-spacing: 0.1em;
+  }
+
+  .logo span { color: #C17F3A; }
+
+  .nav-tag {
+    font-size: 0.09in;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(138,175,138,0.6);
+  }
+
+  /* Main content */
+  .content {
+    position: absolute;
+    top: 1.1in;
+    left: 0.5in;
+    right: 3in;
+  }
+
+  .eyebrow {
+    font-size: 0.09in;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #C17F3A;
+    margin-bottom: 0.18in;
+    display: block;
+  }
+
+  .route-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05in;
+    color: #F4EFE4;
+    line-height: 0.88;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.15in;
+  }
+
+  .guide-type {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.32in;
+    color: #8AAF8A;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.35in;
+  }
+
+  .guide-type em {
+    color: #C17F3A;
+    font-style: normal;
+  }
+
+  /* Accent divider */
+  .divider {
+    width: 0.6in;
+    height: 2px;
+    background: #C17F3A;
+    margin-bottom: 0.3in;
+  }
+
+  .route-desc {
+    font-family: 'Lora', serif;
+    font-size: 0.115in;
+    color: rgba(244,239,228,0.65);
+    line-height: 1.8;
+    max-width: 3.8in;
+    margin-bottom: 0.4in;
+    font-style: italic;
+  }
+
+  /* Stats row */
+  .stats {
+    display: flex;
+    gap: 0.35in;
+    margin-bottom: 0.5in;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.38in;
+    color: #F4EFE4;
+    display: block;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .stat-lbl {
+    font-size: 0.075in;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8AAF8A;
+    display: block;
+    margin-top: 0.04in;
+  }
+
+  /* What's included */
+  .includes-box {
+    background: rgba(30,42,31,0.7);
+    border: 1px solid rgba(138,175,138,0.15);
+    border-left: 3px solid #C17F3A;
+    padding: 0.25in 0.3in;
+    max-width: 4in;
+  }
+
+  .includes-title {
+    font-size: 0.08in;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #C17F3A;
+    margin-bottom: 0.15in;
+  }
+
+  .includes-list {
+    list-style: none;
+  }
+
+  .includes-list li {
+    font-size: 0.09in;
+    color: rgba(244,239,228,0.7);
+    padding: 0.06in 0;
+    border-bottom: 1px solid rgba(138,175,138,0.08);
+    display: flex;
+    align-items: baseline;
+    gap: 0.1in;
+  }
+
+  .includes-list li:last-child { border-bottom: none; }
+
+  .includes-list li::before {
+    content: '\2014';
+    color: #C17F3A;
+    flex-shrink: 0;
+    font-size: 0.08in;
+  }
+
+  /* Pull quote */
+  .pullquote {
+    position: absolute;
+    bottom: 1.6in;
+    left: 0.5in;
+    right: 3.2in;
+    border-left: 2px solid rgba(193,127,58,0.4);
+    padding-left: 0.2in;
+  }
+
+  .pullquote p {
+    font-family: 'Lora', serif;
+    font-size: 0.115in;
+    color: rgba(244,239,228,0.4);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  /* Bottom bar */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0.7in;
+    background: rgba(20,30,21,0.8);
+    border-top: 1px solid rgba(138,175,138,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5in;
+  }
+
+  .bottom-tagline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.16in;
+    color: rgba(244,239,228,0.25);
+    letter-spacing: 0.15em;
+  }
+
+  .bottom-url {
+    font-size: 0.085in;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8AAF8A;
+  }
+
+  /* Right panel content */
+  .right-panel {
+    position: absolute;
+    top: 1.1in;
+    right: 0.4in;
+    width: 2in;
+    text-align: right;
+  }
+
+  .segment-list {
+    list-style: none;
+    margin-top: 0.4in;
+  }
+
+  .segment-list li {
+    padding: 0.12in 0;
+    border-bottom: 1px solid rgba(138,175,138,0.1);
+  }
+
+  .seg-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.16in;
+    color: #F4EFE4;
+    letter-spacing: 0.05em;
+    display: block;
+  }
+
+  .seg-detail {
+    font-size: 0.075in;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(138,175,138,0.6);
+    display: block;
+    margin-top: 0.03in;
+  }
+
+  .seg-miles {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.13in;
+    color: #C17F3A;
+    display: block;
+  }
+
+  .right-label {
+    font-size: 0.07in;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(193,127,58,0.6);
+  }
+
+  /* Route path SVG */
+  .route-svg {
+    position: absolute;
+    top: 3.5in;
+    right: 0.3in;
+    width: 2.2in;
+    opacity: 0.35;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-stripe"></div>
+<div class="diagonal-band"></div>
+<div class="bg-miles">444</div>
+
+<!-- Nav -->
+<div class="nav">
+  <div class="logo">Open<span>Ride</span>.bike</div>
+  <div class="nav-tag">Self-Guided Cycling Guides</div>
+</div>
+
+<!-- Main content -->
+<div class="content">
+  <span class="eyebrow">Complete Route Guide &middot; All Three Segments</span>
+  <h1 class="route-name">Natchez<br>Trace<br>Parkway</h1>
+  <div class="guide-type">Complete Guide &middot; <em>444 Miles</em></div>
+  <div class="divider"></div>
+  <p class="route-desc">Jackson, MS to Nashville, TN. Three segments. One historic road. Ten thousand years of American history.</p>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div>
+      <span class="stat-val">444</span>
+      <span class="stat-lbl">Total Miles</span>
+    </div>
+    <div>
+      <span class="stat-val">3</span>
+      <span class="stat-lbl">States</span>
+    </div>
+    <div>
+      <span class="stat-val">3&ndash;10</span>
+      <span class="stat-lbl">Days</span>
+    </div>
+    <div>
+      <span class="stat-val">NPS</span>
+      <span class="stat-lbl">Parkway</span>
+    </div>
+  </div>
+
+  <!-- Includes -->
+  <div class="includes-box">
+    <div class="includes-title">What's Included</div>
+    <ul class="includes-list">
+      <li>Day-by-day route guide for all three segments</li>
+      <li>GPX file &mdash; Garmin, Wahoo, Komoot ready</li>
+      <li>Complete cue sheet &mdash; every turn, every segment</li>
+      <li>Lodging recommendations at every overnight</li>
+      <li>All free NPS campsites on the Trace</li>
+      <li>Full resupply and services for 444 miles</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Pull quote -->
+<div class="pullquote">
+  <p>"By Day 2 you stop waiting for the roar that never comes.<br>The silence is the whole point."</p>
+</div>
+
+<!-- Right panel -->
+<div class="right-panel">
+  <div class="right-label">Three Segments</div>
+  <ul class="segment-list">
+    <li>
+      <span class="seg-name">Lower Trace</span>
+      <span class="seg-detail">Jackson &rarr; Natchez</span>
+      <span class="seg-miles">~100 mi</span>
+    </li>
+    <li>
+      <span class="seg-name">Middle Trace</span>
+      <span class="seg-detail">Natchez &rarr; Tupelo</span>
+      <span class="seg-miles">~150 mi</span>
+    </li>
+    <li>
+      <span class="seg-name">Upper Trace</span>
+      <span class="seg-detail">Tupelo &rarr; Nashville</span>
+      <span class="seg-miles">~200 mi</span>
+    </li>
+  </ul>
+</div>
+
+<!-- Route SVG illustration -->
+<svg class="route-svg" viewBox="0 0 80 300" xmlns="http://www.w3.org/2000/svg">
+  <path d="M40 10 C45 40, 35 70, 42 100 C48 130, 32 160, 38 190 C44 220, 30 250, 40 290"
+    stroke="#C17F3A" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Start dot -->
+  <circle cx="40" cy="10" r="5" fill="#4CAF50" stroke="white" stroke-width="1.5"/>
+  <!-- Stops -->
+  <circle cx="42" cy="100" r="3.5" fill="#8AAF8A" stroke="white" stroke-width="1.5"/>
+  <circle cx="38" cy="190" r="3.5" fill="#8AAF8A" stroke="white" stroke-width="1.5"/>
+  <!-- End dot -->
+  <circle cx="40" cy="290" r="5" fill="#C17F3A" stroke="white" stroke-width="1.5"/>
+  <!-- Labels -->
+  <text x="50" y="13" fill="#8AAF8A" font-size="8" font-family="sans-serif">Jackson, MS</text>
+  <text x="52" y="103" fill="rgba(138,175,138,0.7)" font-size="7" font-family="sans-serif">Natchez</text>
+  <text x="48" y="193" fill="rgba(138,175,138,0.7)" font-size="7" font-family="sans-serif">Tupelo</text>
+  <text x="50" y="293" fill="#C17F3A" font-size="8" font-family="sans-serif">Nashville, TN</text>
+</svg>
+
+<!-- Bottom bar -->
+<div class="bottom-bar">
+  <div class="bottom-tagline">Your Route &middot; Your Pace &middot; Your Adventure</div>
+  <div class="bottom-url">openride.bike</div>
+</div>
+
+</body>
+</html>
