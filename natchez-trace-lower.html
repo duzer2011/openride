@@ -894,49 +894,68 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   map.touchZoomRotate.disable();
   map.addControl(new mapboxgl.AttributionControl({ compact: true }));
 
-  const stops = [
-    { name: 'Natchez, MS', coords: [-91.403, 31.560], type: 'start' },
-    { name: 'Emerald Mound · MP 10.3', coords: [-91.175, 31.683], type: 'stop' },
-    { name: 'Port Gibson · MP 39.2', coords: [-90.984, 31.958], type: 'stop' },
-    { name: 'Rocky Springs · MP 54.8', coords: [-90.897, 32.093], type: 'stop' },
-    { name: 'Kosciusko', coords: [-89.589, 33.058], type: 'stop' },
-    { name: 'Tupelo · MP 259.7', coords: [-88.703, 34.258], type: 'stop' },
-    { name: 'Meriwether Lewis · MP 385.9', coords: [-87.467, 35.458], type: 'stop' },
-    { name: 'Nashville, TN', coords: [-86.781, 36.166], type: 'end' },
-  ];
-
   map.on('load', () => {
-    map.addSource('trace', {
-      type: 'geojson',
-      data: '/routes/natchez-lower.geojson'
-    });
+    const waypoints = [
+      [-91.3998, 31.5499],
+      [-91.1750, 31.6833],
+      [-90.9840, 31.9580],
+      [-90.9267, 31.9933],
+      [-90.8967, 32.0933],
+      [-90.7700, 31.9800]
+    ];
 
-    map.addLayer({
-      id: 'trace-glow',
-      type: 'line', source: 'trace',
-      layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': '#C17F3A', 'line-width': 8, 'line-opacity': 0.15 }
-    });
+    const coords = waypoints.map(c => c.join(',')).join(';');
+    const url = `https://api.mapbox.com/directions/v5/mapbox/cycling/${coords}?geometries=geojson&overview=full&access_token=${mapboxgl.accessToken}`;
 
-    map.addLayer({
-      id: 'trace-line',
-      type: 'line', source: 'trace',
-      layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': '#C17F3A', 'line-width': 3, 'line-opacity': 0.95 }
-    });
-
-    fetch('/routes/natchez-lower.geojson')
+    fetch(url)
       .then(r => r.json())
       .then(data => {
-        const coords = data.features[0].geometry.coordinates;
-        const bounds = coords.reduce((b, c) => b.extend(c),
-          new mapboxgl.LngLatBounds(coords[0], coords[0]));
-        map.fitBounds(bounds, { padding: 48, maxZoom: 8 });
+        const route = data.routes[0].geometry;
+
+        map.addSource('trace', {
+          type: 'geojson',
+          data: { type: 'Feature', geometry: route, properties: {} }
+        });
+
+        map.addLayer({
+          id: 'trace-glow',
+          type: 'line', source: 'trace',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#C17F3A', 'line-width': 8, 'line-opacity': 0.15 }
+        });
+
+        map.addLayer({
+          id: 'trace-line',
+          type: 'line', source: 'trace',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#C17F3A', 'line-width': 3, 'line-opacity': 0.95 }
+        });
+
+        const bounds = route.coordinates.reduce(
+          (b, c) => b.extend(c),
+          new mapboxgl.LngLatBounds(route.coordinates[0], route.coordinates[0])
+        );
+        map.fitBounds(bounds, { padding: 60, maxZoom: 9 });
+      })
+      .catch(() => {
+        // fallback: just fit to waypoints
+        const bounds = waypoints.reduce(
+          (b, c) => b.extend(c),
+          new mapboxgl.LngLatBounds(waypoints[0], waypoints[0])
+        );
+        map.fitBounds(bounds, { padding: 60 });
       });
+
+    const stops = [
+      { name: 'Natchez, MS', coords: [-91.3998, 31.5499], type: 'start' },
+      { name: 'Emerald Mound · MP 10.3', coords: [-91.175, 31.683], type: 'stop' },
+      { name: 'Port Gibson · MP 39.2', coords: [-90.984, 31.958], type: 'stop' },
+      { name: 'Rocky Springs · MP 54.8', coords: [-90.897, 32.093], type: 'end' },
+    ];
 
     stops.forEach(s => {
       const color = s.type === 'start' ? '#4CAF50' : s.type === 'end' ? '#C17F3A' : '#8AAF8A';
-      const size  = s.type !== 'stop' ? 14 : 9;
+      const size = s.type !== 'stop' ? 14 : 9;
       const el = document.createElement('div');
       el.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;`;
       new mapboxgl.Marker(el)
