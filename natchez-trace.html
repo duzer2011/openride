@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natchez Trace Parkway Cycling Guide — OpenRide.bike</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,600;1,400&family=Lora:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<style>
+:root { --forest:#2C4A2E;--moss:#4A7C59;--sage:#8AAF8A;--parch:#F4EFE4;--parch2:#EDE8D8;--accent:#C17F3A;--ink:#1e2a1f; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--parch);color:var(--ink);font-family:'DM Sans',sans-serif;}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(28,42,31,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(138,175,138,0.15);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.1em;color:var(--parch);text-decoration:none;}
+.nav-logo span{color:var(--accent);}
+.nav-buy{background:var(--accent);color:white;border:none;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.12em;padding:0.55rem 1.4rem;border-radius:2px;cursor:pointer;text-decoration:none;}
+.hero{position:relative;height:90vh;min-height:560px;overflow:hidden;display:flex;align-items:flex-end;}
+.slides{position:absolute;inset:0;}
+.slide{position:absolute;inset:0;background-size:cover;background-position:center center;opacity:0;transition:opacity 1.2s ease;}
+.slide.active{opacity:1;}
+.slide-dots{position:absolute;bottom:1.5rem;right:2rem;z-index:10;display:flex;gap:6px;}
+.slide-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;border:none;padding:0;transition:background 0.3s;}
+.slide-dot.active{background:var(--accent);}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.1) 60%,transparent 100%);}
+.hero-content{position:relative;z-index:1;padding:0 3.5rem 4rem;max-width:780px;}
+.hero-label{font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;display:block;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,5.5rem);color:var(--parch);line-height:0.95;letter-spacing:0.02em;margin-bottom:1.25rem;}
+.hero-sub{font-family:'DM Sans',sans-serif;font-size:1rem;color:rgba(244,239,228,0.75);line-height:1.6;max-width:480px;margin-bottom:2rem;}
+.hero-pills{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.pill{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;border:1px solid rgba(244,239,228,0.3);color:rgba(244,239,228,0.75);padding:0.3rem 0.8rem;border-radius:2px;}
+.map-section{background:var(--ink);position:relative;}
+.map-stats-band{background:var(--forest);display:flex;align-items:stretch;border-bottom:1px solid rgba(138,175,138,0.15);}
+.map-stat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.1rem 0.5rem;border-right:1px solid rgba(138,175,138,0.12);gap:0.15rem;}
+.map-stat:last-child{border-right:none;}
+.map-stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--parch);line-height:1;letter-spacing:0.03em;}
+.map-stat-lbl{font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--sage);}
+#route-map{width:100%;height:520px;display:block;}
+.elev-section{background:#1e2a1f;display:block;width:100%;box-sizing:border-box;}
+.elev-header{display:flex;align-items:baseline;justify-content:space-between;padding:1.25rem 2rem 0.5rem;box-sizing:border-box;}
+.elev-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.12em;color:#F4EFE4;}
+.elev-stats{display:flex;gap:2rem;}
+.elev-stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:#C17F3A;}
+.elev-stat-lbl{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:#8AAF8A;display:block;}
+.elev-chart-wrap{padding:0 2rem 1.25rem;height:140px;width:100%;box-sizing:border-box;display:block;}
+#elev-chart{display:block;width:100%!important;height:100%!important;}
+.elev-endpoints{display:flex;justify-content:space-between;font-family:'DM Sans',sans-serif;font-size:0.7rem;letter-spacing:0.08em;color:#8AAF8A;padding:0.25rem 2rem 0;}
+.route-strip{background:var(--parch2);border-top:1px solid rgba(44,74,46,0.12);border-bottom:1px solid rgba(44,74,46,0.12);display:flex;align-items:stretch;}
+.route-strip-item{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem 1rem;gap:0.15rem;text-align:center;border-right:1px solid rgba(44,74,46,0.1);flex:1;}
+.route-strip-item:last-child{border-right:none;}
+.route-strip-lbl{font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#999;}
+.route-strip-val{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;color:var(--forest);letter-spacing:0.04em;line-height:1.1;}
+.a-editorial{background:var(--parch);padding:5rem 0 4.5rem;}
+.a-editorial-inner{max-width:1100px;margin:0 auto;padding:0 3rem;display:grid;grid-template-columns:1fr 380px;gap:5rem;align-items:start;}
+.a-eyebrow{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:0.6rem;display:block;}
+.a-headline{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--forest);letter-spacing:0.03em;line-height:1;margin-bottom:2rem;}
+.a-editorial-text p{font-family:'Lora',serif;font-size:1.05rem;line-height:1.85;color:#3a3a3a;margin-bottom:1.5rem;}
+.a-editorial-text p:first-of-type::first-letter{font-family:'Bebas Neue',sans-serif;font-size:4.5rem;float:left;line-height:0.75;margin-right:0.08em;color:var(--forest);}
+.a-pullquote{border-left:3px solid var(--accent);padding:0.5rem 0 0.5rem 1.5rem;margin:2rem 0;}
+.a-pullquote p{font-family:'Lora',serif!important;font-size:1.15rem!important;font-style:italic!important;color:var(--forest)!important;line-height:1.6!important;margin-bottom:0!important;}
+.a-sidebar{background:var(--forest);padding:2rem;border-radius:2px;position:sticky;top:80px;}
+.a-sidebar-title{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--parch);letter-spacing:0.06em;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid rgba(138,175,138,0.25);}
+.a-stat-row{display:flex;justify-content:space-between;align-items:baseline;padding:0.6rem 0;border-bottom:1px solid rgba(138,175,138,0.1);}
+.a-stat-row:last-of-type{border-bottom:none;}
+.a-stat-lbl{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--sage);}
+.a-stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--parch);letter-spacing:0.03em;}
+.a-buy-btn{width:100%;background:var(--accent);color:white;border:none;font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:0.1em;padding:0.9rem;border-radius:2px;cursor:pointer;margin-top:1.5rem;display:block;text-align:center;text-decoration:none;}
+.a-sidebar-note{font-size:0.68rem;color:rgba(138,175,138,0.7);text-align:center;margin-top:0.75rem;line-height:1.5;}
+.a-photo-break{width:100%;height:380px;display:flex;align-items:flex-end;padding:2rem 3rem;position:relative;overflow:hidden;}
+.a-photo-break::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.45),transparent 60%);}
+.a-mosaic{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:200px 200px;gap:3px;background:var(--ink);}
+.a-mosaic-cell{overflow:hidden;background-size:cover;background-position:center center;}
+.a-mosaic-cell:nth-child(1){grid-row:1/3;}
+.segments-section{background:#f8f3ea;padding:5rem 0;}
+.segments-inner{max-width:1100px;margin:0 auto;padding:0 3rem;}
+.a-section-head{display:flex;align-items:baseline;gap:1.5rem;margin-bottom:2.5rem;padding-bottom:1rem;border-bottom:2px solid var(--forest);}
+.a-section-head h2{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--forest);letter-spacing:0.03em;}
+.a-section-head span{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);}
+.segment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:0;}
+.segment-card{background:white;border-radius:2px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.06);display:flex;flex-direction:column;transition:transform 0.2s,box-shadow 0.2s;}
+.segment-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.1);}
+.segment-img{height:190px;background-size:cover;background-position:center;position:relative;}
+.segment-img-num{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:rgba(255,255,255,0.12);line-height:1;position:absolute;top:0.25rem;right:0.75rem;}
+.segment-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.45),transparent 60%);}
+.segment-body{padding:1.5rem;flex:1;display:flex;flex-direction:column;}
+.segment-eyebrow{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:0.3rem;}
+.segment-name{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--forest);letter-spacing:0.04em;line-height:1;margin-bottom:0.2rem;}
+.segment-route{font-size:0.78rem;color:var(--moss);margin-bottom:0.75rem;}
+.segment-stats-row{display:flex;gap:1.25rem;margin-bottom:0.9rem;}
+.seg-stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--forest);display:block;line-height:1;}
+.seg-stat-lbl{font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:#999;}
+.segment-desc{font-size:0.85rem;line-height:1.65;color:#555;flex:1;margin-bottom:1rem;}
+.segment-pois{list-style:none;margin-bottom:1.5rem;}
+.segment-pois li{font-size:0.78rem;color:#444;padding:0.3rem 0 0.3rem 1rem;border-bottom:1px solid rgba(44,74,46,0.07);position:relative;}
+.segment-pois li::before{content:'—';position:absolute;left:0;color:var(--accent);}
+.segment-pois li:last-child{border-bottom:none;}
+.segment-footer{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:var(--parch2);border-top:1px solid rgba(44,74,46,0.08);}
+.segment-price{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:var(--forest);letter-spacing:0.03em;}
+.segment-price-note{font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:#999;display:block;line-height:1.4;}
+.segment-btn{background:var(--forest);color:var(--parch);font-family:'Bebas Neue',sans-serif;font-size:0.88rem;letter-spacing:0.1em;padding:0.6rem 1.2rem;border-radius:2px;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.15s;}
+.segment-btn:hover{background:var(--moss);}
+.segment-btn.soon{background:#ddd;color:#aaa;cursor:not-allowed;}
+.bundle-section{background:var(--forest);padding:5rem 0;}
+.bundle-inner{max-width:1100px;margin:0 auto;padding:0 3rem;display:grid;grid-template-columns:1fr 360px;gap:4rem;align-items:center;}
+.bundle-eyebrow{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:0.5rem;}
+.bundle-title{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--parch);letter-spacing:0.03em;line-height:0.95;margin-bottom:1.25rem;}
+.bundle-title em{color:var(--sage);font-style:normal;}
+.bundle-desc{font-family:'Lora',serif;font-size:1rem;color:rgba(244,239,228,0.7);line-height:1.75;margin-bottom:1.5rem;}
+.bundle-list{list-style:none;}
+.bundle-list li{font-size:0.84rem;color:rgba(244,239,228,0.65);padding:0.45rem 0 0.45rem 1.2rem;border-bottom:1px solid rgba(138,175,138,0.1);position:relative;}
+.bundle-list li::before{content:'✓';position:absolute;left:0;color:var(--accent);font-size:0.75rem;}
+.bundle-list li:last-child{border-bottom:none;}
+.bundle-card{background:rgba(255,255,255,0.07);border:1px solid rgba(138,175,138,0.2);border-radius:2px;padding:2rem;}
+.bundle-price-row{display:flex;align-items:baseline;gap:0.75rem;margin-bottom:0.25rem;}
+.bundle-price{font-family:'Bebas Neue',sans-serif;font-size:4.5rem;color:var(--parch);line-height:1;}
+.bundle-was{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:rgba(244,239,228,0.25);text-decoration:line-through;}
+.bundle-save{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:block;}
+.bundle-breakdown{display:flex;flex-direction:column;gap:0;margin-bottom:1.75rem;}
+.bundle-row{display:flex;justify-content:space-between;font-size:0.82rem;color:rgba(244,239,228,0.6);padding:0.55rem 0;border-bottom:1px solid rgba(138,175,138,0.1);}
+.bundle-row:last-child{border-bottom:none;color:var(--parch);font-weight:600;}
+.bundle-row span:last-child{color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.05em;}
+.bundle-btn{width:100%;background:var(--accent);color:white;font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:0.1em;padding:0.9rem;border-radius:2px;border:none;cursor:pointer;text-align:center;display:block;text-decoration:none;transition:background 0.15s;}
+.bundle-btn:hover{background:#a86e30;}
+.bundle-note{font-size:0.68rem;color:rgba(138,175,138,0.6);text-align:center;margin-top:0.75rem;line-height:1.5;}
+.pricing-strip{background:var(--parch2);border-top:1px solid rgba(44,74,46,0.1);border-bottom:1px solid rgba(44,74,46,0.1);display:flex;align-items:center;justify-content:center;}
+.pricing-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.4rem 1rem;border-right:1px solid rgba(44,74,46,0.1);text-align:center;}
+.pricing-item:last-child{border-right:none;}
+.pricing-val{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--forest);letter-spacing:0.03em;}
+.pricing-lbl{font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#999;}
+.ugc-strip{background:#1e2a1f;padding:60px 0 50px;overflow:hidden;}
+.ugc-header{text-align:center;margin-bottom:32px;padding:0 24px;}
+.ugc-label{display:inline-block;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:#C17F3A;margin-bottom:8px;}
+.ugc-subhead{font-family:'DM Sans',sans-serif;font-size:1.05rem;color:#8AAF8A;margin:0;}
+.ugc-scroll{display:flex;gap:16px;overflow-x:auto;padding:20px 40px 30px;scrollbar-width:none;-ms-overflow-style:none;cursor:grab;}
+.ugc-scroll::-webkit-scrollbar{display:none;}
+.ugc-scroll:active{cursor:grabbing;}
+.ugc-card{flex:0 0 auto;width:200px;background:#fff;padding:10px 10px 36px;box-shadow:0 4px 20px rgba(0,0,0,0.4);transition:transform 0.2s ease,box-shadow 0.2s ease;}
+.ugc-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.6);transform:scale(1.04) rotate(0deg)!important;z-index:2;}
+.ugc-card img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;}
+.ugc-card--tilt-left{transform:rotate(-2.5deg);}
+.ugc-card--tilt-right{transform:rotate(2deg);}
+.ugc-card--straight{transform:rotate(-0.5deg);}
+.a-highlights{background:var(--forest);padding:5rem 0;}
+.a-highlights-inner{max-width:1100px;margin:0 auto;padding:0 3rem;}
+.a-highlights-head{margin-bottom:2.5rem;}
+.a-highlights-head .ey{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:0.5rem;}
+.a-highlights-head h2{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--parch);letter-spacing:0.03em;}
+.a-highlights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+.a-hl{border-left:2px solid var(--accent);padding-left:1.25rem;}
+.a-hl-mp{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--sage);margin-bottom:0.25rem;}
+.a-hl-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--parch);letter-spacing:0.05em;margin-bottom:0.4rem;}
+.a-hl-desc{font-size:0.82rem;line-height:1.65;color:rgba(244,239,228,0.6);}
+.faq-section{background:#f9f5ee;padding:4rem 2rem;}
+.faq-inner{max-width:860px;margin:0 auto;}
+.faq-section h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;color:#2C4A2E;margin-bottom:2rem;}
+.faq-item{border-bottom:1px solid rgba(44,74,46,0.12);padding:1.25rem 0;}
+.faq-question{font-weight:700;font-size:1rem;color:#2C4A2E;margin-bottom:0.5rem;}
+.faq-answer{font-size:0.9rem;color:#4a4a3a;line-height:1.7;}
+.cta-strip{background:var(--forest);padding:4rem 3rem;text-align:center;}
+.cta-strip h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3rem);color:var(--parch);letter-spacing:0.04em;margin-bottom:0.5rem;}
+.cta-strip p{font-size:0.9rem;color:var(--sage);margin-bottom:1.75rem;}
+.cta-btn{display:inline-block;background:var(--accent);color:white;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.12em;padding:0.9rem 2.5rem;border-radius:2px;text-decoration:none;}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
+  <a class="nav-buy" href="#guides">Get Your Guide →</a>
+</nav>
+<section class="hero" aria-label="Natchez Trace Parkway cycling route">
+  <div class="slides">
+    <div class="slide active" style="background-image:url('/images/natchez/natchez-trace-parkway-couple-riding.jpg')"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-parkway-solo-woman.jpg')"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-emerald-mound-visit.jpg')"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-windsor-ruins-visit.jpg')"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-natchez-city-arrival.jpg')"></div>
+  </div>
+  <div class="slide-dots" id="slider-dots"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-label">National Scenic Byway · Mississippi to Tennessee</span>
+    <h1 class="hero-title">Natchez<br>Trace<br>Parkway</h1>
+    <p class="hero-sub">Ten thousand years of history. One perfectly quiet road. Ride one section or the whole 444 miles.</p>
+    <div class="hero-pills">
+      <span class="pill">NPS Protected Road</span>
+      <span class="pill">No Commercial Traffic</span>
+      <span class="pill">Free NPS Camping</span>
+      <span class="pill">Beginner Friendly</span>
+    </div>
+  </div>
+</section>
+<section class="map-section">
+  <div class="map-stats-band">
+    <div class="map-stat"><span class="map-stat-val">444</span><span class="map-stat-lbl">Total Miles</span></div>
+    <div class="map-stat"><span class="map-stat-val">3</span><span class="map-stat-lbl">States</span></div>
+    <div class="map-stat"><span class="map-stat-val">3–10</span><span class="map-stat-lbl">Days</span></div>
+    <div class="map-stat"><span class="map-stat-val">NPS</span><span class="map-stat-lbl">Protected Parkway</span></div>
+    <div class="map-stat"><span class="map-stat-val">Road</span><span class="map-stat-lbl">Best Bike</span></div>
+    <div class="map-stat"><span class="map-stat-val">Beginner</span><span class="map-stat-lbl">Difficulty</span></div>
+  </div>
+  <div id="route-map"></div>
+</section>
+<div class="elev-section" style="width:100%;display:block"><div class="elev-header"><div class="elev-title">Elevation Profile — Full Trace</div><div class="elev-stats"><div><span class="elev-stat-val" id="elev-gain">-</span><span class="elev-stat-lbl">Total Gain</span></div><div><span class="elev-stat-val" id="elev-loss">-</span><span class="elev-stat-lbl">Total Loss</span></div><div><span class="elev-stat-val" id="elev-max">-</span><span class="elev-stat-lbl">Max Elevation</span></div><div><span class="elev-stat-val" id="elev-min">-</span><span class="elev-stat-lbl">Min Elevation</span></div></div></div><div class="elev-endpoints"><span>Natchez, MS</span><span>Nashville, TN</span></div><div class="elev-chart-wrap"><canvas id="elev-chart"></canvas></div></div>
+<div class="route-strip">
+  <div class="route-strip-item"><span class="route-strip-lbl">Start</span><span class="route-strip-val">Natchez, MS</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">End</span><span class="route-strip-val">Nashville, TN</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Best Seasons</span><span class="route-strip-val">Spring &amp; Fall</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Fly-In Airport</span><span class="route-strip-val">Jackson, MS (JAN)</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Shuttle Needed</span><span class="route-strip-val">Point-to-Point</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Camping</span><span class="route-strip-val">Free NPS Sites</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Surface</span><span class="route-strip-val">NPS Pavement</span></div>
+</div>
+<section class="a-editorial">
+  <div class="a-editorial-inner">
+    <div class="a-editorial-text">
+      <span class="a-eyebrow">Route Overview</span>
+      <h2 class="a-headline">About This Route</h2>
+      <p>Before it was a road, it was a footpath. The Choctaw and Chickasaw walked it for centuries. Then came the Kaintuck boatmen — traders who floated their flatboats down the Mississippi to New Orleans and walked the 500 miles home. The same worn corridor through the Mississippi and Tennessee wilderness, used by armies, explorers, and outlaws, is now a National Scenic Byway managed by the National Park Service.</p>
+      <div class="a-pullquote"><p>"By Day 2 you stop waiting for the roar that never comes. The silence is the whole point."</p></div>
+      <p>For cyclists it's close to perfect. The grades are gentle, the pavement smooth, and the towns along the way still run on Southern time. Ride the lower 100 miles as your first self-guided tour, or commit to the full 444 and finish at the double-arch bridge outside Nashville.</p>
+    </div>
+    <div class="a-sidebar">
+      <div class="a-sidebar-title">Quick Facts</div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Best For</span><span class="a-stat-val">First-timers</span></div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Pace</span><span class="a-stat-val">40–55 mi/day</span></div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Budget / Day</span><span class="a-stat-val">$60–$180</span></div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Best Months</span><span class="a-stat-val">Mar · Apr · Oct</span></div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Avg Temp</span><span class="a-stat-val">55–75°F</span></div>
+      <div class="a-stat-row"><span class="a-stat-lbl">Guides From</span><span class="a-stat-val">$19</span></div>
+      <a href="#guides" class="a-buy-btn">Choose Your Segment →</a>
+      <div class="a-sidebar-note">Lower Trace available now.<br>Middle &amp; Upper coming soon.</div>
+    </div>
+  </div>
+</section>
+<div class="a-photo-break" style="background:url('/images/natchez/natchez-trace-parkway-solo-woman.jpg') center 40%/cover no-repeat"></div>
+<section class="segments-section" id="guides">
+  <div class="segments-inner">
+    <div class="a-section-head">
+      <h2>Choose Your Segment</h2>
+      <span>Three Sections · One Historic Road</span>
+    </div>
+    <div class="segment-grid">
+      <div class="segment-card">
+        <div class="segment-img" style="background-image:url('/images/natchez/natchez-trace-emerald-mound-visit.jpg')">
+          <span class="segment-img-num">01</span>
+          <div class="segment-img-overlay"></div>
+        </div>
+        <div class="segment-body">
+          <span class="segment-eyebrow">Southern Section · Available Now</span>
+          <div class="segment-name">Lower Trace</div>
+          <div class="segment-route">Natchez → Jackson area</div>
+          <div class="segment-stats-row">
+            <div class="seg-stat"><span class="seg-stat-val">~100</span><span class="seg-stat-lbl">Miles</span></div>
+            <div class="seg-stat"><span class="seg-stat-val">3–4</span><span class="seg-stat-lbl">Days</span></div>
+            <div class="seg-stat"><span class="seg-stat-val">Easy</span><span class="seg-stat-lbl">Terrain</span></div>
+          </div>
+          <p class="segment-desc">Spanish moss, ancient mounds, and the town Grant called "too beautiful to burn." The most dramatic history on the Trace. Best starting point for first-timers.</p>
+          <ul class="segment-pois">
+            <li>Emerald Mound — milepost 10.3</li>
+            <li>Windsor Ruins — 23 Corinthian columns</li>
+            <li>Port Gibson — Civil War antebellum town</li>
+            <li>Rocky Springs — free NPS camping</li>
+          </ul>
+        </div>
+        <div class="segment-footer">
+          <div><span class="segment-price">$19</span><span class="segment-price-note">PDF + GPX + cue sheet</span></div>
+          <a href="/natchez-trace-lower.html" class="segment-btn">View Lower Guide</a>
+        </div>
+      </div>
+      <div class="segment-card">
+        <div class="segment-img" style="background-image:url('/images/natchez/natchez-trace-parkway-couple-riding.jpg')">
+          <span class="segment-img-num">02</span>
+          <div class="segment-img-overlay"></div>
+        </div>
+        <div class="segment-body">
+          <span class="segment-eyebrow">Central Section · Coming Soon</span>
+          <div class="segment-name">Middle Trace</div>
+          <div class="segment-route">Jackson area → Tupelo</div>
+          <div class="segment-stats-row">
+            <div class="seg-stat"><span class="seg-stat-val">~150</span><span class="seg-stat-lbl">Miles</span></div>
+            <div class="seg-stat"><span class="seg-stat-val">4–5</span><span class="seg-stat-lbl">Days</span></div>
+            <div class="seg-stat"><span class="seg-stat-val">Moderate</span><span class="seg-stat-lbl">Terrain</span></div>
+          </div>
+          <p class="segment-desc">The quietest stretch. French Camp, the cypress swamp, and the rolling hills of central Mississippi. Long days, few services, deep forest.</p>
+          <ul class="segment-pois">
+            <li>French Camp — historic inn on the Trace</li>
+            <li>Cypress Swamp — milepost 122</li>
+            <li>Kosciusko — resupply and overnight</li>
+            <li>Jeff Busby — highest point on the Trace</li>
+          </ul>
+        </div>
+        <div class="segment-footer">
+          <div><span class="segment-price">$19</span><span class="segment-price-note">PDF + GPX + cue sheet</span></div>
+          <a href="/natchez-trace-middle.html" class="segment-btn soon">Coming Soon</a>
+        </div>
+      </div>
+      <div class="segment-card">
+        <div class="segment-img" style="background-image:url('/images/natchez/natchez-trace-parkway-friends-group.jpg')">
+          <span class="segment-img-num">03</span>
+          <div class="segment-img-overlay"></div>
+        </div>
+        <div class="segment-body">
+          <span class="segment-eyebrow">Northern Section · Coming Soon</span>
+          <div class="segment-name">Upper Trace</div>
+          <div class="segment-route">Tupelo → Nashville, TN</div>
+          <div class="segment-stats-row">
+            <div class="seg-stat"><span class="seg-stat-val">~200</span><span class="seg-stat-lbl">Miles</span></div>
+            <div class="seg-stat"><span class="seg-stat-val">5–6</span><span class="seg-stat-lbl">Days</span></div>
+            <div class="seg-stat"><span class="seg-stat-val">Rolling</span><span class="seg-stat-lbl">Terrain</span></div>
+          </div>
+          <p class="segment-desc">The hilliest and most rewarding section. Meriwether Lewis, the Tennessee hills, and the northern terminus at the iconic double-arch bridge outside Nashville.</p>
+          <ul class="segment-pois">
+            <li>Tupelo Battlefield — milepost 259.7</li>
+            <li>Meriwether Lewis site — milepost 385.9</li>
+            <li>Tennessee hill country — most climbing</li>
+            <li>Double-arch bridge — the finish</li>
+          </ul>
+        </div>
+        <div class="segment-footer">
+          <div><span class="segment-price">$19</span><span class="segment-price-note">PDF + GPX + cue sheet</span></div>
+          <a href="/natchez-trace-upper.html" class="segment-btn soon">Coming Soon</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="a-mosaic">
+  <div class="a-mosaic-cell" style="background-image:url('/images/natchez/natchez-trace-parkway-friends-group.jpg')"></div>
+  <div class="a-mosaic-cell" style="background-image:url('/images/natchez/natchez-trace-windsor-ruins-visit.jpg')"></div>
+  <div class="a-mosaic-cell" style="background-image:url('/images/natchez/natchez-trace-rocky-springs-camping.jpg')"></div>
+  <div class="a-mosaic-cell" style="background-image:url('/images/natchez/natchez-trace-emerald-mound-visit.jpg')"></div>
+  <div class="a-mosaic-cell" style="background-image:url('/images/natchez/ugc-natchez-trace-sunset-road.jpg')"></div>
+</div>
+<section class="bundle-section">
+  <div class="bundle-inner">
+    <div>
+      <span class="bundle-eyebrow">Best Value</span>
+      <h2 class="bundle-title">The Full<br><em>444 Miles</em></h2>
+      <p class="bundle-desc">All three segment guides in one purchase. Every campsite, every B&amp;B, every resupply point from Natchez to Nashville — mile by mile.</p>
+      <ul class="bundle-list">
+        <li>All three PDF route guides — Lower, Middle, Upper</li>
+        <li>Three GPX files — Garmin, Wahoo, Komoot ready</li>
+        <li>Complete cue sheet set — turn by turn, every segment</li>
+        <li>Full resupply and services list for all 444 miles</li>
+        <li>Lodging recommendations at every overnight</li>
+        <li>All free NPS campsites on the Trace</li>
+      </ul>
+    </div>
+    <div class="bundle-card">
+      <div class="bundle-price-row">
+        <span class="bundle-price">$47</span>
+        <span class="bundle-was">$57</span>
+      </div>
+      <span class="bundle-save">Save $10 vs buying separately</span>
+      <div class="bundle-breakdown">
+        <div class="bundle-row"><span>Lower Trace Guide</span><span>$19</span></div>
+        <div class="bundle-row"><span>Middle Trace Guide</span><span>$19</span></div>
+        <div class="bundle-row"><span>Upper Trace Guide</span><span>$19</span></div>
+        <div class="bundle-row"><span>Full Trace Bundle</span><span>$47</span></div>
+      </div>
+      <a href="/checkout?price=price_1TAhQS1XJx7K3CRmbbAresCk&segment=full" class="bundle-btn">Get the Full Trace — $47</a>
+      <p class="bundle-note">Instant download after purchase.<br>All three guides delivered immediately.</p>
+    </div>
+  </div>
+</section>
+<div class="pricing-strip">
+  <div class="pricing-item"><span class="pricing-val">$19</span><span class="pricing-lbl">Single Segment</span></div>
+  <div class="pricing-item"><span class="pricing-val">$34</span><span class="pricing-lbl">Any Two Segments</span></div>
+  <div class="pricing-item"><span class="pricing-val">$47</span><span class="pricing-lbl">All Three — Full Trace</span></div>
+  <div class="pricing-item"><span class="pricing-val">Save $10</span><span class="pricing-lbl">On the Full Bundle</span></div>
+</div>
+<section class="ugc-strip">
+  <div class="ugc-header">
+    <span class="ugc-label">From the trail</span>
+    <p class="ugc-subhead">Real riders. Real phones. Real trip.</p>
+  </div>
+  <div class="ugc-scroll" id="ugcScroll">
+    <div class="ugc-card ugc-card--tilt-left"><img src="/images/natchez/ugc-natchez-trace-sign-selfie.jpg" alt="Natchez Trace sign selfie" loading="lazy"></div>
+    <div class="ugc-card ugc-card--tilt-right"><img src="/images/natchez/ugc-natchez-trace-road-ahead-pov.jpg" alt="POV riding the Trace" loading="lazy"></div>
+    <div class="ugc-card ugc-card--straight"><img src="/images/natchez/ugc-natchez-trace-milepost-photo.jpg" alt="Milepost on the Trace" loading="lazy"></div>
+    <div class="ugc-card ugc-card--tilt-left"><img src="/images/natchez/ugc-natchez-trace-sunset-road.jpg" alt="Sunset on the Trace" loading="lazy"></div>
+    <div class="ugc-card ugc-card--tilt-right"><img src="/images/natchez/ugc-natchez-trace-bb-porch-morning.jpg" alt="B&B porch morning" loading="lazy"></div>
+    <div class="ugc-card ugc-card--straight"><img src="/images/natchez/ugc-natchez-trace-friends-finish.jpg" alt="Finishing the Trace" loading="lazy"></div>
+    <div class="ugc-card ugc-card--tilt-left"><img src="/images/natchez/ugc-natchez-trace-dinner-table.jpg" alt="Dinner after the ride" loading="lazy"></div>
+    <div class="ugc-card ugc-card--tilt-right"><img src="/images/natchez/ugc-natchez-trace-couple-timer.jpg" alt="Couple on the Trace" loading="lazy"></div>
+    <div class="ugc-card ugc-card--straight"><img src="/images/natchez/ugc-natchez-trace-tent-morning.jpg" alt="Tent morning at Rocky Springs" loading="lazy"></div>
+    <div class="ugc-card ugc-card--tilt-left"><img src="/images/natchez/natchez-trace-port-gibson-bike-lean.jpg" alt="Bikes in Port Gibson" loading="lazy"></div>
+  </div>
+</section>
+<section class="a-highlights">
+  <div class="a-highlights-inner">
+    <div class="a-highlights-head">
+      <span class="ey">Must-See</span>
+      <h2>Six Stops That Define the Trace</h2>
+    </div>
+    <div class="a-highlights-grid">
+      <div class="a-hl"><div class="a-hl-mp">Milepost 10.3 — Lower</div><div class="a-hl-name">Emerald Mound</div><p class="a-hl-desc">Second largest Native American ceremonial mound in the US. Built around 1400 CE. Sunrise here is worth an early start.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Just off Milepost 41 — Lower</div><div class="a-hl-name">Windsor Ruins</div><p class="a-hl-desc">23 haunting Corinthian columns in a field. All that remains of Mississippi's grandest antebellum mansion.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Milepost 122 — Middle</div><div class="a-hl-name">Cypress Swamp</div><p class="a-hl-desc">A boardwalk loop through a water tupelo and bald cypress forest. The Trace at its most otherworldly.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Milepost 193.1 — Middle</div><div class="a-hl-name">French Camp</div><p class="a-hl-desc">A historic inn that's been hosting Trace travelers since 1812. Still operating, still taking cyclists.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Milepost 385.9 — Upper</div><div class="a-hl-name">Meriwether Lewis Site</div><p class="a-hl-desc">The gravesite and death site of the famous explorer. One of the most moving stops on the entire Trace.</p></div>
+      <div class="a-hl"><div class="a-hl-mp">Milepost 438 — Upper</div><div class="a-hl-name">Double-Arch Bridge</div><p class="a-hl-desc">The northern terminus. Two soaring concrete arches over Highway 96. The finish line every full-Trace rider earns.</p></div>
+    </div>
+  </div>
+</section>
+<section class="faq-section">
+  <div class="faq-inner">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item"><div class="faq-question">Do I need all three segments or can I just ride one?</div><div class="faq-answer">Most people start with one segment. The Lower Trace is the best first tour — 3-4 days, the most dramatic history, and the flattest terrain. Buy the Lower guide, ride it, and come back for the rest when you're ready.</div></div>
+    <div class="faq-item"><div class="faq-question">How are the three segments different?</div><div class="faq-answer">The Lower has the most history and flattest terrain. The Middle is the quietest stretch with fewest services — deep forest, long days. The Upper has the most climbing and ends at the iconic double-arch bridge outside Nashville. All three share the same smooth NPS pavement with no commercial traffic.</div></div>
+    <div class="faq-item"><div class="faq-question">When are the Middle and Upper guides available?</div><div class="faq-answer">The Lower Trace guide is available now. Middle and Upper guides are in development. Click "Coming Soon" on either card to get notified when they're ready.</div></div>
+    <div class="faq-item"><div class="faq-question">What's in each guide?</div><div class="faq-answer">Day-by-day route description, PDF formatted for phone or print, GPX file for your device, turn-by-turn cue sheet, lodging recommendations, resupply points, and key waypoints. Everything a self-supported rider needs without a support vehicle.</div></div>
+    <div class="faq-item"><div class="faq-question">Is the Natchez Trace good for beginners?</div><div class="faq-answer">The Lower Trace is one of the best beginner cycling routes in the country. No commercial traffic, smooth NPS pavement, gentle grades. The biggest challenge isn't the hills — it's saddle conditioning. Start training your sit bones at least 4 weeks before you go.</div></div>
+  </div>
+</section>
+<div class="cta-strip">
+  <h2>Ready to Ride the Trace?</h2>
+  <p>Start with the Lower Trace or commit to all 444 miles.</p>
+  <a href="#guides" class="cta-btn">Choose Your Segment →</a>
+</div>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script>
+(function(){
+  const token=window.MAPBOX_TOKEN||'pk.eyJ1IjoidHJhaWxzaWRlYmlrZXMiLCJhIjoiY2l2cmJ2b3E5MDNkbDJ0bXU0cXRybDY4ayJ9.FJvNzMcj-daMXW2ol67LCw';
+  mapboxgl.accessToken=token;
+  const map=new mapboxgl.Map({container:'route-map',style:'mapbox://styles/mapbox/outdoors-v12',center:[-89.5,33.5],zoom:6,attributionControl:false});
+  map.addControl(new mapboxgl.NavigationControl(),'top-right');
+  map.scrollZoom.disable();map.dragPan.disable();map.doubleClickZoom.disable();map.touchZoomRotate.disable();
+  map.addControl(new mapboxgl.AttributionControl({compact:true}));
+  const stops=[
+    {name:'Natchez, MS',coords:[-91.403,31.560],type:'start'},
+    {name:'Emerald Mound · MP 10.3',coords:[-91.175,31.683],type:'stop'},
+    {name:'Port Gibson · MP 39.2',coords:[-90.984,31.958],type:'stop'},
+    {name:'Rocky Springs · MP 54.8',coords:[-90.897,32.093],type:'stop'},
+    {name:'French Camp · MP 180.7',coords:[-89.401,33.298],type:'stop'},
+    {name:'Kosciusko',coords:[-89.589,33.058],type:'stop'},
+    {name:'Tupelo · MP 259.7',coords:[-88.703,34.258],type:'stop'},
+    {name:'Meriwether Lewis · MP 385.9',coords:[-87.467,35.458],type:'stop'},
+    {name:'Nashville, TN',coords:[-86.781,36.166],type:'end'},
+  ];
+  map.on('load',()=>{
+    map.addSource('trace',{type:'geojson',data:'/routes/natchez-lower.geojson'});
+    map.addLayer({id:'trace-glow',type:'line',source:'trace',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#C17F3A','line-width':8,'line-opacity':0.15}});
+    map.addLayer({id:'trace-line',type:'line',source:'trace',layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':'#C17F3A','line-width':3,'line-opacity':0.95}});
+    fetch('/routes/natchez-lower.geojson').then(r=>r.json()).then(data=>{
+      const coords=data.features[0].geometry.coordinates;
+      const bounds=coords.reduce((b,c)=>b.extend(c),new mapboxgl.LngLatBounds(coords[0],coords[0]));
+      map.fitBounds(bounds,{padding:48,maxZoom:8});
+    });
+    stops.forEach(s=>{
+      const color=s.type==='start'?'#4CAF50':s.type==='end'?'#C17F3A':'#8AAF8A';
+      const size=s.type!=='stop'?14:9;
+      const el=document.createElement('div');
+      el.style.cssText=`width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;`;
+      new mapboxgl.Marker(el).setLngLat(s.coords).setPopup(new mapboxgl.Popup({offset:12,closeButton:false}).setHTML(`<div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;color:#2C4A2E;padding:2px 4px;">${s.name}</div>`)).addTo(map);
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  const slides=document.querySelectorAll('.slide');
+  const dotsEl=document.getElementById('slider-dots');
+  let current=0;
+  slides.forEach((_,i)=>{
+    const d=document.createElement('button');
+    d.className='slide-dot'+(i===0?' active':'');
+    d.addEventListener('click',()=>goTo(i));
+    dotsEl.appendChild(d);
+  });
+  function goTo(n){slides[current].classList.remove('active');dotsEl.children[current].classList.remove('active');current=n;slides[current].classList.add('active');dotsEl.children[current].classList.add('active');}
+  setInterval(()=>goTo((current+1)%slides.length),5000);
+})();
+</script>
+<script>
+const ugcScroll=document.getElementById('ugcScroll');
+if(ugcScroll){let isDown=false,startX,scrollLeft;ugcScroll.addEventListener('mousedown',e=>{isDown=true;startX=e.pageX-ugcScroll.offsetLeft;scrollLeft=ugcScroll.scrollLeft;});ugcScroll.addEventListener('mouseleave',()=>{isDown=false;});ugcScroll.addEventListener('mouseup',()=>{isDown=false;});ugcScroll.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();ugcScroll.scrollLeft=scrollLeft-(e.pageX-ugcScroll.offsetLeft-startX)*1.5;});}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>(function(){function distMiles(a,b){var R=3958.8,dLat=(b[1]-a[1])*Math.PI/180,dLon=(b[0]-a[0])*Math.PI/180;var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a[1]*Math.PI/180)*Math.cos(b[1]*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}function toFt(m){return Math.round(m*3.28084);}fetch('/routes/natchez-lower.geojson').then(function(r){return r.json();}).then(function(data){var coords=data.features[0].geometry.coordinates;var step=Math.max(1,Math.floor(coords.length/500));var pts=coords.filter(function(_,i){return i%step===0;});var dist=0,gain=0,loss=0,labels=[],elevs=[];pts.forEach(function(pt,i){if(i>0){dist+=distMiles(pts[i-1],pt);var d=(pt[2]||0)-(pts[i-1][2]||0);if(d>0)gain+=d;else loss+=Math.abs(d);}labels.push(dist.toFixed(1));elevs.push(pt[2]?toFt(pt[2]):null);});var valid=elevs.filter(function(e){return e!==null;});if(!valid.length){var s=document.querySelector('.elev-section');if(s)s.style.display='none';return;}var maxE=Math.max.apply(null,valid),minE=Math.min.apply(null,valid);document.getElementById('elev-gain').textContent=toFt(gain).toLocaleString()+' ft';document.getElementById('elev-loss').textContent=toFt(loss).toLocaleString()+' ft';document.getElementById('elev-max').textContent=maxE.toLocaleString()+' ft';document.getElementById('elev-min').textContent=minE.toLocaleString()+' ft';window._elevChart=new Chart(document.getElementById('elev-chart').getContext('2d'),{type:'line',data:{labels:labels,datasets:[{data:elevs,fill:true,borderColor:'#C17F3A',borderWidth:1.5,backgroundColor:'rgba(193,127,58,0.25)',pointRadius:0,tension:0.3,spanGaps:true}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{right:40}},interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2a1f',borderColor:'rgba(193,127,58,0.4)',borderWidth:1,titleColor:'#8AAF8A',bodyColor:'#F4EFE4',callbacks:{title:function(i){return 'Mile '+i[0].label;},label:function(i){return i.raw?i.raw.toLocaleString()+' ft':'-';}}}},scales:{x:{ticks:{color:'rgba(138,175,138,0.6)',font:{size:9},maxTicksLimit:12},grid:{color:'rgba(138,175,138,0.08)'},title:{display:true,text:'distance in miles',color:'rgba(138,175,138,0.5)',font:{size:9}}},y:{ticks:{color:'rgba(138,175,138,0.6)',font:{size:9},maxTicksLimit:5,callback:function(v){return v.toLocaleString()+' ft';}},grid:{color:'rgba(138,175,138,0.08)'},min:Math.max(0,minE-200)}}}});}).catch(function(){var s=document.querySelector('.elev-section');if(s)s.style.display='none';});setTimeout(function(){if(window._elevChart)window._elevChart.resize();},300);})();</script>
+</body>
+</html>
