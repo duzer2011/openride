@@ -608,8 +608,11 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 
 <!-- ROUTE DETAILS STRIP -->
 <div class="route-strip">
-  <div class="route-strip-item"><span class="route-strip-lbl">Start</span><span class="route-strip-val">Jackson, MS</span></div>
-  <div class="route-strip-item"><span class="route-strip-lbl">End</span><span class="route-strip-val">Natchez, MS</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Start</span><span class="route-strip-val" id="strip-start">Jackson, MS</span></div>
+  <div class="route-strip-item" style="flex:0 0 auto;padding:1rem;">
+    <button id="dir-toggle" onclick="toggleDirection()" style="background:var(--forest);color:var(--parch);border:1px solid rgba(138,175,138,0.3);font-family:'Bebas Neue',sans-serif;font-size:0.85rem;letter-spacing:0.1em;padding:0.5rem 1rem;border-radius:2px;cursor:pointer;white-space:nowrap;transition:background 0.15s;">↕ Reverse Route</button>
+  </div>
+  <div class="route-strip-item"><span class="route-strip-lbl">End</span><span class="route-strip-val" id="strip-end">Natchez, MS</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Best Seasons</span><span class="route-strip-val">Spring &amp; Fall</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Fly-In Airport</span><span class="route-strip-val">Jackson, MS (JAN)</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Shuttle Needed</span><span class="route-strip-val">Point-to-Point</span></div>
@@ -874,6 +877,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 <section class="faq-section">
   <div class="faq-inner">
     <h2>Frequently Asked Questions</h2>
+    <div class="faq-item"><div class="faq-question">Can I ride it Natchez to Jackson instead of Jackson to Natchez?</div><div class="faq-answer">Yes — the guide covers both directions. We recommend Jackson to Natchez because you're riding slightly downhill the whole way and you finish in one of the most beautiful towns in the South. Natchez to Jackson works fine if your logistics require it — same road, same stops, just ridden in reverse. Use the ↕ Reverse Route button above the map to see the northbound itinerary. The GPX file works in either direction on Garmin, Wahoo, and Komoot.</div></div>
     <div class="faq-item"><div class="faq-question">Is the Natchez Trace suitable for beginners?</div><div class="faq-answer">Yes — the lower Natchez Trace is one of the best beginner cycling routes in the US. The parkway is closed to commercial traffic, the road surface is smooth NPS pavement, and the terrain is rolling rather than mountainous. The 82-mile lower section averages about 25 miles per day over 3-4 days, which is manageable for most riders with basic fitness. The biggest challenge isn't the hills — it's saddle conditioning. Start training your sit bones at least 4 weeks before your tour.</div></div>
     <div class="faq-item"><div class="faq-question">What is the best time of year to cycle the Natchez Trace?</div><div class="faq-answer">Spring (March–May) and fall (October–November) are ideal. Spring brings dogwood blooms and mild temperatures in the 60s–70s°F. Fall delivers spectacular foliage and crisp riding weather. Summer is rideable but hot and humid — start riding by 7am and be done by noon. Winter is quiet and cool but some services close. Most experienced riders choose mid-October for the fall colors and perfect temperatures.</div></div>
     <div class="faq-item"><div class="faq-question">Do I need a road bike or can I ride a hybrid or touring bike?</div><div class="faq-answer">Any bike works. The entire Natchez Trace Parkway is paved NPS road with no gravel or dirt sections. Road bikes are fastest but loaded touring bikes and hybrids are common and perfectly comfortable. What matters more than bike type is bike fit — a poorly fitted bike becomes unbearable by Day 2. Get a proper fit before your tour, not after.</div></div>
@@ -907,6 +911,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
     zoom: 6,
     attributionControl: false
   });
+  window._map = map;
 
   map.addControl(new mapboxgl.NavigationControl(), 'top-right');
   map.scrollZoom.disable();
@@ -956,11 +961,13 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       const size = s.type !== 'stop' ? 14 : 9;
       const el = document.createElement('div');
       el.style.cssText = `width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;`;
-      new mapboxgl.Marker(el)
+      var marker = new mapboxgl.Marker(el)
         .setLngLat(s.coords)
         .setPopup(new mapboxgl.Popup({ offset: 12, closeButton: false })
           .setHTML(`<div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;color:#2C4A2E;padding:2px 4px;">${s.name}</div>`))
         .addTo(map);
+      if (!window._routeMarkers) window._routeMarkers = [];
+      window._routeMarkers.push(marker);
     });
   });
 })();
@@ -1119,5 +1126,71 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 }
 </script>
 
+<script>
+var directionNtoS = true; // true = Jackson→Natchez (default)
+
+var directions = {
+  northToSouth: {
+    start: 'Jackson, MS',
+    end: 'Natchez, MS',
+    stops: [
+      { name: 'Jackson, MS · Start', coords: [-90.1323, 32.4238], type: 'start' },
+      { name: 'Rocky Springs · MP 54.8', coords: [-90.897, 32.093], type: 'stop' },
+      { name: 'Port Gibson · MP 39.2', coords: [-90.984, 31.958], type: 'stop' },
+      { name: 'Emerald Mound · MP 10.3', coords: [-91.175, 31.683], type: 'stop' },
+      { name: 'Natchez, MS · Finish', coords: [-91.3998, 31.5499], type: 'end' },
+    ]
+  },
+  southToNorth: {
+    start: 'Natchez, MS',
+    end: 'Jackson, MS',
+    stops: [
+      { name: 'Natchez, MS · Start', coords: [-91.3998, 31.5499], type: 'start' },
+      { name: 'Emerald Mound · MP 10.3', coords: [-91.175, 31.683], type: 'stop' },
+      { name: 'Port Gibson · MP 39.2', coords: [-90.984, 31.958], type: 'stop' },
+      { name: 'Rocky Springs · MP 54.8', coords: [-90.897, 32.093], type: 'stop' },
+      { name: 'Jackson, MS · Finish', coords: [-90.1323, 32.4238], type: 'end' },
+    ]
+  }
+};
+
+function toggleDirection() {
+  directionNtoS = !directionNtoS;
+  var d = directionNtoS ? directions.northToSouth : directions.southToNorth;
+
+  // Update strip labels
+  document.getElementById('strip-start').textContent = d.start;
+  document.getElementById('strip-end').textContent = d.end;
+
+  // Update elevation endpoints
+  var eps = document.querySelectorAll('.elev-endpoints span');
+  if (eps.length === 2) {
+    eps[0].textContent = d.start;
+    eps[1].textContent = d.end;
+  }
+
+  // Update toggle button label
+  document.getElementById('dir-toggle').textContent =
+    directionNtoS ? '↕ Reverse Route' : '↕ Reverse Route';
+
+  // Rebuild map markers
+  var existingMarkers = window._routeMarkers || [];
+  existingMarkers.forEach(function(m) { m.remove(); });
+  window._routeMarkers = [];
+
+  d.stops.forEach(function(s) {
+    var color = s.type === 'start' ? '#4CAF50' : s.type === 'end' ? '#C17F3A' : '#8AAF8A';
+    var size = s.type !== 'stop' ? 14 : 9;
+    var el = document.createElement('div');
+    el.style.cssText = 'width:'+size+'px;height:'+size+'px;border-radius:50%;background:'+color+';border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;';
+    var marker = new mapboxgl.Marker(el)
+      .setLngLat(s.coords)
+      .setPopup(new mapboxgl.Popup({ offset: 12, closeButton: false })
+        .setHTML('<div style="font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:600;color:#2C4A2E;padding:2px 4px;">'+s.name+'</div>'))
+      .addTo(window._map);
+    window._routeMarkers.push(marker);
+  });
+}
+</script>
 </body>
 </html>
