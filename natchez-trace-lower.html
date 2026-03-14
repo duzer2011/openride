@@ -257,26 +257,38 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   transition: color 0.15s;
 }
 .modal-close:hover { color: var(--parch); }
-.modal-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-.modal-body iframe {
-  width: 100%; height: 40%; min-height: 200px; border: none; display: block; flex-shrink: 0;
+.modal-body { flex: 1; overflow: hidden; position: relative; }
+.modal-pdf-scroll {
+  width: 100%; height: 100%; overflow-y: auto; background: #e8e0d0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px 0;
+}
+.modal-pdf-scroll canvas {
+  display: block; max-width: 100%; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
 }
 .modal-blur-overlay {
-  flex: 1;
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 70%;
+  z-index: 10;
   background: linear-gradient(
     to bottom,
-    rgba(244,239,228,0.3) 0%,
-    rgba(244,239,228,0.85) 25%,
-    rgba(244,239,228,0.98) 50%,
+    rgba(244,239,228,0) 0%,
+    rgba(244,239,228,0.5) 20%,
+    rgba(244,239,228,0.88) 40%,
+    rgba(244,239,228,0.98) 60%,
     var(--parch) 100%
   );
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 2rem;
+  justify-content: flex-end;
+  padding-bottom: 2rem;
+  pointer-events: none;
 }
 .modal-blur-cta {
+  pointer-events: all;
   text-align: center;
 }
 .modal-blur-cta p {
@@ -1015,7 +1027,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       <button class="modal-close" onclick="closeModal('modal-guide')">✕</button>
     </div>
     <div class="modal-body">
-      <iframe src="/PDFs/natchez-moderate-bnb-spring.pdf" title="Sample Route Guide"></iframe>
+      <div class="modal-pdf-scroll" id="pdf-guide-pages"></div>
       <div class="modal-blur-overlay">
         <div class="modal-blur-cta">
           <p>Get the complete guide. Day-by-day routes, lodging, resupply &amp; GPX file.</p>
@@ -1035,7 +1047,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       <button class="modal-close" onclick="closeModal('modal-cues')">✕</button>
     </div>
     <div class="modal-body">
-      <iframe src="/PDFs/natchez-trace-cue-sheet.pdf" title="Sample Cue Sheet"></iframe>
+      <div class="modal-pdf-scroll" id="pdf-cues-pages"></div>
       <div class="modal-blur-overlay">
         <div class="modal-blur-cta">
           <p>Full cue sheet included with every guide. Turn by turn, every segment.</p>
@@ -1088,6 +1100,54 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       });
     }
   });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function() {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  var pdfModals = [
+    { id: 'modal-guide', container: 'pdf-guide-pages', src: '/PDFs/natchez-moderate-bnb-spring.pdf', loaded: false },
+    { id: 'modal-cues',  container: 'pdf-cues-pages',  src: '/PDFs/natchez-trace-cue-sheet.pdf',    loaded: false }
+  ];
+
+  // Render all pages of a PDF into canvas elements
+  function renderPdf(cfg) {
+    if (cfg.loaded) return;
+    cfg.loaded = true;
+    var container = document.getElementById(cfg.container);
+    pdfjsLib.getDocument(cfg.src).promise.then(function(pdf) {
+      var maxPages = Math.min(pdf.numPages, 6);
+      for (var p = 1; p <= maxPages; p++) {
+        (function(pageNum) {
+          pdf.getPage(pageNum).then(function(page) {
+            var scale = (container.clientWidth - 16) / page.getViewport({ scale: 1 }).width;
+            var viewport = page.getViewport({ scale: Math.min(scale, 2) });
+            var canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
+            container.appendChild(canvas);
+            page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport });
+          });
+        })(p);
+      }
+    }).catch(function() {
+      container.innerHTML = '<p style="padding:2rem;color:#888;text-align:center;">Could not load preview.</p>';
+    });
+  }
+
+  // Load PDF pages when modal opens
+  var origOpen = window.openModal;
+  window.openModal = function(id) {
+    origOpen(id);
+    pdfModals.forEach(function(cfg) {
+      if (cfg.id === id) renderPdf(cfg);
+    });
+  };
+})();
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><script>(function(){function distMiles(a,b){var R=3958.8,dLat=(b[1]-a[1])*Math.PI/180,dLon=(b[0]-a[0])*Math.PI/180;var x=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a[1]*Math.PI/180)*Math.cos(b[1]*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}function toFt(m){return Math.round(m*3.28084);}fetch('/routes/natchez-lower.geojson').then(function(r){return r.json();}).then(function(data){var coords=data.features[0].geometry.coordinates;var step=Math.max(1,Math.floor(coords.length/500));var pts=coords.filter(function(_,i){return i%step===0;});var dist=0,gain=0,loss=0,labels=[],elevs=[];pts.forEach(function(pt,i){if(i>0){dist+=distMiles(pts[i-1],pt);var d=(pt[2]||0)-(pts[i-1][2]||0);if(d>0)gain+=d;else loss+=Math.abs(d);}labels.push(dist.toFixed(1));elevs.push(pt[2]?toFt(pt[2]):null);});var valid=elevs.filter(function(e){return e!==null;});if(!valid.length){var s=document.querySelector('.elev-section');if(s)s.style.display='none';return;}var maxE=Math.max.apply(null,valid),minE=Math.min.apply(null,valid);document.getElementById('elev-gain').textContent=toFt(gain).toLocaleString()+' ft';document.getElementById('elev-loss').textContent=toFt(loss).toLocaleString()+' ft';document.getElementById('elev-max').textContent=maxE.toLocaleString()+' ft';document.getElementById('elev-min').textContent=minE.toLocaleString()+' ft';window._elevChart=new Chart(document.getElementById('elev-chart').getContext('2d'),{type:'line',data:{labels:labels,datasets:[{data:elevs,fill:true,borderColor:'#C17F3A',borderWidth:1.5,backgroundColor:'rgba(193,127,58,0.25)',pointRadius:0,tension:0.3,spanGaps:true}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{right:40}},interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1e2a1f',borderColor:'rgba(193,127,58,0.4)',borderWidth:1,titleColor:'#8AAF8A',bodyColor:'#F4EFE4',callbacks:{title:function(i){return 'Mile '+i[0].label;},label:function(i){return i.raw?i.raw.toLocaleString()+' ft':'-';}}}},scales:{x:{ticks:{color:'rgba(138,175,138,0.6)',font:{size:9},maxTicksLimit:12},grid:{color:'rgba(138,175,138,0.08)'},title:{display:true,text:'distance in miles',color:'rgba(138,175,138,0.5)',font:{size:9}},padding:{right:20}},y:{ticks:{color:'rgba(138,175,138,0.6)',font:{size:9},maxTicksLimit:5,callback:function(v){return v.toLocaleString()+' ft';}},grid:{color:'rgba(138,175,138,0.08)'},min:Math.max(0,minE-200)}}}});}).catch(function(){var s=document.querySelector('.elev-section');if(s)s.style.display='none';});setTimeout(function(){if(window._elevChart)window._elevChart.resize();},300);})();</script>
