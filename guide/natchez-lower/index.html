@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natchez Trace Lower Guide - OpenRide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital@0;1&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script src="../../config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* ── TOKENS ── */
+        :root {
+            --forest: #2C4A2E;
+            --moss:   #4A7C59;
+            --sage:   #8AAF8A;
+            --parch:  #F4EFE4;
+            --parch2: #EDE8D8;
+            --accent: #C17F3A;
+            --ink:    #1e2a1f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #fdfbf7;
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: var(--parch);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(44, 74, 46, 0.1);
+            border-left-color: var(--forest);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
+            min-height: 100vh;
+        }
+
+        /* ── ADAPTED TEMPLATE STYLES (web units) ── */
+        .page {
+            padding: 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 2px dashed var(--parch2);
+            margin-bottom: 2rem;
+        }
+        .page:last-child { border-bottom: none; margin-bottom: 0; }
+
+        /* ── HEADER BAR ── */
+        .page-header {
+            background: var(--forest);
+            padding: 0.8rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .page-header-route { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.12em; color: var(--sage); }
+        .page-header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .page-header-label { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(138,175,138,0.5); }
+        .page-header-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.08em; color: var(--parch); }
+        .page-header-logo span { color: var(--accent); }
+
+        /* ── FOOTER ── */
+        .page-footer {
+            margin-top: auto;
+            background: var(--parch2);
+            border-top: 1px solid rgba(44,74,46,0.1);
+            padding: 0.6rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .page-footer-route { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #999; }
+        .page-footer-page { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--forest); letter-spacing: 0.05em; }
+
+        /* ── PAGE BODY ── */
+        .page-body { flex: 1; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; overflow: hidden; }
+
+        /* ── DAY HERO BAND ── */
+        .day-hero {
+            background: var(--forest);
+            background-size: cover;
+            background-position: center;
+            margin: -2rem -2rem 0;
+            padding: 2.5rem 2rem 2rem;
+            display: flex;
+            align-items: flex-end;
+            gap: 2rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+        }
+        .day-hero-img-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(28,42,31,0.92) 0%, rgba(28,42,31,0.75) 50%, rgba(28,42,31,0.45) 100%); z-index: 0; }
+        .day-hero > * { position: relative; z-index: 1; }
+        .day-num { font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: rgba(255,255,255,0.08); line-height: 0.85; letter-spacing: -0.02em; flex-shrink: 0; }
+        .day-hero-content { flex: 1; }
+        .day-eyebrow { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.5rem; }
+        .day-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--parch); letter-spacing: 0.02em; line-height: 0.95; margin-bottom: 0.8rem; }
+        .day-meta { display: flex; gap: 2rem; }
+        .day-meta-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--parch); display: block; line-height: 1; }
+        .day-meta-lbl { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage); display: block; }
+        .day-tip { background: rgba(193,127,58,0.12); border-left: 2px solid var(--accent); padding: 0.6rem 1rem; margin-top: 0.8rem; align-self: flex-end; max-width: 280px; }
+        .day-tip p { font-size: 0.8rem; color: rgba(244,239,228,0.7); line-height: 1.5; font-style: italic; }
+
+        /* ── SECTION HEADS ── */
+        .section-head { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem; }
+        .section-head-line { flex: 1; height: 1px; background: rgba(44,74,46,0.15); }
+        .section-label { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); flex-shrink: 0; }
+
+        /* ── DESCRIPTION ── */
+        .day-description { font-family: 'Lora', serif; font-size: 1.05rem; line-height: 1.75; color: #3a3a3a; }
+
+        /* ── CUE BLOCK (POI/Activity) ── */
+        .cue-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        .cue-item { display: grid; grid-template-columns: 70px 1fr; gap: 1rem; padding: 0.7rem 0; border-bottom: 1px solid rgba(44,74,46,0.07); align-items: start; }
+        .cue-item:last-child { border-bottom: none; }
+        .cue-mp { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--accent); letter-spacing: 0.04em; line-height: 1; }
+        .cue-mp-lbl { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: #bbb; display: block; }
+        .cue-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; color: var(--forest); letter-spacing: 0.04em; margin-bottom: 0.15rem; }
+        .cue-name.highlight::before { content: '\2605 '; color: var(--accent); font-size: 0.85rem; }
+        .cue-desc { font-size: 0.85rem; color: #555; line-height: 1.55; }
+        .cue-badge { display: inline-block; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; background: var(--forest); color: var(--sage); padding: 0.15rem 0.5rem; border-radius: 1px; margin-top: 0.2rem; margin-right: 0.3rem; }
+
+        /* ── CUE SHEET TABLE ── */
+        .cue-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .cue-table thead tr { background: var(--forest); }
+        .cue-table thead th { font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em; color: var(--sage); padding: 0.7rem 0.8rem; text-align: left; font-weight: normal; }
+        .cue-table tbody tr:nth-child(even) { background: var(--parch2); }
+        .cue-table tbody tr:nth-child(odd) { background: white; }
+        .cue-table tbody tr.cue-row-highlight { background: rgba(193,127,58,0.08); }
+        .cue-table tbody td { padding: 0.6rem 0.8rem; color: #333; line-height: 1.4; vertical-align: top; border-bottom: 1px solid rgba(44,74,46,0.06); }
+        .cue-table .col-mile { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--accent); white-space: nowrap; width: 50px; }
+        .cue-table .col-dir { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--forest); width: 55px; }
+        .cue-table .col-landmark { font-weight: 600; }
+        .cue-table .col-notes { color: #555; font-size: 0.8rem; }
+
+        /* ── LODGING CARDS ── */
+        .lodging-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+        .lodging-card { border: 1px solid rgba(44,74,46,0.12); border-left: 4px solid var(--sage); padding: 1rem 1.2rem; background: white; }
+        .lodging-card.highlight { border-left-color: var(--accent); background: rgba(244,239,228,0.4); }
+        .lodging-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; color: var(--forest); letter-spacing: 0.04em; margin-bottom: 0.2rem; }
+        .lodging-name .star { color: var(--accent); font-size: 0.85rem; }
+        .lodging-meta { font-size: 0.8rem; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 0.3rem; }
+        .lodging-notes { font-size: 0.85rem; color: #555; line-height: 1.5; margin-bottom: 0.3rem; font-style: italic; }
+        .lodging-booking { font-size: 0.75rem; color: var(--moss); letter-spacing: 0.05em; }
+
+        /* ── DINING ── */
+        .dining-list { display: flex; flex-direction: column; gap: 0.4rem; }
+        .dining-item { display: grid; grid-template-columns: 1.2fr 1fr auto; gap: 0.8rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(44,74,46,0.07); align-items: start; }
+        .dining-item:last-child { border-bottom: none; }
+        .dining-name { font-weight: 600; font-size: 0.95rem; color: var(--forest); }
+        .dining-type { font-size: 0.7rem; color: #999; letter-spacing: 0.05em; display: block; text-transform: uppercase; }
+        .dining-notes { font-size: 0.85rem; color: #555; line-height: 1.5; }
+        .dining-hours { font-size: 0.75rem; color: #999; line-height: 1.4; text-align: right; }
+        .dining-price { display: inline-block; font-size: 0.7rem; color: var(--moss); font-weight: 600; }
+
+        /* ── TWO COLUMN LAYOUT ── */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+        /* ── ESSENTIALS BOX ── */
+        .essentials-box { background: var(--forest); padding: 1.5rem 1.6rem; border-radius: 2px; }
+        .essentials-title { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--parch); letter-spacing: 0.1em; margin-bottom: 0.8rem; padding-bottom: 0.6rem; border-bottom: 1px solid rgba(138,175,138,0.2); }
+        .essentials-row { display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid rgba(138,175,138,0.08); }
+        .essentials-row:last-child { border-bottom: none; }
+        .essentials-lbl { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage); }
+        .essentials-val { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--parch); letter-spacing: 0.04em; }
+
+        /* ── GEAR PAGE ── */
+        .gear-section { margin-bottom: 1.5rem; }
+        .gear-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--forest); letter-spacing: 0.06em; margin-bottom: 0.6rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--accent); }
+        .gear-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem 1.5rem; }
+        .gear-list li { font-size: 0.9rem; color: #444; padding: 0.3rem 0 0.3rem 1.2rem; border-bottom: 1px solid rgba(44,74,46,0.06); position: relative; line-height: 1.4; }
+        .gear-list li::before { content: '\2014'; position: absolute; left: 0; color: var(--accent); }
+
+        /* ── NAV APPS ── */
+        .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+        .nav-card { border: 1px solid rgba(44,74,46,0.1); padding: 1rem; background: var(--parch2); }
+        .nav-app { font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; color: var(--forest); letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+        .nav-desc { font-size: 0.8rem; color: #555; line-height: 1.5; }
+
+        /* ── HISTORY BLOCK ── */
+        .history-block { border-left: 3px solid var(--forest); padding: 1rem 1.5rem; background: rgba(244,239,228,0.4); }
+        .history-block p { font-family: 'Lora', serif; font-style: italic; font-size: 0.95rem; line-height: 1.7; color: #3a3a3a; }
+
+        /* ── TERRAIN BLOCK ── */
+        .terrain-block { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1rem; padding: 0.7rem 0; }
+        .terrain-summary { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--forest); letter-spacing: 0.04em; }
+        .terrain-detail { font-size: 0.85rem; color: #555; line-height: 1.6; }
+
+        /* ── ENRICHMENT POI TABLE ── */
+        .poi-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .poi-table thead tr { background: var(--forest); }
+        .poi-table thead th { font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.1em; color: var(--sage); padding: 0.6rem 0.8rem; text-align: left; font-weight: normal; }
+        .poi-table tbody td { padding: 0.6rem 0.8rem; color: #333; line-height: 1.4; vertical-align: top; border-bottom: 1px solid rgba(44,74,46,0.06); }
+        .poi-table tbody tr:nth-child(even) { background: var(--parch2); }
+        .poi-mp { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--accent); white-space: nowrap; }
+        .poi-name { font-weight: 600; }
+        .poi-duration { display: inline-block; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; background: var(--forest); color: var(--sage); padding: 0.1rem 0.4rem; border-radius: 1px; }
+
+        /* ── LUNCH LIST ── */
+        .lunch-list { display: flex; flex-direction: column; gap: 0.4rem; }
+        .lunch-item { display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.8rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(44,74,46,0.07); }
+        .lunch-item:last-child { border-bottom: none; }
+        .lunch-name { font-weight: 600; font-size: 0.95rem; color: var(--forest); }
+        .lunch-notes { font-size: 0.85rem; color: #555; line-height: 1.5; }
+
+        /* ── WARNING BOX ── */
+        .warning-box { background: rgba(193,127,58,0.08); border: 1px solid rgba(193,127,58,0.3); border-left: 3px solid var(--accent); padding: 1rem 1.2rem; }
+        .warning-box p { font-size: 0.85rem; color: #555; line-height: 1.5; }
+        .warning-box strong { color: var(--accent); }
+
+        /* ── CLOSING PAGE ── */
+        .closing-page {
+            background: var(--forest);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            gap: 1.5rem;
+        }
+        .closing-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--parch); letter-spacing: 0.1em; }
+        .closing-logo span { color: var(--accent); }
+        .closing-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--parch); letter-spacing: 0.02em; line-height: 0.9; }
+        .closing-sub { font-family: 'Lora', serif; font-size: 1rem; color: rgba(244,239,228,0.6); line-height: 1.8; font-style: italic; max-width: 500px; }
+        .closing-divider { width: 60px; height: 2px; background: var(--accent); }
+        .closing-tagline { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--sage); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 700px) {
+            .lodging-grid { grid-template-columns: 1fr; }
+            .two-col { grid-template-columns: 1fr; }
+            .nav-grid { grid-template-columns: 1fr 1fr; }
+            .gear-list { grid-template-columns: 1fr; }
+            .day-hero { flex-direction: column; align-items: flex-start; gap: 1rem; min-height: 180px; }
+            .day-num { font-size: 4rem; }
+            .day-title { font-size: 2rem; }
+            .dining-item { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <div class="spinner"></div>
+        <p id="loading-text">Verifying Access...</p>
+    </div>
+
+    <div class="guide-container" id="guide-content" style="display:none;">
+        <!-- Populated by JS -->
+    </div>
+
+    <script>
+        const sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnon);
+
+        async function init() {
+            const loadingText = document.getElementById('loading-text');
+
+            try {
+                // 1. Check Auth
+                const { data: { session } } = await sb.auth.getSession();
+                if (!session) {
+                    window.location.href = '/?login=true&redirect=/guide/natchez-lower';
+                    return;
+                }
+
+                // 2. Check Purchase
+                loadingText.textContent = 'Verifying Purchase...';
+                const response = await fetch('/.netlify/functions/check-purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ route_slug: 'natchez-lower' })
+                });
+
+                const { purchased } = await response.json();
+                if (!purchased) {
+                    window.location.href = '/natchez-trace-lower.html';
+                    return;
+                }
+
+                // 3. Load Data & Render
+                loadingText.textContent = 'Loading Guide Content...';
+                const guideRes = await fetch('./guide-data.json');
+                const guide = await guideRes.json();
+
+                renderGuide(guide);
+
+                // 4. Show Content
+                document.getElementById('loading').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('guide-content').style.display = 'block';
+                }, 500);
+
+            } catch (err) {
+                console.error('Error:', err);
+                loadingText.innerHTML = '<span style="color:red">Error loading guide. Please try refreshing.</span>';
+            }
+        }
+
+        // ── HELPERS ──
+        function formatTownName(key) {
+            if (!key) return '\u2014';
+            return key.replace(/_/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        function el(tag, cls, html) {
+            const e = document.createElement(tag);
+            if (cls) e.className = cls;
+            if (html) e.innerHTML = html;
+            return e;
+        }
+
+        // Web-friendly hero images (served from /images/)
+        const DAY_IMAGES = {
+            'natchez':       '/images/natchez/natchez-trace-natchez-city-arrival.jpg',
+            'port_gibson':   '/images/natchez/natchez-trace-windsor-ruins-visit.jpg',
+            'rocky_springs': '/images/natchez/natchez-trace-rocky-springs-camping.jpg',
+            'default':       '/images/natchez/natchez-trace-parkway-couple-riding.jpg',
+        };
+
+        function getDayImage(overnightTown) {
+            const key = (overnightTown || '').toLowerCase();
+            return DAY_IMAGES[key] || DAY_IMAGES['default'];
+        }
+
+        function pageShell(routeLabel, pageNum, pageLabel) {
+            const page = el('div', 'page');
+            const hdr = el('div', 'page-header');
+            hdr.innerHTML = `
+                <span class="page-header-route">${routeLabel}</span>
+                <div class="page-header-right">
+                    <span class="page-header-label">${pageLabel || ''}</span>
+                    <span class="page-header-logo">Open<span>Ride</span>.bike</span>
+                </div>`;
+            page.appendChild(hdr);
+            const body = el('div', 'page-body');
+            page.appendChild(body);
+            const ftr = el('div', 'page-footer');
+            ftr.innerHTML = `
+                <span class="page-footer-route">${routeLabel}</span>
+                <span class="page-footer-page">${pageNum}</span>`;
+            page.appendChild(ftr);
+            return { page, body };
+        }
+
+        function sectionHead(label) {
+            return `<div class="section-head"><span class="section-label">${label}</span><div class="section-head-line"></div></div>`;
+        }
+
+        // ── PAGE BUILDERS ──
+
+        function buildEssentialsPage(guide, pageNum) {
+            const r = guide.route;
+            const { page, body } = pageShell(
+                `${r.name} \u00b7 ${r.origin} \u2192 ${r.destination}`,
+                `Page ${pageNum}`,
+                'Essential Information'
+            );
+
+            const title = el('div');
+            title.innerHTML = `
+                <span style="font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:0.6rem;">Before You Ride</span>
+                <h1 style="font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--forest);letter-spacing:0.02em;line-height:0.95;margin-bottom:0.5rem;">${r.name}</h1>
+                <p style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--sage);letter-spacing:0.06em;">${r.subtitle}</p>`;
+            body.appendChild(title);
+
+            // Stats band
+            const stats = r.stats;
+            const statsEl = el('div');
+            statsEl.style.cssText = 'display:flex;gap:0;background:var(--forest);margin:-0.5rem -2rem 0;padding:1rem 2rem;';
+            const statItems = [
+                [stats.distance || '~82 mi', 'Distance'],
+                [stats.difficulty || 'Beginner', 'Difficulty'],
+                [stats.bikes || 'Road/Hybrid', 'Bike Type'],
+                [stats.seasons || 'Spring/Fall', 'Best Seasons'],
+                [`${guide.config.pace.charAt(0).toUpperCase() + guide.config.pace.slice(1)}`, 'Pace'],
+                [`${guide.config.lodging.toUpperCase()}`, 'Lodging Style'],
+            ];
+            statItems.forEach(([val, lbl]) => {
+                statsEl.innerHTML += `<div style="flex:1;border-right:1px solid rgba(138,175,138,0.12);padding:0 1rem;text-align:center;">
+                    <span style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--parch);display:block;line-height:1;">${val}</span>
+                    <span style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--sage);">${lbl}</span>
+                </div>`;
+            });
+            body.appendChild(statsEl);
+
+            // Two column
+            const cols = el('div', 'two-col');
+
+            // Essentials
+            const ess = r.essentials || {};
+            const essBox = el('div', 'essentials-box');
+            essBox.innerHTML = `<div class="essentials-title">Essential Information</div>`;
+            if (Array.isArray(ess)) {
+                ess.forEach(([k, v]) => {
+                    essBox.innerHTML += `<div class="essentials-row"><span class="essentials-lbl">${k}</span><span class="essentials-val">${v}</span></div>`;
+                });
+            } else {
+                Object.entries(ess).forEach(([k, v]) => {
+                    essBox.innerHTML += `<div class="essentials-row"><span class="essentials-lbl">${k.replace(/_/g,' ')}</span><span class="essentials-val">${v}</span></div>`;
+                });
+            }
+            cols.appendChild(essBox);
+
+            // Logistics
+            const log = r.logistics || {};
+            const logBox = el('div');
+            logBox.innerHTML = `${sectionHead('Getting There & Back')}`;
+            Object.entries(log).forEach(([k, v]) => {
+                if (typeof v === 'string') {
+                    logBox.innerHTML += `<div style="padding:0.5rem 0;border-bottom:1px solid rgba(44,74,46,0.08);">
+                        <span style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:0.15rem;">${k.replace(/_/g,' ')}</span>
+                        <span style="font-size:0.9rem;color:#444;line-height:1.5;">${v}</span>
+                    </div>`;
+                }
+            });
+            cols.appendChild(logBox);
+            body.appendChild(cols);
+
+            // Seasonal conditions
+            const seasons = r.seasons || {};
+            if (Object.keys(seasons).length) {
+                const seasonsEl = el('div');
+                seasonsEl.innerHTML = sectionHead('Seasonal Riding Conditions');
+                const grid = el('div');
+                grid.style.cssText = 'display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;';
+                Object.entries(seasons).forEach(([season, notes]) => {
+                    grid.innerHTML += `<div style="border:1px solid rgba(44,74,46,0.1);border-left:3px solid var(--accent);padding:1rem 1.2rem;">
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--forest);letter-spacing:0.06em;margin-bottom:0.3rem;">${season}</div>
+                        <div style="font-size:0.85rem;color:#555;line-height:1.55;">${notes}</div>
+                    </div>`;
+                });
+                seasonsEl.appendChild(grid);
+                body.appendChild(seasonsEl);
+            }
+
+            // How to use this guide box
+            const howTo = el('div');
+            howTo.style.cssText = 'background:var(--parch2);border:1px solid rgba(44,74,46,0.1);padding:1.5rem 1.6rem;margin-top:0.8rem;';
+            howTo.innerHTML = `
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--forest);letter-spacing:0.08em;margin-bottom:0.8rem;">How to Use This Guide</div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+                    <div>
+                        <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.3rem;">PDF Guide</div>
+                        <div style="font-size:0.85rem;color:#555;line-height:1.5;">Read each day page the night before. Review lodging and dining while you have WiFi.</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.3rem;">GPX File</div>
+                        <div style="font-size:0.85rem;color:#555;line-height:1.5;">Load into Garmin, Wahoo, Komoot, or RideWithGPS before you leave home. Download offline maps.</div>
+                    </div>
+                    <div>
+                        <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.3rem;">Cue Sheet</div>
+                        <div style="font-size:0.85rem;color:#555;line-height:1.5;">Print and laminate for your map case or jersey pocket. Essential when cell service drops.</div>
+                    </div>
+                </div>`;
+            body.appendChild(howTo);
+
+            return page;
+        }
+
+        function buildRidingPage(guide, day, pageNum) {
+            const r = guide.route;
+            const isArrival = day.miles === '0 miles riding' || day.miles === 0;
+            const { page, body } = pageShell(
+                `${r.name} \u00b7 ${r.header_label}`,
+                `Page ${pageNum}`,
+                `Day ${day.number}`
+            );
+
+            // Day hero band
+            const hero = el('div', 'day-hero');
+            const imgPath = getDayImage(day.overnight_town);
+            hero.style.backgroundImage = `url('${imgPath}')`;
+            hero.innerHTML = `
+                <div class="day-hero-img-overlay"></div>
+                <div class="day-num">0${day.number}</div>
+                <div class="day-hero-content">
+                    <span class="day-eyebrow">Day ${day.number} of ${guide.days.length}</span>
+                    <div class="day-title">${day.title}</div>
+                    <div class="day-meta">
+                        <div class="day-meta-item">
+                            <span class="day-meta-val">${isArrival ? 'Arrival' : day.miles}</span>
+                            <span class="day-meta-lbl">Distance</span>
+                        </div>
+                        ${day.elevation ? `<div class="day-meta-item">
+                            <span class="day-meta-val">${day.elevation}</span>
+                            <span class="day-meta-lbl">Elevation</span>
+                        </div>` : ''}
+                        <div class="day-meta-item">
+                            <span class="day-meta-val">${formatTownName(day.overnight_town)}</span>
+                            <span class="day-meta-lbl">Overnight</span>
+                        </div>
+                    </div>
+                </div>
+                ${day.tip ? `<div class="day-tip"><p>${day.tip}</p></div>` : ''}`;
+            body.insertBefore(hero, body.firstChild);
+
+            if (day.description) {
+                body.appendChild(el('p', 'day-description', day.description));
+            }
+
+            // History block
+            if (day.history) {
+                const histSection = el('div');
+                histSection.innerHTML = sectionHead('History & Context');
+                const histBlock = el('div', 'history-block');
+                histBlock.innerHTML = `<p>${day.history}</p>`;
+                histSection.appendChild(histBlock);
+                body.appendChild(histSection);
+            }
+
+            // Terrain block (skip on arrival days)
+            if (!isArrival && (day.terrain_summary || day.terrain_detail)) {
+                const terrSection = el('div');
+                terrSection.innerHTML = sectionHead('Terrain');
+                const terrBlock = el('div', 'terrain-block');
+                terrBlock.innerHTML = `
+                    ${day.terrain_summary ? `<div class="terrain-summary" style="grid-column:1/-1;">${day.terrain_summary}</div>` : ''}
+                    ${day.terrain_detail ? `<div class="terrain-detail" style="grid-column:1/-1;">${day.terrain_detail}</div>` : ''}`;
+                terrSection.appendChild(terrBlock);
+                body.appendChild(terrSection);
+            }
+
+            // Enrichment POIs (riding days)
+            if (!isArrival && day.poi && day.poi.length) {
+                const poiSection = el('div');
+                poiSection.innerHTML = sectionHead('Points of Interest');
+                const table = document.createElement('table');
+                table.className = 'poi-table';
+                let thead = '<thead><tr><th>MP</th><th>Stop</th><th>Details</th><th></th></tr></thead>';
+                let tbody = '<tbody>';
+                day.poi.forEach(p => {
+                    tbody += `<tr>
+                        <td class="poi-mp">${p.milepost != null ? 'MP ' + p.milepost : ''}</td>
+                        <td class="poi-name">${p.name || ''}</td>
+                        <td>${p.description || ''}</td>
+                        <td>${p.duration ? `<span class="poi-duration">${p.duration}</span>` : ''}</td>
+                    </tr>`;
+                });
+                tbody += '</tbody>';
+                table.innerHTML = thead + tbody;
+                poiSection.appendChild(table);
+                body.appendChild(poiSection);
+            }
+
+            // Lunch options (skip on arrival days)
+            if (!isArrival && day.lunch && day.lunch.length) {
+                const lunchSection = el('div');
+                lunchSection.innerHTML = sectionHead('Lunch Options');
+                const list = el('div', 'lunch-list');
+                day.lunch.forEach(l => {
+                    const item = el('div', 'lunch-item');
+                    item.innerHTML = `
+                        <div class="lunch-name">${l.name || ''}</div>
+                        <div class="lunch-notes">${l.notes || l.description || ''}</div>`;
+                    list.appendChild(item);
+                });
+                lunchSection.appendChild(list);
+                body.appendChild(lunchSection);
+            }
+
+            // Cue items (arrival days only)
+            if (isArrival && day.cues && day.cues.length) {
+                const cueSection = el('div');
+                cueSection.innerHTML = sectionHead('Points of Interest');
+                const cueList = el('div', 'cue-list');
+                day.cues.forEach(cue => {
+                    const item = el('div', 'cue-item');
+                    let mpVal, name, notes, highlight, direction;
+                    if (Array.isArray(cue)) {
+                        mpVal = cue[0]; name = cue[1]; direction = cue[2]; notes = cue[3]; highlight = cue[4];
+                    } else {
+                        mpVal = cue.milepost || cue.mile || '';
+                        name = cue.name || cue.landmark || '';
+                        notes = cue.notes || cue.description || '';
+                        highlight = cue.highlight;
+                        direction = cue.direction || cue.type || '';
+                    }
+                    const mpLabel = isArrival ? '' : 'Milepost';
+                    item.innerHTML = `
+                        <div>
+                            <span class="cue-mp">${mpVal !== '\u2014' && mpVal !== '' ? 'MP ' + mpVal : '\u2605'}</span>
+                            <span class="cue-mp-lbl">${mpLabel}</span>
+                        </div>
+                        <div class="cue-body">
+                            <div class="cue-name ${highlight ? 'highlight' : ''}">${name}</div>
+                            <div class="cue-desc">${notes}</div>
+                            ${direction && direction !== '\u2014' ? `<span class="cue-badge">${direction}</span>` : ''}
+                        </div>`;
+                    cueList.appendChild(item);
+                });
+                cueSection.appendChild(cueList);
+                body.appendChild(cueSection);
+            }
+
+            return page;
+        }
+
+        function buildOvernightPage(guide, day, pageNum) {
+            const r = guide.route;
+            const { page, body } = pageShell(
+                `${r.name} \u00b7 ${r.header_label}`,
+                `Page ${pageNum}`,
+                `Overnight \u2014 ${formatTownName(day.overnight_town)}`
+            );
+
+            const hero = el('div', 'day-hero');
+            hero.style.padding = '1.5rem 2rem 1.2rem';
+            hero.innerHTML = `
+                <div class="day-hero-content">
+                    <span class="day-eyebrow">Day ${day.number} \u2014 Overnight</span>
+                    <div class="day-title">${formatTownName(day.overnight_town)}</div>
+                </div>`;
+            body.insertBefore(hero, body.firstChild);
+
+            // Dinner note
+            if (day.dinner_note) {
+                const noteBox = el('div', 'warning-box');
+                noteBox.innerHTML = `<p><strong>Dinner Note:</strong> ${day.dinner_note}</p>`;
+                body.appendChild(noteBox);
+            }
+
+            // Lodging
+            if (day.lodging && day.lodging.length) {
+                const lodgSection = el('div');
+                lodgSection.innerHTML = sectionHead(`Lodging: ${formatTownName(day.overnight_town)}`);
+                const grid = el('div', 'lodging-grid');
+                day.lodging.forEach(l => {
+                    const card = el('div', `lodging-card ${l.highlight ? 'highlight' : ''}`);
+                    card.innerHTML = `
+                        <div class="lodging-name">${l.highlight ? '<span class="star">\u2605 </span>' : ''}${l.name}</div>
+                        <div class="lodging-meta">${l.price || ''}</div>
+                        <div class="lodging-notes">${l.notes || ''}</div>
+                        <div class="lodging-booking">${l.booking || l.phone || ''}</div>`;
+                    grid.appendChild(card);
+                });
+                lodgSection.appendChild(grid);
+                body.appendChild(lodgSection);
+            }
+
+            // Dining
+            if (day.dinner && day.dinner.length) {
+                const dinSection = el('div');
+                dinSection.innerHTML = sectionHead('Dining Tonight');
+                const list = el('div', 'dining-list');
+                day.dinner.forEach(d => {
+                    const item = el('div', 'dining-item');
+                    item.innerHTML = `
+                        <div>
+                            <span class="dining-name">${d.name}</span>
+                            <span class="dining-type">${d.type || ''} <span class="dining-price">${d.price || ''}</span></span>
+                        </div>
+                        <div class="dining-notes">${d.notes || ''}</div>
+                        <div class="dining-hours">${d.hours || ''}</div>`;
+                    list.appendChild(item);
+                });
+                dinSection.appendChild(list);
+                body.appendChild(dinSection);
+            }
+
+            // Breakfast
+            if (day.breakfast && day.breakfast.length) {
+                const brkSection = el('div');
+                brkSection.innerHTML = sectionHead('Breakfast Tomorrow');
+                const list = el('div', 'dining-list');
+                day.breakfast.forEach(d => {
+                    const item = el('div', 'dining-item');
+                    item.innerHTML = `
+                        <div>
+                            <span class="dining-name">${d.name}</span>
+                            <span class="dining-type">${d.type || ''} <span class="dining-price">${d.price || ''}</span></span>
+                        </div>
+                        <div class="dining-notes">${d.notes || ''}</div>
+                        <div class="dining-hours">${d.hours || ''}</div>`;
+                    list.appendChild(item);
+                });
+                brkSection.appendChild(list);
+                body.appendChild(brkSection);
+            }
+
+            return page;
+        }
+
+        function buildGearPage(guide, pageNum) {
+            const r = guide.route;
+            const { page, body } = pageShell(
+                `${r.name} \u00b7 ${r.header_label}`,
+                `Page ${pageNum}`,
+                'Gear & Navigation'
+            );
+
+            body.innerHTML += `${sectionHead('What to Pack')}`;
+            const cols = el('div', 'two-col');
+
+            // All riders gear
+            const allGear = el('div', 'gear-section');
+            allGear.innerHTML = `<div class="gear-title">All Riders</div>`;
+            const allList = el('ul', 'gear-list');
+            (guide.gear.all || []).forEach(item => {
+                if (Array.isArray(item)) {
+                    allList.innerHTML += `<li>${item[0]}: ${item[1]}${item[2] ? ' (' + item[2] + ')' : ''}</li>`;
+                } else {
+                    allList.innerHTML += `<li>${typeof item === 'string' ? item : item.item || JSON.stringify(item)}</li>`;
+                }
+            });
+            allGear.appendChild(allList);
+            cols.appendChild(allGear);
+
+            // Style-specific gear
+            const styleGear = el('div', 'gear-section');
+            const styleLabel = guide.config.lodging === 'camping' ? 'Camping' :
+                               guide.config.lodging === 'bnb' ? 'Inn to Inn' : 'Mixed';
+            styleGear.innerHTML = `<div class="gear-title">${styleLabel} Riders</div>`;
+            const styleList = el('ul', 'gear-list');
+            (guide.gear.style || []).forEach(item => {
+                if (Array.isArray(item)) {
+                    styleList.innerHTML += `<li>${item[0]}: ${item[1]}${item[2] ? ' (' + item[2] + ')' : ''}</li>`;
+                } else {
+                    styleList.innerHTML += `<li>${typeof item === 'string' ? item : item.item || JSON.stringify(item)}</li>`;
+                }
+            });
+            styleGear.appendChild(styleList);
+            cols.appendChild(styleGear);
+            body.appendChild(cols);
+
+            // Navigation
+            body.innerHTML += sectionHead('Navigation Options');
+            const navGrid = el('div', 'nav-grid');
+            const navItems = guide.navigation;
+            if (Array.isArray(navItems)) {
+                navItems.forEach(item => {
+                    const [app, desc, tip] = Array.isArray(item) ? item : [item.name || '', item.desc || '', item.tip || ''];
+                    navGrid.innerHTML += `<div class="nav-card">
+                        <div class="nav-app">${app}</div>
+                        <div class="nav-desc">${desc}${tip ? '<br><em style="color:var(--accent);font-size:0.7rem;">' + tip + '</em>' : ''}</div>
+                    </div>`;
+                });
+            } else {
+                const defaultApps = [
+                    { name: 'GPX File', desc: 'Works with Garmin, Wahoo, Komoot, RideWithGPS. Included in your download.' },
+                    { name: 'Komoot', desc: 'Best cycling app for turn-by-turn. Import GPX or search OpenRide Natchez Trace.' },
+                    { name: 'RideWithGPS', desc: 'Full route map with cues on your phone. ridewithgps.com' },
+                    { name: 'Google Maps', desc: 'Download offline before your trip. Works without cell service.' },
+                    { name: 'Garmin / Wahoo', desc: 'Load GPX file before departure. Most reliable in areas with no cell service.' },
+                    { name: 'This Cue Sheet', desc: 'Analog backup. Print and laminate. Essential for Rocky Springs section.' },
+                ];
+                defaultApps.forEach(app => {
+                    navGrid.innerHTML += `<div class="nav-card">
+                        <div class="nav-app">${app.name}</div>
+                        <div class="nav-desc">${app.desc}</div>
+                    </div>`;
+                });
+            }
+            body.appendChild(navGrid);
+
+            return page;
+        }
+
+        function buildClosingPage(guide) {
+            const r = guide.route;
+            const page = el('div', 'page closing-page');
+            page.innerHTML = `
+                <div class="closing-logo">Open<span>Ride</span>.bike</div>
+                <div class="closing-divider"></div>
+                <div class="closing-title">${r.name}</div>
+                <div class="closing-sub">${r.closing || 'This route guide was curated by a professional bicycle tour guide with over 10 years of experience. Every stop, every recommendation, every note comes from real miles ridden on this road.'}</div>
+                <div class="closing-divider"></div>
+                <div class="closing-tagline">Your Route \u00b7 Your Pace \u00b7 Your Adventure</div>
+                <div style="font-size:0.75rem;color:rgba(138,175,138,0.5);letter-spacing:0.1em;margin-top:0.5rem;">openride.bike \u00b7 hello@openride.bike</div>`;
+            return page;
+        }
+
+        // ── MAIN RENDER ──
+        function renderGuide(guide) {
+            const container = document.getElementById('guide-content');
+            let pageNum = 1;
+
+            // Page 1: Essentials
+            container.appendChild(buildEssentialsPage(guide, pageNum++));
+
+            // Two pages per day: riding + overnight
+            guide.days.forEach(day => {
+                container.appendChild(buildRidingPage(guide, day, pageNum++));
+                container.appendChild(buildOvernightPage(guide, day, pageNum++));
+            });
+
+            // Gear page
+            container.appendChild(buildGearPage(guide, pageNum++));
+
+            // Closing
+            container.appendChild(buildClosingPage(guide));
+        }
+
+        init();
+    </script>
+</body>
+</html>

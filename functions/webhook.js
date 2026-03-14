@@ -3,6 +3,8 @@ const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY.trim());
 const fs = require('fs');
 const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
+const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 async function sendPDF(customerEmail, pdfFile, metadata) {
     const pdfPath = path.join(__dirname, '../guides/', pdfFile);
@@ -86,6 +88,21 @@ exports.handler = async (event) => {
 
         // Send email with PDF
         await sendPDF(customerEmail, pdfFile, metadata);
+
+        // Record purchase in Supabase
+        await supabaseAdmin.from('purchases').insert({
+            email: customerEmail,
+            user_id: metadata.supabase_user_id || null,
+            stripe_session_id: session.id,
+            route_slug: 'natchez-lower',
+            pdf_variant: pdfFile,
+            amount_cents: session.amount_total,
+            metadata: { 
+                pace: metadata.pace, 
+                accommodation: metadata.accommodation, 
+                season: metadata.season 
+            }
+        });
 
         // If partner emails exist, send prep email to each
         if (metadata.partner_emails) {
