@@ -699,3 +699,17 @@ These should happen before the next build session begins.
 |                                                                       |
 | 5. Post Facebook route poll to 80k group                              |
 +-----------------------------------------------------------------------+
+
+## PDF Preview Standard
+
+All route guide pages that show PDF previews (sample guide, cue sheet)
+MUST use the modal-blur-overlay pattern. Never show the full PDF.
+Rules:
+- iframe shows the real PDF file
+- .modal-blur-overlay covers the bottom 65% with a fade
+- CTA button links to the correct Stripe checkout for that segment
+- "Purchase to unlock" messaging always present
+- CSS classes: modal-blur-overlay, modal-blur-cta, modal-blur-btn
+- These classes must be in the <style> block of every route page
+
+Copy the pattern from natchez-trace-lower.html. Do not deviate.
