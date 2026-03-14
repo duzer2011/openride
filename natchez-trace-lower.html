@@ -561,11 +561,11 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 <!-- HERO -->
 <section class="hero" aria-label="Natchez Trace Parkway cycling tour photo slider">
   <div class="slides">
-    <div class="slide active" style="background-image:url('/images/natchez/natchez-trace-parkway-fall-foliage-cyclist.jpg')" aria-label="Fall foliage cyclist on the Natchez Trace Parkway"></div>
-    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-parkway-cycling-road-ahead.jpg')" aria-label="Open road ahead on the Natchez Trace Parkway"></div>
-    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-emerald-mound-cyclist-sunset.jpg')" aria-label="Cyclist at Emerald Mound on the Natchez Trace"></div>
-    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-windsor-ruins-visit.jpg')" aria-label="Cyclist at the Windsor Ruins on the Natchez Trace"></div>
-    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-natchez-city-antebellum-arrival.jpg')" aria-label="Arriving in historic Natchez, Mississippi"></div>
+    <div class="slide active" style="background-image:url('/images/natchez/natchez-trace-parkway-couple-riding.jpg')" aria-label="Cyclists on the Natchez Trace Parkway"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-emerald-mound-visit.jpg')" aria-label="Emerald Mound on the Natchez Trace"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-windsor-ruins-visit.jpg')" aria-label="Windsor Ruins on the Natchez Trace"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-natchez-city-arrival.jpg')" aria-label="Arriving in historic Natchez, Mississippi"></div>
+    <div class="slide" style="background-image:url('/images/natchez/natchez-trace-rocky-springs-camping.jpg')" aria-label="Camping at Rocky Springs on the Natchez Trace"></div>
   </div>
   <div class="hero-overlay"></div>
   <div class="slide-dots">
@@ -576,7 +576,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
     <button class="slide-dot" aria-label="Slide 5"></button>
   </div>
   <div class="hero-content">
-    <span class="hero-label">National Scenic Byway · Mississippi to Tennessee</span>
+    <span class="hero-label">Southern Section · Natchez, MS to Jackson Area</span>
     <h1 class="hero-title">Natchez<br>Trace<br>Parkway</h1>
     <p class="hero-sub">Ten thousand years of American history. One perfectly quiet road.</p>
     <div class="hero-pills">
@@ -591,22 +591,22 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 <!-- MAP -->
 <section class="map-section">
   <div class="map-stats-band">
-    <div class="map-stat"><span class="map-stat-val">444</span><span class="map-stat-lbl">Total Miles</span></div>
-    <div class="map-stat"><span class="map-stat-val">3</span><span class="map-stat-lbl">States</span></div>
-    <div class="map-stat"><span class="map-stat-val">3–10</span><span class="map-stat-lbl">Days</span></div>
+    <div class="map-stat"><span class="map-stat-val">~100</span><span class="map-stat-lbl">Miles</span></div>
+    <div class="map-stat"><span class="map-stat-val">1</span><span class="map-stat-lbl">State</span></div>
+    <div class="map-stat"><span class="map-stat-val">3–4</span><span class="map-stat-lbl">Days</span></div>
     <div class="map-stat"><span class="map-stat-val">NPS</span><span class="map-stat-lbl">Protected Parkway</span></div>
     <div class="map-stat"><span class="map-stat-val">Road</span><span class="map-stat-lbl">Best Bike</span></div>
-    <div class="map-stat"><span class="map-stat-val">Beginner</span><span class="map-stat-lbl">Difficulty</span></div>
+    <div class="map-stat"><span class="map-stat-val">Easy</span><span class="map-stat-lbl">Difficulty</span></div>
   </div>
   <div id="route-map"></div>
 </section>
 
-<!-- ELEVATION PROFILE --><div class="elev-section" style="width:100%;display:block"><div class="elev-header"><div class="elev-title">Elevation Profile</div><div class="elev-stats"><div><span class="elev-stat-val" id="elev-gain">-</span><span class="elev-stat-lbl">Total Gain</span></div><div><span class="elev-stat-val" id="elev-loss">-</span><span class="elev-stat-lbl">Total Loss</span></div><div><span class="elev-stat-val" id="elev-max">-</span><span class="elev-stat-lbl">Max Elevation</span></div><div><span class="elev-stat-val" id="elev-min">-</span><span class="elev-stat-lbl">Min Elevation</span></div></div></div><div class="elev-endpoints"><span>Nashville</span><span>Natchez</span></div><div class="elev-chart-wrap"><canvas id="elev-chart"></canvas></div></div>
+<!-- ELEVATION PROFILE --><div class="elev-section" style="width:100%;display:block"><div class="elev-header"><div class="elev-title">Elevation Profile</div><div class="elev-stats"><div><span class="elev-stat-val" id="elev-gain">-</span><span class="elev-stat-lbl">Total Gain</span></div><div><span class="elev-stat-val" id="elev-loss">-</span><span class="elev-stat-lbl">Total Loss</span></div><div><span class="elev-stat-val" id="elev-max">-</span><span class="elev-stat-lbl">Max Elevation</span></div><div><span class="elev-stat-val" id="elev-min">-</span><span class="elev-stat-lbl">Min Elevation</span></div></div></div><div class="elev-endpoints"><span>Natchez, MS</span><span>Rocky Springs</span></div><div class="elev-chart-wrap"><canvas id="elev-chart"></canvas></div></div>
 
 <!-- ROUTE DETAILS STRIP -->
 <div class="route-strip">
   <div class="route-strip-item"><span class="route-strip-lbl">Start</span><span class="route-strip-val">Natchez, MS</span></div>
-  <div class="route-strip-item"><span class="route-strip-lbl">End</span><span class="route-strip-val">Nashville, TN</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">End</span><span class="route-strip-val">Rocky Springs, MS</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Best Seasons</span><span class="route-strip-val">Spring &amp; Fall</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Fly-In Airport</span><span class="route-strip-val">Jackson, MS (JAN)</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Shuttle Needed</span><span class="route-strip-val">Point-to-Point</span></div>
