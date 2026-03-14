@@ -14,9 +14,9 @@ def merge_full_trace(output_path, lodging_style='bnb', season='spring'):
     # As middle and upper guides are built, add them here
     segment_map = {
         'lower': {
-            'bnb':     f'natchez-moderate-bnb-{season}.pdf',
-            'camping': f'natchez-relaxed-camping-{season}.pdf',
-            'mixed':   f'natchez-moderate-bnb-{season}.pdf',  # fallback until mixed exists
+            'bnb':     'natchez-lower-guide-new.pdf',
+            'camping': 'natchez-lower-guide-new.pdf',
+            'mixed':   'natchez-lower-guide-new.pdf',
         },
         'middle': None,  # not yet built
         'upper':  None,  # not yet built
