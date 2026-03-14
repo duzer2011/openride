@@ -725,7 +725,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 <script>
 (function() {
   // TOKEN: Antigravity should replace this with process.env.MAPBOX_TOKEN
-  const token = window.MAPBOX_TOKEN || 'pk.eyJ1IjoidHJhaWxzaWRlYmlrZXMiLCJhIjoiY2l2cmJ2b3E5MDNkbDJ0bXU0cXRybDY4ayJ9.FJvNzMcj-daMXW2ol67LCw';
+  const token = window.MAPBOX_TOKEN || 'REPLACE_WITH_MAPBOX_TOKEN';
   mapboxgl.accessToken = token;
 
   const map = new mapboxgl.Map({
@@ -753,31 +753,26 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   map.on('load', () => {
     map.addSource('trace', {
       type: 'geojson',
-      data: '/routes/natchez-lower.geojson'
+      data: {
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: [
+            [-91.403,31.560],[-91.175,31.683],[-90.984,31.958],
+            [-90.897,32.093],[-90.650,32.350],[-90.200,32.650],
+            [-89.589,33.058],[-89.100,33.500],[-88.703,34.258],
+            [-88.200,34.700],[-87.800,35.100],[-87.467,35.458],
+            [-87.100,35.750],[-86.900,36.000],[-86.781,36.166]
+          ]
+        }
+      }
     });
-
-    map.addLayer({
-      id: 'trace-glow',
-      type: 'line', source: 'trace',
-      layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': '#C17F3A', 'line-width': 8, 'line-opacity': 0.15 }
-    });
-
     map.addLayer({
       id: 'trace-line',
       type: 'line', source: 'trace',
       layout: { 'line-join': 'round', 'line-cap': 'round' },
-      paint: { 'line-color': '#C17F3A', 'line-width': 3, 'line-opacity': 0.95 }
+      paint: { 'line-color': '#C17F3A', 'line-width': 3.5, 'line-opacity': 0.95 }
     });
-
-    fetch('/routes/natchez-lower.geojson')
-      .then(r => r.json())
-      .then(data => {
-        const coords = data.features[0].geometry.coordinates;
-        const bounds = coords.reduce((b, c) => b.extend(c),
-          new mapboxgl.LngLatBounds(coords[0], coords[0]));
-        map.fitBounds(bounds, { padding: 48, maxZoom: 8 });
-      });
 
     stops.forEach(s => {
       const color = s.type === 'start' ? '#4CAF50' : s.type === 'end' ? '#C17F3A' : '#8AAF8A';

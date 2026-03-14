@@ -1,0 +1,701 @@
+**OPENRIDE.BIKE**
+
+Project Master Document
+
+Claude Project Instructions · Build Reference · Division of Labor
+
+*"Your route. Your pace. Your adventure."*
+
+**1. Claude Project Instructions**
+
+*Paste this block into the Claude Project system prompt. It gives every
+session full context without re-explaining anything.*
+
++-----------------------------------------------------------------------+
+| **PASTE INTO CLAUDE PROJECT SYSTEM PROMPT**                           |
+|                                                                       |
+| OpenRide.bike --- self-guided cycling tour platform. Owner: Chris     |
+| VanDusen.                                                             |
+|                                                                       |
+| 10 years professional bicycle tour guiding. 80,000-member Facebook    |
+| bikepacking group.                                                    |
+|                                                                       |
+| BRAND: forest #2C4A2E · moss #4A7C59 · sage #8AAF8A · parch #F4EFE4 · |
+| accent #C17F3A                                                        |
+|                                                                       |
+| VOICE: Adventure-focused, honest, experienced guide. Personal,        |
+| direct, occasionally blunt.                                           |
+|                                                                       |
+| Never generic. Never fluffy. Specific details, real places, things    |
+| that happened on tours.                                               |
+|                                                                       |
+| TECH STACK:                                                           |
+|                                                                       |
+| Domain: openride.bike (GoDaddy) · Hosted: Netlify                     |
+| (jovial-malabi-1c6dab.netlify.app)                                    |
+|                                                                       |
+| Local dev: C:\OpenRide.bike · Builder: Antigravity · localhost:8000   |
+|                                                                       |
+| GitHub: github.com/duzer2011/openride                                 |
+|                                                                       |
+| Database: Supabase · Payments: Stripe · Maps: Mapbox                  |
+|                                                                       |
+| Email: hello@openride.bike via ImprovMX → trailsidebikes@gmail.com    |
+|                                                                       |
+| API keys in Antigravity: Google Imagen 3, Veo 2, ElevenLabs           |
+|                                                                       |
+| BUSINESS MODEL:                                                       |
+|                                                                       |
+| Core product: $19 PDF route guides (self-guided tours)                |
+|                                                                       |
+| Affiliates: Booking.com, Hipcamp, BikeFlights, Discover Cars, Kayak,  |
+| REI, Backcountry                                                      |
+|                                                                       |
+| Average revenue per customer: ~$130 (guide + lodging + logistics +    |
+| gear + travel affiliates)                                             |
+|                                                                       |
+| Luggage forwarding: OpenRide Luggage Hop ($7/bag via LuggageForward)  |
+|                                                                       |
+| FOUNDING ROUTES (Phase 1 --- build first):                            |
+|                                                                       |
+| 1. Natchez Trace South (FLAGSHIP --- 82 mi, 3-4 days, Mississippi)    |
+|                                                                       |
+| 2. Great Allegheny Passage (Pittsburgh → Cumberland)                  |
+|                                                                       |
+| 3. Katy Trail (Missouri wine country)                                 |
+|                                                                       |
+| 4. Door County Loop (Wisconsin)                                       |
+|                                                                       |
+| 5. C&O Canal Towpath (DC → Cumberland)                                |
+|                                                                       |
+| KEY PRODUCT KNOWLEDGE (always reference this in content):             |
+|                                                                       |
+| - Saddle conditioning takes weeks not days --- #1 first-timer         |
+| mistake                                                               |
+|                                                                       |
+| - Back-to-back weekend rides (Sat+Sun) are the critical training      |
+| tool                                                                  |
+|                                                                       |
+| - The 'bad hour' --- miles 12-18 of Day 2, every rider gets one,     |
+| always passes                                                         |
+|                                                                       |
+| - Couples: mismatched fitness = most common tour failure, 100%        |
+| preventable                                                           |
+|                                                                       |
+| - Groups: one underprepared rider drags everyone, no van on           |
+| self-guided tours                                                     |
+|                                                                       |
+| - Solo: mental challenge shifts after Day 2, small conversations      |
+| become the tour                                                       |
+|                                                                       |
+| - Chamois cream non-negotiable · Pack less than you think · Bike fit  |
+| matters most                                                          |
+|                                                                       |
+| DIVISION OF LABOR:                                                    |
+|                                                                       |
+| Claude: code, copy, architecture, schema, email sequences, review     |
+| Antigravity output                                                    |
+|                                                                       |
+| Antigravity: runs API calls (Imagen, Veo, Stripe, Supabase), local    |
+| files, deploys                                                        |
+|                                                                       |
+| CURRENT PRIORITY BUILD ORDER: See Section 4 of this document.         |
++-----------------------------------------------------------------------+
+
+**2. What's Already Built**
+
+Full inventory of completed files. All outputs are in
+C:\OpenRide.bike\ or outputs folder.
+
+**2.1 Website & Frontend**
+
+  -------------------------------- ------------ ----------- -------------------------
+  **Component**                    **Status**   **Owner**   **Notes**
+
+  index.html                       **Done**     Claude      Homepage with hero, route
+                                                            cards, feature pills,
+                                                            Mapbox
+
+  natchez-trace-route-guide.html   **Done**     Claude      Full route guide page ---
+                                                            Natchez Trace
+
+  profile.html                     **Done**     Claude      Rider profile + badge
+                                                            system + UGC feed
+
+  community.html                   **Done**     Claude      Community feed with
+                                                            shareable posts
+
+  openride-tour-builder.jsx        **Done**     Claude      AI tour builder chat
+                                                            interface (React)
+
+  openride-blog-generator.jsx      **Done**     Claude      Blog post generator using
+                                                            Claude API (React)
+  -------------------------------- ------------ ----------- -------------------------
+
+**2.2 PDF & Route Engine**
+
+  ---------------------------------- ------------ ----------- -------------------------
+  **Component**                      **Status**   **Owner**   **Notes**
+
+  pdf_engine.py                      **Done**     Claude      Generalized PDF generator
+                                                              --- all route variants
+
+  natchez_trace.py                   **Done**     Claude      Full Natchez Trace route
+                                                              data + day guides
+
+  natchez-trace-cue-sheet.pdf        **Done**     Claude      Cue sheet format PDF
+
+  natchez-trace-lower.gpx            **Done**     Claude      GPX file for GPS devices
+
+  natchez-moderate-bnb-spring.pdf    **Done**     Claude      Full guide --- moderate /
+                                                              B&B / spring
+
+  natchez-relaxed-camping-fall.pdf   **Done**     Claude      Full guide --- relaxed /
+                                                              camping / fall
+
+  generate_pdf.py                    **Done**     Claude      Netlify serverless PDF
+                                                              generation function
+  ---------------------------------- ------------ ----------- -------------------------
+
+**2.3 Audio & Media**
+
+  ----------------------------------------- ------------ ----------- -------------------------
+  **Component**                             **Status**   **Owner**   **Notes**
+
+  natchez-audio-scripts.docx                **Done**     Claude      Mile-by-mile audio guide
+                                                                     scripts for ElevenLabs
+
+  generate_audio.html                       **Done**     Claude      ElevenLabs batch audio
+                                                                     generator tool
+
+  generate_audio.py                         **Done**     Claude      Python audio generation
+                                                                     script
+
+  openride-blog-your-first-bike-tour.html   **Done**     Claude      First blog post --- fully
+                                                                     styled HTML
+  ----------------------------------------- ------------ ----------- -------------------------
+
+**2.4 Business Architecture Docs**
+
+  --------------------------------- ------------ ----------- -------------------------
+  **Component**                     **Status**   **Owner**   **Notes**
+
+  openride-ai-ops-system.md         **Done**     Claude      14-component AI
+                                                             operations architecture
+
+  openride-market-analysis.md       **Done**     Claude      Market sizing +
+                                                             competitor analysis
+
+  openride-founding-catalog.md      **Done**     Claude      50-route catalog across
+                                                             38 states
+
+  openride-arrival-departure.docx   **Done**     Claude      Arrival & departure
+                                                             affiliate playbook
+
+  openride-fitness-prep.docx        **Done**     Claude      Rider fitness preparation
+                                                             --- 3 training plans
+
+  openride-groups-solo.docx         **Done**     Claude      Groups & solo rider
+                                                             preparation playbook
+
+  schema.sql                        **Done**     Claude      Full Supabase schema
+                                                             incl. bathroom facilities
+
+  openride-build-plan.docx          **Done**     Claude      Staged build plan (this
+                                                             document)
+  --------------------------------- ------------ ----------- -------------------------
+
+**3. Division of Labor**
+
+This is the operating model. Every build task maps to one of these two
+lanes.
+
+**3.1 Claude Does**
+
+-   Write and iterate all code: HTML, CSS, JS, React/JSX, Python
+
+-   Generate all copy: blog posts, email sequences, route descriptions,
+    audio scripts
+
+-   Design architecture: database schemas, system prompts, API flows,
+    email logic
+
+-   Review Antigravity output before building further on it
+
+-   Create documents: PDFs, DOCX, structured markdown
+
+-   Build generators and tools (blog generator, image prompt builder,
+    etc.)
+
+-   Prompt engineering: write the exact prompts for Imagen, Veo,
+    ElevenLabs
+
+-   Quality control: compare what Antigravity built vs. what was
+    specified
+
+**3.2 Antigravity Does**
+
+-   Execute API calls requiring live keys: Imagen 3, Veo 2, ElevenLabs,
+    Stripe, Supabase
+
+-   Run and test code against real services locally
+
+-   File system operations on C:\OpenRide.bike\
+
+-   Local server (localhost:8000) --- running and hot-reloading
+
+-   Push to GitHub / deploy to Netlify
+
+-   Database operations: Supabase migrations, schema deploys, data
+    seeding
+
+-   Stripe checkout integration: product creation, webhook setup
+
+-   Mapbox: tile requests, map rendering in browser
+
+**3.3 The Handoff Protocol**
+
+This is the workflow for every new feature:
+
+1.  Claude designs and writes the code/prompt/architecture
+
+2.  You paste it into Antigravity (or share the file)
+
+3.  Antigravity runs it, creates/modifies files
+
+4.  You share output (screenshot or paste code) back to Claude
+
+5.  Claude reviews, catches problems, specifies next iteration
+
+6.  Repeat until done --- then move to next feature
+
++-----------------------------------------------------------------------+
+| **RULE: NEVER BUILD FURTHER ON UNREVIEWED OUTPUT**                    |
+|                                                                       |
+| If Antigravity generates a file and you haven't shown it to Claude    |
+| first,                                                                |
+|                                                                       |
+| do not build the next layer on top of it. Paste or screenshot it here |
+| first.                                                                |
+|                                                                       |
+| This prevents compounding errors and wasted build time.               |
++-----------------------------------------------------------------------+
+
+**4. Build Stages --- Priority Order**
+
+Organized by stage. Complete each stage before starting the next. Items
+within a stage can be parallel.
+
+**Stage 1: Foundation (Complete First)**
+
+  ---------------------- ------------ ------------- -------------------------
+  **Component**          **Status**   **Owner**     **Notes**
+
+  ImprovMX MX Records    Pending      You           Add MX records in Netlify
+                                                    DNS for
+                                                    hello@openride.bike
+
+  Natchez homepage fixes  Pending      Antigravity   Fix card stats: 82 mi,
+                                                    3-4 days, Smooth +
+                                                    description
+
+  Facebook route poll     Pending      You           Post 5 Phase 1 routes to
+                                                    80k group --- votes =
+                                                    build order
+
+  Supabase schema deploy  Pending      Antigravity   Run schema.sql ---
+                                                    includes
+                                                    bathroom_facilities,
+                                                    route_airports
+
+  Stripe checkout setup   Pending      Antigravity   Product: $19 guide +
+                                                    preparation fields at
+                                                    checkout
+
+  PDF auto-delivery       Pending      Antigravity   Stripe webhook → send PDF
+                                                    on purchase confirmation
+  ---------------------- ------------ ------------- -------------------------
+
+**Stage 2: Affiliate Revenue**
+
+  ---------------------- ------------ ----------- -------------------------
+  **Component**          **Status**   **Owner**   **Notes**
+
+  Booking.com affiliate   Pending      You         Apply at
+                                                  booking.com/affiliate ---
+                                                  highest lodging priority
+
+  Discover Cars           Pending      You         70% commission on car
+  (ShareASale)                                    rental --- best in
+                                                  category
+
+  Kayak affiliate         Pending      You         Flight search widget on
+                                                  route pages --- CJ or
+                                                  direct
+
+  Avantlink (REI,         Pending      You         Gear affiliates --- REI,
+  Ortlieb)                                        Ortlieb, Revelate
+
+  InsureMyTrip            Pending      You         Travel insurance ---
+                                                  15-20% commission, 60-day
+                                                  cookie
+
+  BikeFlights direct      Pending      You         Bike shipping affiliate
+                                                  --- essential for fly-in
+                                                  riders
+
+  Affiliate link          Pending      Claude+AG   Add affiliate links to
+  injection                                       Natchez route guide HTML
+  ---------------------- ------------ ----------- -------------------------
+
+**Stage 3: Content & Media Pipeline**
+
+  ---------------------- ------------ ------------- -------------------------------
+  **Component**          **Status**   **Owner**     **Notes**
+
+  Imagen/Veo generator    Pending      Antigravity   openride-media-generator.html
+                                                    --- see Section 5 for spec
+
+  Blog post #1 published  Pending      You+Claude    'Your First Bike Tour' ---
+                                                    HTML file ready, needs deploy
+
+  YouTube script #1       Pending      Claude        'Your First Bike Tour' ---
+                                                    long-form camera-to-camera
+
+  Shorts from Opus Clip   Pending      You           Run YouTube video through Opus
+                                                    Clip → 8-10 shorts
+
+  Email sequence           Pending      Antigravity   Post-purchase: preparation,
+  automation                                        logistics, lodging, gear tracks
+
+  Audio guides             Pending      Antigravity   Natchez scripts ready --- batch
+  (ElevenLabs)                                      generate via
+                                                    generate_audio.html
+
+  Blog posts 2-5           Pending      Claude        Use blog generator --- couples,
+                                                    solo, bad hour, packing
+  ---------------------- ------------ ------------- -------------------------------
+
+**Stage 4: Route Expansion**
+
+  ---------------------- ------------ ----------- -------------------------
+  **Component**          **Status**   **Owner**   **Notes**
+
+  Facebook poll results   Pending      You         Results determine which
+                                                  Phase 1 route to build
+                                                  second
+
+  GAP route guide         Pending      Claude+AG   Pittsburgh → Cumberland
+                                                  --- full PDF + HTML guide
+
+  Katy Trail route guide  Pending      Claude+AG   Missouri wine country ---
+                                                  full PDF + HTML guide
+
+  Route guide template    Pending      Claude      Reusable template so each
+                                                  new route takes <4hrs
+                                                  total
+
+  Bathroom facility       Pending      Claude+AG   Seed Supabase with
+  database                                        Natchez bathroom data
+                                                  first
+
+  C&O + Door County       Pending      Claude+AG   Phase 1 completion ---
+                                                  guides 4 and 5
+  ---------------------- ------------ ----------- -------------------------
+
+**Stage 5: AI Operations System**
+
+  ---------------------- ------------ ------------- -------------------------
+  **Component**          **Status**   **Owner**     **Notes**
+
+  Email Router agent      Pending      Antigravity   Routes
+                                                    hello@openride.bike to
+                                                    correct handler
+
+  Customer Agent          Pending      Antigravity   Pre/post purchase support
+                                                    --- answers route
+                                                    questions
+
+  Lodging Booking Agent   Pending      Antigravity   Booking.com + Hipcamp
+                                                    affiliate booking flow
+
+  Gear Intelligence       Pending      Antigravity   Gear chat on route pages
+  Agent                                             → affiliate conversions
+
+  Partner/Outreach Agent  Pending      Antigravity   B&B partner emails,
+                                                    affiliate outreach
+
+  Route Discovery         Pending      Claude+AG     Automated new route
+  Pipeline                                          identification + scoring
+  ---------------------- ------------ ------------- -------------------------
+
+**5. Media Generator Spec (Antigravity Build Target)**
+
+This is the exact spec to give Antigravity for the Imagen 3 / Veo 2
+media generator.
+
+**5.1 What to Build**
+
+-   Filename: openride-media-generator.html in C:\OpenRide.bike\
+
+-   Standalone HTML tool --- no framework, no build step
+
+-   Two modes toggled at top: Image (Imagen 3) and Video (Veo 2)
+
+-   Google Generative AI API --- use same key as other project
+
+**5.2 Shot Categories & Prompts**
+
+Each category has pre-built prompt templates. Claude will provide full
+prompt text in session.
+
+-   On the Bike --- POV road ahead, hands on bars, rider from behind,
+    group riding, descent, climb
+
+-   Points of Interest --- Natchez Trace mileposts, historic ruins,
+    scenic overlooks, bridges, churches
+
+-   Rest Stops & Food --- diner counter, gas station stop, bike leaned
+    outside cafe, picnic lunch
+
+-   Lodging & End of Day --- B&B porch with bikes, bike in room,
+    breakfast table, sunset arrival
+
+-   Landscape & Atmosphere --- misty morning, Spanish moss, fall
+    foliage, storm coming, golden hour
+
+-   People & Moments --- couple at viewpoint, solo rider at rest,
+    talking to local, group laughing
+
+**5.3 Controls Required**
+
+-   Route selector: Natchez Trace / GAP / Katy Trail / Oregon Coast /
+    Blue Ridge / Generic
+
+-   Season: Spring / Summer / Fall / Winter
+
+-   Camera style: iPhone snapshot / GoPro POV / Mirrorless / Film grain
+
+-   Generate button → displays image grid with download buttons
+
+-   Each image labeled with suggested filename (e.g.
+    natchez-trace-morning-pov.jpg)
+
+**5.4 Critical Prompt Direction**
+
++-----------------------------------------------------------------------+
+| **EVERY IMAGEN/VEO PROMPT MUST INCLUDE THESE ELEMENTS**               |
+|                                                                       |
+| • Real touring cyclist --- NOT racing kit. Practical cycling clothes, |
+| loaded panniers visible                                               |
+|                                                                       |
+| • Candid/authentic --- NOT staged, NOT stock photo, NOT AI aesthetic  |
+|                                                                       |
+| • Specific location details baked in per route (Spanish moss =        |
+| Natchez, limestone bluffs = Katy, etc.)                               |
+|                                                                       |
+| • Camera style modifier on every prompt (iPhone snapshot / GoPro wide |
+| / mirrorless bokeh / film grain)                                      |
+|                                                                       |
+| • Time of day specified (morning mist, midday sun, golden hour, dusk  |
+| arrival)                                                              |
+|                                                                       |
+| • Human scale --- bike and rider in frame at correct proportion to    |
+| landscape                                                             |
++-----------------------------------------------------------------------+
+
+**5.5 Image Prompt Rules (Apply to Every Route, Every Batch)**
+
++-----------------------------------------------------------------------+
+| **LOCATION VERIFICATION — REQUIRED BEFORE WRITING ANY PROMPT**        |
+|                                                                       |
+| Every named location in a prompt must be verified as real, currently  |
+| accessible, and accurately described from actual photos or listings.  |
+|                                                                       |
+| • POIs: mounds, ruins, historic sites, overlooks — confirm open,      |
+|   confirm current access (e.g. Windsor Ruins is fenced since 2023)    |
+|                                                                       |
+| • Lodging: confirm operating, describe architecture from real photos  |
+|   only — never from imagination                                       |
+|                                                                       |
+| • Diners/stores: real named establishments only. If unverifiable,     |
+|   use a fully generic description with NO name and NO signage         |
+|                                                                       |
+| • Campgrounds: confirm open, describe accurately                      |
+|                                                                       |
+| Generic/unnamed scenes (unnamed rest stops, unnamed roads, unnamed    |
+| overlooks) are fine — just no invented names or specific signage.     |
++-----------------------------------------------------------------------+
+
++-----------------------------------------------------------------------+
+| **NO INTERIOR SHOTS WITHOUT A REFERENCE IMAGE — NO EXCEPTIONS**       |
+|                                                                       |
+| If a prompt depicts the inside of any building — diner, gas station,  |
+| B&B bedroom, restaurant, shop, any interior — it requires:            |
+|                                                                       |
+| 1. A real verified location (named, confirmed operating)              |
+| 2. A reference photo of the actual interior                           |
+|                                                                       |
+| If either is missing, the prompt is CUT. Do not write a generic       |
+| interior. Do not approximate. Cut the shot and replace it with an     |
+| exterior or outdoor scene at a real verifiable location.              |
+|                                                                       |
+| Reason: people see these images and want to go there. A generic       |
+| interior is a dead end — there is no "there" for them to find.        |
++-----------------------------------------------------------------------+
+
++-----------------------------------------------------------------------+
+| **RIDING SHOTS — FACES RULE**                                         |
+|                                                                       |
+| Imagen 3 ignores "from behind" camera direction. Fix: describe the    |
+| scene so faces are physically impossible to show.                     |
+|                                                                       |
+| • "Camera at road level behind the riders" — not "shot from behind"  |
+| • "Backs, helmets, and road ahead visible"                            |
+| • "No faces visible. No one looking back." — add explicitly           |
+| • Never use direction language alone. Make it structural.             |
++-----------------------------------------------------------------------+
+
++-----------------------------------------------------------------------+
+| PREFERRED IMAGE WORKFLOW — REAL PHOTO + GEMINI EDIT                   |
+|                                                                       |
+| For all POI shots, lodging exteriors, and named locations:            |
+|                                                                       |
+| STEP 1 — fetch_reference_images.py                                    |
+| Run for the route. Pulls real photos from Wikimedia Commons and NPS   |
+| automatically into routes/[Route Name]/Reference Images/              |
+|                                                                       |
+| STEP 2 — Gemini image editing (gemini.google.com)                     |
+| Drop the real reference photo into Gemini. Use this prompt:           |
+|                                                                       |
+| "Add two touring cyclists with loaded panniers in the foreground.     |
+|  Candid, not posed. Helmets on. Cycling jerseys. They are looking     |
+|  at the location, not the camera. Keep the background completely      |
+|  unchanged. Photorealistic."                                          |
+|                                                                       |
+| Adjust for solo rider, couple, or group as needed.                    |
+|                                                                       |
+| STEP 3 — Save output to images/{route}/                               |
+| Use the standard filename from prompts.json for that shot.            |
+|                                                                       |
+| WHY THIS BEATS IMAGEN ALONE:                                          |
+| Real signage, real architecture, real light. Imagen generating from   |
+| scratch gets the location "close but off." Gemini editing a real      |
+| photo produces the exact location every time.                         |
+|                                                                       |
+| USE generate_images.py (Imagen 3) FOR:                                |
+| Riding shots, rest stops, camping, generic road scenes —              |
+| anything where exact location details don't matter.                   |
+|                                                                       |
+| USE GEMINI EDIT FOR:                                                   |
+| Named POIs, lodging exteriors, historic sites, landmarks —            |
+| anything where real location details matter.                          |
++-----------------------------------------------------------------------+
+
+**5.6 Handoff Rule for Media Generator**
+
+After Antigravity builds the HTML file:
+
+-   Open it in browser, take a screenshot
+
+-   Generate one test image (any category, Natchez Trace, Fall, iPhone
+    style)
+
+-   Share both screenshot AND generated image with Claude before
+    generating any batch
+
+-   Claude will review quality and adjust prompts if needed before you
+    generate the full library
+
+**6. Key Decisions Log**
+
+Permanent record of strategic decisions made. Reference before changing
+direction.
+
++-----------------------------------+-----------------------------------+
+| **Pricing**                       | **Reason**                        |
+|                                   |                                   |
+| $19/guide (not                    | Low barrier to first purchase.    |
+| subscription-first)               | Subscription comes after catalog  |
+|                                   | depth.                            |
++-----------------------------------+-----------------------------------+
+
++-----------------------------------+-----------------------------------+
+| **Flagship Route**                | **Reason**                        |
+|                                   |                                   |
+| Natchez Trace South               | Car-light, NPS-managed, easiest   |
+|                                   | first tour, Chris's personal      |
+|                                   | favorite.                         |
++-----------------------------------+-----------------------------------+
+
++-----------------------------------+-----------------------------------+
+| **Build Order**                   | **Reason**                        |
+|                                   |                                   |
+| Facebook poll drives Phase 1      | 80k members = free market         |
+| sequence                          | research. Votes = real demand     |
+|                                   | signal.                           |
++-----------------------------------+-----------------------------------+
+
++-----------------------------------+-----------------------------------+
+| **Email tool**                    | **Reason**                        |
+|                                   |                                   |
+| ImprovMX →                        | Free tier sufficient for launch.  |
+| trailsidebikes@gmail.com          | Upgrade to ConvertKit when list   |
+|                                   | grows.                            |
++-----------------------------------+-----------------------------------+
+
++-----------------------------------+-----------------------------------+
+| **Affiliate priority**            | **Reason**                        |
+|                                   |                                   |
+| Discover Cars (70% commission)    | 365-day cookie + highest          |
+|                                   | commission in car rental          |
+|                                   | category.                         |
++-----------------------------------+-----------------------------------+
+
++-----------------------------------+-----------------------------------+
+| **Media generation**              | **Reason**                        |
+|                                   |                                   |
+| Imagen 3 + Veo 2 via Antigravity  | Better photorealism than          |
+|                                   | alternatives. Keys already in     |
+|                                   | Antigravity.                      |
++-----------------------------------+-----------------------------------+
+
++-----------------------------------+-----------------------------------+
+| **Content engine**                | **Reason**                        |
+|                                   |                                   |
+| 1 blog → YouTube → Opus Clip →    | One truth told well = 15-20       |
+| 8-10 Shorts                       | pieces. Efficient for solo        |
+|                                   | operator.                         |
++-----------------------------------+-----------------------------------+
+
+**7. Immediate Next Actions**
+
+These should happen before the next build session begins.
+
++-----------------------------------------------------------------------+
+| **DO THIS BEFORE NEXT SESSION**                                       |
+|                                                                       |
+| 1. Create Claude Project --- name: 'OpenRide.bike'                    |
+|                                                                       |
+| 2. Paste Section 1 into Project system prompt                         |
+|                                                                       |
+| 3. Upload these files to Project knowledge:                           |
+|                                                                       |
+| • openride-build-plan.docx (this document)                            |
+|                                                                       |
+| • openride-founding-catalog.md                                        |
+|                                                                       |
+| • openride-ai-ops-system.md                                           |
+|                                                                       |
+| • openride-fitness-prep.docx                                          |
+|                                                                       |
+| • schema.sql                                                          |
+|                                                                       |
+| 4. Add Netlify MX records for hello@openride.bike                     |
+|                                                                       |
+| MX1: mx1.improvmx.com (priority 10)                                   |
+|                                                                       |
+| MX2: mx2.improvmx.com (priority 20)                                   |
+|                                                                       |
+| 5. Post Facebook route poll to 80k group                              |
++-----------------------------------------------------------------------+

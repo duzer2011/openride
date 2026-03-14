@@ -36,3 +36,13 @@ schema.sql
 
 # Local Netlify folder
 .netlify
+
+# Claude Code local files
+.agents/
+.claude/
+deno.lock
+
+# Temp/scratch files
+clean_dry_run.txt
+dry_run_out.txt
+sync_log.txt
