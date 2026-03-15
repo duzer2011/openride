@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1593,7 +1593,9 @@
       sb.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
           currentUser = session.user; await loadProfile(session.user.id); renderNavLoggedIn(); closeAuth();
-          if (pendingAnswers) { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("? Your tour plan is saved! Head to your profile to see it � and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
+          const redirect = new URLSearchParams(window.location.search).get('redirect');
+          if (redirect) { window.location.href = redirect; return; }
+          if (pendingAnswers) { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("? Your tour plan is saved! Head to your profile to see it  and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
         }
         if (event === 'SIGNED_OUT') { currentUser = null; currentProfile = null; renderNavLoggedOut(); }
       });
@@ -1707,7 +1709,15 @@ Quick replies: [QR: option 1 | option 2 | option 3]`;
     let history = [], loading = false;
     const msgsEl = document.getElementById('chatMessages'), inputEl = document.getElementById('chatInput'), sendBtn = document.getElementById('sendBtn');
 
-    window.addEventListener('load', () => { initAuth(); callApi([{ role: 'user', content: 'Give a warm 2-sentence greeting and ask your first planning question.' }], true); });
+    window.addEventListener('load', () => {
+      initAuth();
+      callApi([{ role: 'user', content: 'Give a warm 2-sentence greeting and ask your first planning question.' }], true);
+      // Delay login modal so auth and DOM are fully initialized
+      setTimeout(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('login') === 'true') openAuth('login');
+      }, 300);
+    });
     inputEl.addEventListener('input', () => { inputEl.style.height = 'auto'; inputEl.style.height = Math.min(inputEl.scrollHeight, 90) + 'px'; });
     inputEl.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
 
