@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1e2a1f">
+  <title>OpenRide — Ride</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+  <style>
+    :root {
+      --forest: #2C4A2E;
+      --moss: #4A7C59;
+      --sage: #8AAF8A;
+      --parch: #F4EFE4;
+      --accent: #C17F3A;
+      --ink: #1e2a1f;
+      --dark: #0f1710;
+      --hud-bg: rgba(15, 23, 16, 0.96);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--dark); font-family: 'DM Sans', sans-serif; color: var(--parch); }
+
+    /* ── SCREENS ── */
+    .screen { position: absolute; inset: 0; display: none; flex-direction: column; }
+    .screen.active { display: flex; }
+
+    /* ── SCREEN 1: TOUR DETAIL ── */
+    #screen-detail {
+      background: var(--ink);
+      overflow-y: auto;
+    }
+    .detail-hero {
+      position: relative;
+      height: 240px;
+      background: linear-gradient(135deg, var(--forest), var(--ink));
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex; align-items: flex-end;
+    }
+    .detail-hero-map { position: absolute; inset: 0; opacity: 0.4; }
+    #preview-map { width: 100%; height: 100%; }
+    .detail-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(15,23,16,0.9) 0%, transparent 60%);
+    }
+    .detail-hero-content {
+      position: relative; z-index: 1;
+      padding: 1.5rem;
+    }
+    .detail-eyebrow {
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.25rem;
+    }
+    .detail-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem; letter-spacing: 0.04em;
+      color: var(--parch); line-height: 1;
+    }
+    .detail-body { padding: 1.5rem; flex: 1; }
+    .detail-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: rgba(138,175,138,0.1);
+      border-radius: 4px; overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .detail-stat {
+      background: rgba(44,74,46,0.3);
+      padding: 1rem 0.5rem; text-align: center;
+    }
+    .detail-stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem; color: var(--parch);
+      letter-spacing: 0.04em; line-height: 1;
+    }
+    .detail-stat-lbl {
+      font-size: 0.6rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--sage);
+      margin-top: 2px;
+    }
+
+    /* Audio mode selector */
+    .mode-section { margin-bottom: 1.5rem; }
+    .mode-label {
+      font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--sage); margin-bottom: 0.75rem; display: block;
+    }
+    .mode-options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .mode-option {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.85rem 1rem;
+      border: 1.5px solid rgba(138,175,138,0.15);
+      border-radius: 4px; cursor: pointer;
+      transition: all 0.15s; background: rgba(44,74,46,0.15);
+    }
+    .mode-option.selected {
+      border-color: var(--accent);
+      background: rgba(193,127,58,0.12);
+    }
+    .mode-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(138,175,138,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .mode-option.selected .mode-icon { background: rgba(193,127,58,0.2); }
+    .mode-text { flex: 1; }
+    .mode-name {
+      font-weight: 600; font-size: 0.9rem;
+      color: var(--parch); margin-bottom: 2px;
+    }
+    .mode-desc { font-size: 0.75rem; color: rgba(138,175,138,0.7); line-height: 1.4; }
+    .mode-check {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid rgba(138,175,138,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; flex-shrink: 0;
+    }
+    .mode-option.selected .mode-check {
+      background: var(--accent); border-color: var(--accent); color: #fff;
+    }
+
+    /* Waypoints preview */
+    .waypoints-section { margin-bottom: 2rem; }
+    .waypoint-list { display: flex; flex-direction: column; gap: 0.4rem; }
+    .waypoint-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: rgba(44,74,46,0.2);
+      border-radius: 3px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .waypoint-item:hover { background: rgba(44,74,46,0.35); }
+    .waypoint-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .dot-start { background: #4CAF50; }
+    .dot-finish { background: var(--accent); }
+    .dot-poi { background: var(--sage); }
+    .dot-campsite { background: #64B5F6; }
+    .dot-lodging { background: #CE93D8; }
+    .dot-town { background: #FFB74D; }
+    .waypoint-name { font-size: 0.85rem; font-weight: 600; color: var(--parch); flex: 1; }
+    .waypoint-meta { font-size: 0.7rem; color: var(--sage); }
+    .waypoint-audio-btn {
+      background: none; border: none; color: var(--sage);
+      font-size: 1rem; cursor: pointer; padding: 0.25rem;
+      opacity: 0.6; transition: opacity 0.15s;
+    }
+    .waypoint-audio-btn:hover { opacity: 1; }
+
+    /* Start button */
+    .start-btn {
+      width: 100%; padding: 1.1rem;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 4px; font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: 0.1em;
+      cursor: pointer; transition: background 0.15s;
+      margin-bottom: 1rem;
+    }
+    .start-btn:hover { background: #a86b2e; }
+    .offline-status {
+      text-align: center; font-size: 0.75rem;
+      color: rgba(138,175,138,0.5); padding-bottom: 2rem;
+    }
+    .offline-status span { color: var(--sage); }
+
+    /* ── SCREEN 2: RIDING HUD ── */
+    #screen-hud {
+      background: var(--dark);
+    }
+    .hud-map-wrap { position: absolute; inset: 0; }
+    #hud-map { width: 100%; height: 100%; }
+
+    /* HUD overlay */
+    .hud-overlay {
+      position: absolute; inset: 0; pointer-events: none;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+
+    /* Top bar */
+    .hud-top {
+      pointer-events: all;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem;
+      padding-top: calc(1rem + env(safe-area-inset-top));
+      background: linear-gradient(to bottom, rgba(15,23,16,0.9), transparent);
+    }
+    .hud-route-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem; letter-spacing: 0.1em; color: var(--parch);
+    }
+    .hud-top-controls { display: flex; gap: 0.5rem; }
+    .hud-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--hud-bg); border: 1px solid rgba(138,175,138,0.2);
+      color: var(--parch); font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: all;
+    }
+    .hud-btn.active { background: var(--accent); border-color: var(--accent); }
+
+    /* Next cue banner — sits above stats bar */
+    .hud-cue-banner {
+      background: rgba(193,127,58,0.15);
+      border: 1px solid rgba(193,127,58,0.3);
+      border-radius: 4px;
+      padding: 0.6rem 1rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      min-height: 44px;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .hud-cue-banner.visible { opacity: 1; }
+    .hud-cue-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .hud-cue-text { flex: 1; }
+    .hud-cue-distance {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem; color: var(--accent); font-weight: 500;
+    }
+    .hud-cue-name { font-size: 0.85rem; color: var(--parch); font-weight: 600; }
+
+    /* Bottom stats */
+    .hud-bottom {
+      pointer-events: all;
+      background: linear-gradient(to top, rgba(15,23,16,0.95) 70%, transparent);
+      padding: 1rem 1.25rem;
+      padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    }
+    .hud-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem; margin-bottom: 1rem;
+    }
+    .hud-stat { text-align: center; }
+    .hud-stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; color: var(--parch);
+      letter-spacing: 0.04em; line-height: 1;
+    }
+    .hud-stat-val.accent { color: var(--accent); }
+    .hud-stat-lbl {
+      font-size: 0.55rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--sage);
+      margin-top: 2px;
+    }
+
+    .hud-actions { display: flex; gap: 0.5rem; }
+    .hud-action-btn {
+      flex: 1; padding: 0.75rem;
+      background: rgba(44,74,46,0.4);
+      border: 1px solid rgba(138,175,138,0.15);
+      border-radius: 4px; color: var(--parch);
+      font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+      font-weight: 600; cursor: pointer; letter-spacing: 0.04em;
+      transition: background 0.15s;
+    }
+    .hud-action-btn:hover { background: rgba(44,74,46,0.6); }
+    .hud-action-btn.danger {
+      background: rgba(180,50,50,0.3);
+      border-color: rgba(180,50,50,0.3);
+    }
+
+    /* GPS status indicator */
+    .gps-indicator {
+      position: absolute;
+      top: calc(5rem + env(safe-area-inset-top));
+      left: 50%; transform: translateX(-50%);
+      background: var(--hud-bg);
+      border: 1px solid rgba(138,175,138,0.2);
+      border-radius: 20px; padding: 0.4rem 1rem;
+      font-size: 0.72rem; letter-spacing: 0.08em;
+      display: flex; align-items: center; gap: 0.5rem;
+      pointer-events: none;
+    }
+    .gps-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #666;
+    }
+    .gps-dot.acquiring { background: var(--accent); animation: pulse 1s infinite; }
+    .gps-dot.locked { background: #4CAF50; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* Waypoint popup */
+    .waypoint-popup {
+      position: absolute; bottom: 180px; left: 1rem; right: 1rem;
+      background: var(--hud-bg);
+      border: 1px solid rgba(193,127,58,0.4);
+      border-radius: 8px; padding: 1.25rem;
+      backdrop-filter: blur(12px);
+      transform: translateY(20px); opacity: 0;
+      transition: all 0.3s; pointer-events: none;
+    }
+    .waypoint-popup.visible {
+      transform: translateY(0); opacity: 1; pointer-events: all;
+    }
+    .popup-close {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      background: none; border: none; color: var(--sage);
+      font-size: 1.1rem; cursor: pointer;
+    }
+    .popup-category {
+      font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.25rem;
+    }
+    .popup-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; color: var(--parch);
+      letter-spacing: 0.04em; margin-bottom: 0.5rem;
+    }
+    .popup-desc {
+      font-size: 0.82rem; color: rgba(244,239,228,0.7);
+      line-height: 1.6; margin-bottom: 1rem;
+    }
+    .popup-actions { display: flex; gap: 0.5rem; }
+    .popup-btn {
+      flex: 1; padding: 0.6rem;
+      border-radius: 3px; font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; text-align: center; text-decoration: none;
+      border: none; transition: all 0.15s;
+    }
+    .popup-btn-primary {
+      background: var(--accent); color: #fff;
+    }
+    .popup-btn-secondary {
+      background: rgba(44,74,46,0.4);
+      border: 1px solid rgba(138,175,138,0.2);
+      color: var(--parch);
+    }
+
+    /* ── SCREEN 3: FINISHED ── */
+    #screen-finished {
+      background: var(--ink);
+      align-items: center; justify-content: center;
+      text-align: center; padding: 2rem;
+    }
+    .finish-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .finish-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem; color: var(--parch);
+      letter-spacing: 0.04em; margin-bottom: 0.5rem;
+    }
+    .finish-subtitle { font-size: 0.9rem; color: var(--sage); margin-bottom: 2rem; }
+    .finish-stats {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: rgba(138,175,138,0.1);
+      border-radius: 4px; overflow: hidden;
+      width: 100%; max-width: 300px; margin: 0 auto 2rem;
+    }
+    .finish-stat {
+      background: rgba(44,74,46,0.3); padding: 1.25rem 1rem;
+    }
+    .finish-stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; color: var(--accent); letter-spacing: 0.04em;
+    }
+    .finish-stat-lbl {
+      font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--sage);
+    }
+    .finish-btn {
+      width: 100%; max-width: 300px; padding: 1rem;
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 4px; font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.1em; cursor: pointer;
+    }
+
+    /* Audio playing indicator */
+    .audio-playing {
+      position: absolute;
+      top: calc(5rem + env(safe-area-inset-top));
+      right: 1rem;
+      background: var(--hud-bg);
+      border: 1px solid rgba(193,127,58,0.4);
+      border-radius: 20px; padding: 0.4rem 0.9rem;
+      font-size: 0.7rem; color: var(--accent);
+      display: none; align-items: center; gap: 0.4rem;
+    }
+    .audio-playing.visible { display: flex; }
+    .audio-bars {
+      display: flex; gap: 2px; align-items: flex-end; height: 12px;
+    }
+    .audio-bar {
+      width: 3px; background: var(--accent); border-radius: 1px;
+      animation: bar 0.8s ease infinite;
+    }
+    .audio-bar:nth-child(2) { animation-delay: 0.2s; }
+    .audio-bar:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bar {
+      0%,100%{height:4px} 50%{height:12px}
+    }
+  </style>
+  <link rel="manifest" href="/manifest.json">
+  <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</head>
+<body>
+
+<!-- SCREEN 1: TOUR DETAIL -->
+<div id="screen-detail" class="screen active">
+  <div class="detail-hero">
+    <div class="detail-hero-map"><div id="preview-map"></div></div>
+    <div class="detail-hero-overlay"></div>
+    <div class="detail-hero-content">
+      <div class="detail-eyebrow">Mississippi · Lower Trace</div>
+      <div class="detail-title">Natchez Trace South</div>
+    </div>
+  </div>
+
+  <div class="detail-body">
+    <div class="detail-stats">
+      <div class="detail-stat">
+        <div class="detail-stat-val">~100</div>
+        <div class="detail-stat-lbl">Miles</div>
+      </div>
+      <div class="detail-stat">
+        <div class="detail-stat-val">3–4</div>
+        <div class="detail-stat-lbl">Days</div>
+      </div>
+      <div class="detail-stat">
+        <div class="detail-stat-val">Easy</div>
+        <div class="detail-stat-lbl">Terrain</div>
+      </div>
+    </div>
+
+    <!-- Audio Mode -->
+    <div class="mode-section">
+      <span class="mode-label">Audio Mode</span>
+      <div class="mode-options">
+        <div class="mode-option" data-mode="silent">
+          <div class="mode-icon">🔇</div>
+          <div class="mode-text">
+            <div class="mode-name">Silent</div>
+            <div class="mode-desc">GPS tracking and visual cues only. No audio.</div>
+          </div>
+          <div class="mode-check"></div>
+        </div>
+        <div class="mode-option" data-mode="navigation">
+          <div class="mode-icon">🧭</div>
+          <div class="mode-text">
+            <div class="mode-name">Navigation Only</div>
+            <div class="mode-desc">Turn-by-turn audio at decision points. Nothing else.</div>
+          </div>
+          <div class="mode-check"></div>
+        </div>
+        <div class="mode-option selected" data-mode="full">
+          <div class="mode-icon">🎙️</div>
+          <div class="mode-text">
+            <div class="mode-name">Full Guide</div>
+            <div class="mode-desc">Navigation + Chris narrates the history as you ride through it.</div>
+          </div>
+          <div class="mode-check">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Waypoints -->
+    <div class="waypoints-section">
+      <span class="mode-label">Route Stops</span>
+      <div class="waypoint-list" id="waypoint-list">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="startRide()">Start Ride →</button>
+    <div class="offline-status">
+      Route data: <span id="offline-status-text">checking...</span>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 2: RIDING HUD -->
+<div id="screen-hud" class="screen">
+  <div class="hud-map-wrap">
+    <div id="hud-map"></div>
+  </div>
+
+  <div class="hud-overlay">
+    <div class="hud-top">
+      <div class="hud-route-name">Natchez Trace South</div>
+      <div class="hud-top-controls">
+        <button class="hud-btn" id="btn-center" onclick="centerOnRider()" title="Center map">⊙</button>
+        <button class="hud-btn" id="btn-audio" onclick="toggleAudio()" title="Toggle audio">🔊</button>
+      </div>
+    </div>
+
+    <div class="hud-bottom">
+      <div class="hud-cue-banner" id="cue-banner">
+        <div class="hud-cue-icon" id="cue-icon">📍</div>
+        <div class="hud-cue-text">
+          <div class="hud-cue-distance" id="cue-distance">0.3 mi</div>
+          <div class="hud-cue-name" id="cue-name">Emerald Mound</div>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="hud-stat">
+          <div class="hud-stat-val" id="stat-speed">0.0</div>
+          <div class="hud-stat-lbl">mph</div>
+        </div>
+        <div class="hud-stat">
+          <div class="hud-stat-val accent" id="stat-distance">0.0</div>
+          <div class="hud-stat-lbl">miles</div>
+        </div>
+        <div class="hud-stat">
+          <div class="hud-stat-val" id="stat-elapsed">0:00</div>
+          <div class="hud-stat-lbl">elapsed</div>
+        </div>
+        <div class="hud-stat">
+          <div class="hud-stat-val" id="stat-remaining">--</div>
+          <div class="hud-stat-lbl">to go</div>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="hud-action-btn" onclick="showWaypointList()">📍 Stops</button>
+        <button class="hud-action-btn" onclick="pauseRide()">⏸ Pause</button>
+        <button class="hud-action-btn danger" onclick="endRide()">End Ride</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="gps-indicator" id="gps-indicator">
+    <div class="gps-dot acquiring" id="gps-dot"></div>
+    <span id="gps-text">Acquiring GPS...</span>
+  </div>
+
+  <div class="audio-playing" id="audio-playing">
+    <div class="audio-bars">
+      <div class="audio-bar"></div>
+      <div class="audio-bar"></div>
+      <div class="audio-bar"></div>
+    </div>
+    Now Playing
+  </div>
+
+  <div class="waypoint-popup" id="waypoint-popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-category" id="popup-category">Point of Interest</div>
+    <div class="popup-name" id="popup-name">Emerald Mound</div>
+    <div class="popup-desc" id="popup-desc">Description here.</div>
+    <div class="popup-actions" id="popup-actions"></div>
+  </div>
+</div>
+
+<!-- SCREEN 3: FINISHED -->
+<div id="screen-finished" class="screen">
+  <div class="finish-icon">🏁</div>
+  <div class="finish-title">Ride Complete</div>
+  <div class="finish-subtitle">Natchez Trace South</div>
+  <div class="finish-stats">
+    <div class="finish-stat">
+      <div class="finish-stat-val" id="finish-distance">0.0</div>
+      <div class="finish-stat-lbl">Miles</div>
+    </div>
+    <div class="finish-stat">
+      <div class="finish-stat-val" id="finish-time">0:00</div>
+      <div class="finish-stat-lbl">Time</div>
+    </div>
+    <div class="finish-stat">
+      <div class="finish-stat-val" id="finish-stops">0</div>
+      <div class="finish-stat-lbl">Stops Passed</div>
+    </div>
+    <div class="finish-stat">
+      <div class="finish-stat-val" id="finish-cues">0</div>
+      <div class="finish-stat-lbl">Audio Cues</div>
+    </div>
+  </div>
+  <button class="finish-btn" onclick="showScreen('screen-detail')">← Back to Tour</button>
+</div>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script src="/config.js"></script>
+<script>
+// ── ROUTE DATA ──
+let routeData = null;
+let audioMode = 'full'; // silent | navigation | full
+let hudMap = null;
+let previewMap = null;
+let riderMarker = null;
+let watchId = null;
+let rideStartTime = null;
+let ridePaused = false;
+let distanceTraveled = 0;
+let lastPosition = null;
+let firedCues = new Set();
+let stopsVisited = 0;
+let cuesPlayed = 0;
+let elapsedSeconds = 0;
+let elapsedTimer = null;
+let audioMuted = false;
+let currentSpeech = null;
+
+// ── INIT ──
+async function init() {
+  // Load route data
+  try {
+    const resp = await fetch('/routes/natchez-lower-route.json');
+    routeData = await resp.json();
+    renderWaypointList();
+    initPreviewMap();
+    document.getElementById('offline-status-text').textContent = 'Ready ✓';
+    document.getElementById('offline-status-text').style.color = '#4CAF50';
+  } catch(e) {
+    document.getElementById('offline-status-text').textContent = 'Download needed';
+  }
+}
+
+// ── PREVIEW MAP ──
+function initPreviewMap() {
+  if (!routeData || !window.MAPBOX_TOKEN) return;
+  mapboxgl.accessToken = window.MAPBOX_TOKEN;
+  previewMap = new mapboxgl.Map({
+    container: 'preview-map',
+    style: 'mapbox://styles/mapbox/outdoors-v12',
+    interactive: false,
+    attributionControl: false
+  });
+  previewMap.on('load', () => {
+    const coords = routeData.track.map(p => [p[1], p[0]]);
+    previewMap.addSource('route', {
+      type: 'geojson',
+      data: { type: 'Feature', geometry: { type: 'LineString', coordinates: coords } }
+    });
+    previewMap.addLayer({
+      id: 'route-line', type: 'line', source: 'route',
+      paint: { 'line-color': '#C17F3A', 'line-width': 2.5, 'line-opacity': 0.9 }
+    });
+    // Fit to route
+    const bounds = coords.reduce((b, c) => b.extend(c), new mapboxgl.LngLatBounds(coords[0], coords[0]));
+    previewMap.fitBounds(bounds, { padding: 20 });
+  });
+}
+
+// ── WAYPOINT LIST ──
+function renderWaypointList() {
+  if (!routeData) return;
+  const container = document.getElementById('waypoint-list');
+  container.innerHTML = '';
+  routeData.waypoints.forEach(wp => {
+    const item = document.createElement('div');
+    item.className = 'waypoint-item';
+    item.innerHTML = `
+      <div class="waypoint-dot dot-${wp.type}"></div>
+      <div class="waypoint-name">${wp.name}</div>
+      <div class="waypoint-meta">MP ${wp.milepost}</div>
+      ${wp.audio_file ? `<button class="waypoint-audio-btn" onclick="previewAudio('${wp.id}', event)" title="Preview audio">▶</button>` : ''}
+    `;
+    item.addEventListener('click', () => showWaypointPopup(wp));
+    container.appendChild(item);
+  });
+}
+
+// ── MODE SELECTION ──
+document.querySelectorAll('.mode-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.mode-option').forEach(o => {
+      o.classList.remove('selected');
+      o.querySelector('.mode-check').textContent = '';
+    });
+    opt.classList.add('selected');
+    opt.querySelector('.mode-check').textContent = '✓';
+    audioMode = opt.dataset.mode;
+  });
+});
+
+// ── SCREEN MANAGEMENT ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── START RIDE ──
+function startRide() {
+  showScreen('screen-hud');
+  initHudMap();
+  startGPS();
+  rideStartTime = Date.now();
+  distanceTraveled = 0;
+  firedCues.clear();
+  stopsVisited = 0;
+  cuesPlayed = 0;
+  elapsedSeconds = 0;
+  elapsedTimer = setInterval(() => {
+    if (!ridePaused) {
+      elapsedSeconds++;
+      updateElapsed();
+    }
+  }, 1000);
+}
+
+// ── HUD MAP ──
+function initHudMap() {
+  if (!window.MAPBOX_TOKEN) return;
+  mapboxgl.accessToken = window.MAPBOX_TOKEN;
+  hudMap = new mapboxgl.Map({
+    container: 'hud-map',
+    style: 'mapbox://styles/mapbox/outdoors-v12',
+    center: [-91.3998, 31.5499],
+    zoom: 13,
+    attributionControl: false
+  });
+  hudMap.addControl(new mapboxgl.AttributionControl({ compact: true }));
+
+  hudMap.on('load', () => {
+    if (!routeData) return;
+    const coords = routeData.track.map(p => [p[1], p[0]]);
+
+    // Route line
+    hudMap.addSource('route', {
+      type: 'geojson',
+      data: { type: 'Feature', geometry: { type: 'LineString', coordinates: coords } }
+    });
+    hudMap.addLayer({
+      id: 'route-glow', type: 'line', source: 'route',
+      paint: { 'line-color': '#C17F3A', 'line-width': 10, 'line-opacity': 0.15 }
+    });
+    hudMap.addLayer({
+      id: 'route-line', type: 'line', source: 'route',
+      paint: { 'line-color': '#C17F3A', 'line-width': 3 }
+    });
+
+    // Waypoint markers
+    routeData.waypoints.forEach(wp => {
+      const colors = {
+        start: '#4CAF50', finish: '#C17F3A', poi: '#8AAF8A',
+        campsite: '#64B5F6', lodging: '#CE93D8', town: '#FFB74D'
+      };
+      const el = document.createElement('div');
+      el.style.cssText = `width:12px;height:12px;border-radius:50%;background:${colors[wp.type]||'#8AAF8A'};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.5);cursor:pointer;`;
+      el.addEventListener('click', () => showWaypointPopup(wp));
+      new mapboxgl.Marker(el).setLngLat([wp.lon, wp.lat]).addTo(hudMap);
+    });
+
+    // Rider marker
+    const riderEl = document.createElement('div');
+    riderEl.style.cssText = `width:20px;height:20px;border-radius:50%;background:#4FC3F7;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.4);`;
+    riderMarker = new mapboxgl.Marker(riderEl).setLngLat([-91.3998, 31.5499]).addTo(hudMap);
+  });
+}
+
+// ── GPS ──
+function startGPS() {
+  if (!navigator.geolocation) {
+    document.getElementById('gps-text').textContent = 'GPS not available';
+    return;
+  }
+  watchId = navigator.geolocation.watchPosition(onPosition, onGPSError, {
+    enableHighAccuracy: true,
+    maximumAge: 2000,
+    timeout: 10000
+  });
+}
+
+function onPosition(pos) {
+  const { latitude, longitude, speed } = pos.coords;
+  const gpsDot = document.getElementById('gps-dot');
+  const gpsText = document.getElementById('gps-text');
+  gpsDot.className = 'gps-dot locked';
+  gpsText.textContent = `GPS locked`;
+
+  // Update rider marker
+  if (riderMarker) riderMarker.setLngLat([longitude, latitude]);
+
+  // Update distance
+  if (lastPosition) {
+    const d = haversine(lastPosition.lat, lastPosition.lon, latitude, longitude);
+    distanceTraveled += d;
+    document.getElementById('stat-distance').textContent = distanceTraveled.toFixed(1);
+    // Remaining (rough estimate based on total route ~100 miles)
+    const remaining = Math.max(0, 100 - distanceTraveled);
+    document.getElementById('stat-remaining').textContent = remaining.toFixed(1);
+  }
+  lastPosition = { lat: latitude, lon: longitude };
+
+  // Speed
+  const mph = speed ? (speed * 2.237).toFixed(1) : '0.0';
+  document.getElementById('stat-speed').textContent = mph;
+
+  // Check waypoint proximity
+  checkWaypointProximity(latitude, longitude);
+}
+
+function onGPSError(err) {
+  document.getElementById('gps-dot').className = 'gps-dot acquiring';
+  document.getElementById('gps-text').textContent = 'Acquiring GPS...';
+}
+
+// ── PROXIMITY CHECK ──
+function checkWaypointProximity(lat, lon) {
+  if (!routeData) return;
+  let nearestCue = null;
+  let nearestDist = Infinity;
+
+  routeData.waypoints.forEach(wp => {
+    if (firedCues.has(wp.id)) return;
+    const dist = haversine(lat, lon, wp.lat, wp.lon);
+    const distMeters = dist * 1609.34;
+
+    // Show upcoming cue banner
+    if (distMeters < 800 && distMeters < nearestDist) {
+      nearestDist = distMeters;
+      nearestCue = wp;
+    }
+
+    // Fire cue when within trigger radius
+    if (distMeters < wp.trigger_radius_meters) {
+      firedCues.add(wp.id);
+      stopsVisited++;
+      triggerCue(wp);
+    }
+  });
+
+  // Update cue banner
+  updateCueBanner(nearestCue, nearestDist);
+
+  // Check if finished
+  if (lastPosition) {
+    const distToFinish = haversine(lat, lon, 31.54587, -91.36975);
+    if (distToFinish < 0.1) finishRide();
+  }
+}
+
+// ── CUE BANNER ──
+function updateCueBanner(wp, distMeters) {
+  const banner = document.getElementById('cue-banner');
+  if (!wp) { banner.classList.remove('visible'); return; }
+  banner.classList.add('visible');
+  const distMiles = (distMeters / 1609.34).toFixed(1);
+  const icons = { poi:'🏛️', campsite:'⛺', lodging:'🏠', town:'🏘️', start:'🚴', finish:'🏁' };
+  document.getElementById('cue-icon').textContent = icons[wp.type] || '📍';
+  document.getElementById('cue-distance').textContent = `${distMiles} mi ahead`;
+  document.getElementById('cue-name').textContent = wp.name;
+}
+
+// ── TRIGGER CUE ──
+function triggerCue(wp) {
+  if (audioMuted || audioMode === 'silent') return;
+  if (audioMode === 'navigation' && wp.type === 'poi') return;
+
+  // Use Web Speech API for now (placeholder until ElevenLabs files ready)
+  if ('speechSynthesis' in window && wp.description) {
+    if (currentSpeech) window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(wp.name + '. ' + wp.description);
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.onstart = () => {
+      cuesPlayed++;
+      document.getElementById('audio-playing').classList.add('visible');
+    };
+    utterance.onend = () => document.getElementById('audio-playing').classList.remove('visible');
+    currentSpeech = utterance;
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
+// ── AUDIO TOGGLE ──
+function toggleAudio() {
+  audioMuted = !audioMuted;
+  const btn = document.getElementById('btn-audio');
+  btn.textContent = audioMuted ? '🔇' : '🔊';
+  btn.classList.toggle('active', audioMuted);
+  if (audioMuted && window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+// ── PREVIEW AUDIO ──
+function previewAudio(wpId, e) {
+  e.stopPropagation();
+  const wp = routeData?.waypoints.find(w => w.id === wpId);
+  if (!wp) return;
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(wp.name + '. ' + wp.description);
+    u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+// ── CENTER ON RIDER ──
+function centerOnRider() {
+  if (hudMap && lastPosition) {
+    hudMap.flyTo({ center: [lastPosition.lon, lastPosition.lat], zoom: 14, duration: 800 });
+  }
+}
+
+// ── ELAPSED TIME ──
+function updateElapsed() {
+  const h = Math.floor(elapsedSeconds / 3600);
+  const m = Math.floor((elapsedSeconds % 3600) / 60);
+  const s = elapsedSeconds % 60;
+  const display = h > 0
+    ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+    : `${m}:${String(s).padStart(2,'0')}`;
+  document.getElementById('stat-elapsed').textContent = display;
+}
+
+// ── PAUSE ──
+function pauseRide() {
+  ridePaused = !ridePaused;
+  const btn = document.querySelector('.hud-action-btn:nth-child(2)');
+  btn.textContent = ridePaused ? '▶ Resume' : '⏸ Pause';
+}
+
+// ── END RIDE ──
+function endRide() {
+  if (!confirm('End this ride?')) return;
+  finishRide();
+}
+
+function finishRide() {
+  if (watchId) navigator.geolocation.clearWatch(watchId);
+  if (elapsedTimer) clearInterval(elapsedTimer);
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+
+  const h = Math.floor(elapsedSeconds / 3600);
+  const m = Math.floor((elapsedSeconds % 3600) / 60);
+  const timeDisplay = h > 0 ? `${h}h ${m}m` : `${m}m`;
+
+  document.getElementById('finish-distance').textContent = distanceTraveled.toFixed(1);
+  document.getElementById('finish-time').textContent = timeDisplay;
+  document.getElementById('finish-stops').textContent = stopsVisited;
+  document.getElementById('finish-cues').textContent = cuesPlayed;
+
+  showScreen('screen-finished');
+}
+
+// ── WAYPOINT POPUP ──
+function showWaypointPopup(wp) {
+  const popup = document.getElementById('waypoint-popup');
+  const labels = { poi:'Point of Interest', campsite:'Campsite', lodging:'Lodging', town:'Town', start:'Start', finish:'Finish' };
+  document.getElementById('popup-category').textContent = labels[wp.type] || wp.type;
+  document.getElementById('popup-name').textContent = wp.name;
+  document.getElementById('popup-desc').textContent = wp.description;
+
+  const actions = document.getElementById('popup-actions');
+  actions.innerHTML = '';
+
+  if (wp.audio_file) {
+    const audioBtn = document.createElement('button');
+    audioBtn.className = 'popup-btn popup-btn-secondary';
+    audioBtn.textContent = '▶ Listen';
+    audioBtn.onclick = () => previewAudio(wp.id, { stopPropagation: ()=>{} });
+    actions.appendChild(audioBtn);
+  }
+
+  if (wp.links?.length > 0) {
+    wp.links.forEach(link => {
+      const a = document.createElement('a');
+      a.className = 'popup-btn popup-btn-primary';
+      a.href = link.url;
+      a.target = '_blank';
+      a.textContent = link.label;
+      actions.appendChild(a);
+    });
+  }
+
+  if (hudMap) hudMap.flyTo({ center: [wp.lon, wp.lat], zoom: 14, duration: 600 });
+  popup.classList.add('visible');
+}
+
+function closePopup() {
+  document.getElementById('waypoint-popup').classList.remove('visible');
+}
+
+function showWaypointList() {
+  // Could expand to a full overlay — for now just close any open popup
+  closePopup();
+}
+
+// ── UTILS ──
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 3958.8;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ── BOOT ──
+init();
+</script>
+</body>
+</html>
