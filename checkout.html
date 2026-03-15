@@ -85,10 +85,10 @@
   <p class="secure-note">🔒 Secure checkout via Stripe · Instant PDF delivery</p>
 </div>
 <script>
-  const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+  const supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
   let currentUser = null;
 
-  supabase.auth.getSession().then(({ data: { session } }) => {
+  supabaseClient.auth.getSession().then(({ data: { session } }) => {
     currentUser = session?.user ?? null;
     if (!currentUser) document.getElementById('email-section').style.display = 'block';
   });
