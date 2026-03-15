@@ -11,7 +11,7 @@
 :root { --forest:#2C4A2E;--moss:#4A7C59;--sage:#8AAF8A;--parch:#F4EFE4;--parch2:#EDE8D8;--accent:#C17F3A;--ink:#1e2a1f; }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{background:var(--parch);color:var(--ink);font-family:'DM Sans',sans-serif;}
+body{background:var(--parch);color:var(--ink);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(28,42,31,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(138,175,138,0.15);}
 .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.1em;color:var(--parch);text-decoration:none;}
 .nav-logo span{color:var(--accent);}
@@ -24,7 +24,7 @@ body{background:var(--parch);color:var(--ink);font-family:'DM Sans',sans-serif;}
 .slide-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;border:none;padding:0;transition:background 0.3s;}
 .slide-dot.active{background:var(--accent);}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.1) 60%,transparent 100%);}
-.hero-content{position:relative;z-index:1;padding:0 3.5rem 4rem;max-width:780px;}
+.hero-content{position:relative;z-index:1;padding:0 1.5rem 4rem;max-width:780px;width:100%;}
 .hero-label{font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:#fff;margin-bottom:0.75rem;display:block;text-shadow:0 1px 4px rgba(0,0,0,0.5);}
 .hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,5.5rem);color:var(--parch);line-height:0.95;letter-spacing:0.02em;margin-bottom:1.25rem;}
 .hero-sub{font-family:'DM Sans',sans-serif;font-size:1rem;color:rgba(244,239,228,0.75);line-height:1.6;max-width:480px;margin-bottom:2rem;}
@@ -122,6 +122,10 @@ body{background:var(--parch);color:var(--ink);font-family:'DM Sans',sans-serif;}
 .pricing-item{flex:0 0 50%;padding:1.25rem 0.5rem;}
 .cta-strip{padding:3rem 1.5rem;}
 .faq-inner{padding:0 1.25rem;}
+.elev-header{padding:1.25rem 1rem 0.5rem;flex-wrap:wrap;gap:0.5rem;}
+.elev-stats{gap:1rem;flex-wrap:wrap;}
+.elev-chart-wrap{padding:0 1rem 1.25rem;}
+.elev-endpoints{padding:0.25rem 1rem 0;}
 }
 .segment-card{background:white;border-radius:2px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.06);display:flex;flex-direction:column;transition:transform 0.2s,box-shadow 0.2s;}
 .segment-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.1);}

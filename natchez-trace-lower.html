@@ -22,7 +22,7 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans-serif; }
+body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
 
 /* ── HERO SLIDER ── */
 .hero { position: relative; height: 90vh; min-height: 560px; overflow: hidden; display: flex; align-items: flex-end; }
@@ -63,8 +63,9 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 }
 .hero-content {
   position: relative; z-index: 1;
-  padding: 0 3.5rem 4rem;
+  padding: 0 1.5rem 4rem;
   max-width: 780px;
+  width: 100%;
 }
 .hero-label {
   font-family: 'DM Sans', sans-serif; font-weight: 600;
