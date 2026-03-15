@@ -1623,7 +1623,7 @@
     }
 
     // -- AUTH MODAL ------------------------------------------------------------
-    let authMode = 'signup';
+    var authMode = 'signup';
     function openAuth(mode = 'signup', answers = null) { authMode = mode; if (answers) pendingAnswers = answers; switchTab(mode); document.getElementById('authModal').classList.add('open'); setTimeout(() => document.getElementById('authEmail').focus(), 100); }
     function closeAuth() { document.getElementById('authModal').classList.remove('open'); document.getElementById('authError').classList.remove('show'); }
     function switchTab(mode) {
