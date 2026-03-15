@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -20,16 +20,18 @@
     }
 
     :root {
-      --forest: #2C4A2E;
-      --moss:   #4A7C59;
-      --sage:   #8AAF8A;
-      --parch:  #F4EFE4;
-      --parch2: #EDE8D8;
-      --accent: #C17F3A;
-      --ink:    #1e2a1f;
-      --white:  #FFFFFF;
-      --muted:  #7A8C7D;
+      --navy: #1A2B4C;
+      --yellow: #F4D03F;
+      --crimson: #4A7C59;
+      --ivory: #FDFBF7;
+      --cream: #F2EBE1;
+      --ink: #1C2D27;
+      --white: #FFFFFF;
+      --sand: #E5D9C5;
+      --muted: #7A8C7D;
       --border: #D5C8B5;
+      --forest: #2D4635;
+      --moss: #435C49;
     }
 
     html {
@@ -38,7 +40,7 @@
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--parch);
+      background: var(--ivory);
       color: var(--ink);
       overflow-x: hidden;
     }
@@ -58,7 +60,7 @@
     .dot {
       position: absolute;
       border-radius: 50%;
-      background: var(--accent);
+      background: var(--yellow);
       opacity: 0.2;
       animation: float linear infinite;
       pointer-events: none;
@@ -147,31 +149,90 @@
       height: 80px;
       pointer-events: none;
       z-index: 0;
-      background: var(--parch2);
+      background: var(--cream);
       clip-path: polygon(0 100%, 0 60%, 5% 40%, 12% 55%, 20% 30%, 30% 50%, 40% 20%, 52% 45%, 60% 25%, 70% 42%, 80% 18%, 90% 38%, 100% 22%, 100% 100%);
     }
 
     /* -- NAV --------------------------------- */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 2.5rem; height: 60px;
-      background: rgba(28, 42, 31, 0.92);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid rgba(138,175,138,0.15);
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.8rem 3.5rem;
+      animation: fadeDown 0.7s ease both;
     }
-    .nav-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.4rem; letter-spacing: 0.1em;
-      color: var(--parch); text-decoration: none;
-    }
-    .nav-logo span { color: var(--accent); }
-    .nav-buy {
-      background: var(--accent); color: white; border: none;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1rem; letter-spacing: 0.12em;
-      padding: 0.55rem 1.4rem; border-radius: 2px; cursor: pointer;
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
       text-decoration: none;
+    }
+
+    .logo-text {
+      font-family: inherit;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--forest);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--forest);
+      background: #F2EBE1;
+      border: 1px solid var(--border);
+      padding: 0.4rem 1.1rem;
+      border-radius: 999px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .nav-btn {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--white);
+      background: var(--forest);
+      border: none;
+      padding: 0.6rem 1.6rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all .2s ease;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .nav-user-name {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--navy);
+      cursor: pointer;
     }
 
     /* -- HERO CONTENT ------------------------ */
@@ -341,7 +402,7 @@
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(2.2rem, 4.5vw, 3.5rem);
       font-weight: 400;
-      color: var(--forest);
+      color: var(--navy);
       letter-spacing: 0.02em;
       margin-bottom: 0.65rem;
     }
@@ -482,7 +543,7 @@
       border-radius: 999px;
       border: 1.5px solid var(--border);
       background: var(--white);
-      color: var(--forest);
+      color: var(--navy);
       font-family: 'DM Sans', sans-serif;
       font-size: 0.77rem;
       font-weight: 500;
@@ -491,9 +552,9 @@
     }
 
     .qr-btn:hover {
-      background: var(--forest);
+      background: var(--navy);
       color: var(--white);
-      border-color: var(--forest);
+      border-color: var(--navy);
     }
 
     /* typing */
@@ -505,7 +566,7 @@
     }
 
     .typing-dots {
-      background: var(--parch2);
+      background: var(--cream);
       border: 1px solid var(--border);
       border-radius: 16px;
       border-bottom-left-radius: 4px;
@@ -549,7 +610,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
-      background: var(--parch);
+      background: var(--ivory);
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 0.2rem 0.6rem;
@@ -570,7 +631,7 @@
     }
 
     .rc-head {
-      background: var(--forest);
+      background: var(--navy);
       color: var(--white);
       padding: 0.6rem 0.85rem;
       font-family: 'Bebas Neue', sans-serif;
@@ -609,13 +670,13 @@
     }
 
     .stat-v {
-      color: var(--forest);
+      color: var(--navy);
       font-weight: 600;
       font-size: 0.8rem;
     }
 
     .itin {
-      background: var(--parch2);
+      background: var(--cream);
       border: 1px solid var(--border);
       border-radius: 10px;
       overflow: hidden;
@@ -624,8 +685,8 @@
     }
 
     .itin-head {
-      background: var(--accent);
-      color: var(--forest);
+      background: var(--yellow);
+      color: var(--navy);
       padding: 0.5rem 0.85rem;
       font-weight: 700;
       font-size: 0.72rem;
@@ -635,7 +696,7 @@
 
     .itin-day {
       padding: 0.5rem 0.85rem;
-      border-bottom: 1px solid var(--parch2);
+      border-bottom: 1px solid var(--sand);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -660,7 +721,7 @@
     }
 
     .pdf-card {
-      background: linear-gradient(135deg, var(--forest), var(--ink));
+      background: linear-gradient(135deg, var(--navy), var(--ink));
       border-radius: 10px;
       padding: 1rem 1.1rem;
       color: var(--white);
@@ -707,7 +768,7 @@
     }
 
     .save-plan-card {
-      background: var(--parch);
+      background: var(--ivory);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 0.9rem 1rem;
@@ -719,8 +780,8 @@
     .save-plan-btn {
       margin-top: 0.65rem;
       display: inline-flex;
-      background: var(--accent);
-      color: var(--forest);
+      background: var(--yellow);
+      color: var(--navy);
       border: none;
       padding: 0.5rem 1.1rem;
       border-radius: 7px;
@@ -781,7 +842,7 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: var(--forest);
+      background: var(--navy);
       border: none;
       cursor: pointer;
       display: flex;
@@ -803,14 +864,14 @@
     }
 
     .send-btn:disabled {
-      background: var(--parch2);
+      background: var(--sand);
       color: var(--muted);
       cursor: not-allowed;
     }
 
     /* -- ONBOARDING SECTIONS ----------------- */
     .onboarding {
-      background: var(--parch);
+      background: var(--ivory);
       padding: 6rem 2rem 5rem;
       text-align: center;
     }
@@ -833,7 +894,7 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: var(--forest);
+      background: var(--navy);
       color: var(--white);
       display: flex;
       align-items: center;
@@ -845,7 +906,7 @@
 
     .ob-step h3 {
       font-size: 1.2rem;
-      color: var(--forest);
+      color: var(--navy);
       margin-bottom: 0.75rem;
     }
 
@@ -857,7 +918,7 @@
     }
 
     .cta-section {
-      background: var(--forest);
+      background: var(--navy);
       color: var(--white);
       text-align: center;
       padding: 6rem 2rem;
@@ -875,13 +936,13 @@
       font-size: 1.1rem;
       max-width: 500px;
       margin: 0 auto 2.5rem;
-      color: var(--parch2);
+      color: var(--cream);
       line-height: 1.6;
     }
 
     .cta-btn {
-      background: var(--accent);
-      color: var(--forest);
+      background: var(--yellow);
+      color: var(--navy);
       font-family: 'DM Sans', sans-serif;
       font-size: 1rem;
       font-weight: 700;
@@ -900,7 +961,7 @@
     /* -- FEATURED TOURS ---------------------- */
     .chat-section {
       padding: 4rem 2rem 8rem;
-      background: var(--parch);
+      background: var(--ivory);
       text-align: center;
       border-top: 1px solid var(--border);
       position: relative;
@@ -908,7 +969,7 @@
 
     .tours-section {
       padding: 6rem 2rem;
-      background: var(--parch2);
+      background: var(--cream);
       text-align: center;
       border-top: 1px solid var(--border);
     }
@@ -916,7 +977,7 @@
     .tours-header h2 {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(2.5rem, 5vw, 3.5rem);
-      color: var(--forest);
+      color: var(--navy);
       letter-spacing: 0.02em;
       margin-bottom: 1rem;
     }
@@ -985,7 +1046,7 @@
     .tour-info h3 {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1.8rem;
-      color: var(--forest);
+      color: var(--navy);
       letter-spacing: 0.02em;
       margin-bottom: 0.5rem;
     }
@@ -1016,7 +1077,7 @@
 
     .plan-btn {
       width: 100%;
-      background: var(--forest);
+      background: var(--navy);
       color: var(--white);
       border: none;
       padding: 0.8rem;
@@ -1079,7 +1140,7 @@
       width: 52px;
       height: 52px;
       border-radius: 50%;
-      background: var(--forest);
+      background: var(--navy);
       color: var(--white);
       align-items: center;
       justify-content: center;
@@ -1090,7 +1151,7 @@
       font-family: 'Bebas Neue', sans-serif;
       font-size: 1.6rem;
       font-weight: 400;
-      color: var(--forest);
+      color: var(--navy);
       letter-spacing: 0.04em;
       text-align: center;
       margin-bottom: 0.35rem
@@ -1107,7 +1168,7 @@
     .auth-tabs {
       display: flex;
       gap: 0;
-      border: 1.5px solid var(--parch2);
+      border: 1.5px solid var(--sand);
       border-radius: 8px;
       overflow: hidden;
       margin-bottom: 1.25rem
@@ -1127,7 +1188,7 @@
     }
 
     .auth-tab.active {
-      background: var(--forest);
+      background: var(--navy);
       color: var(--white)
     }
 
@@ -1154,18 +1215,18 @@
       font-size: 0.9rem;
       color: var(--ink);
       outline: none;
-      background: var(--parch);
+      background: var(--ivory);
       transition: border-color .15s
     }
 
     .auth-input:focus {
-      border-color: var(--forest)
+      border-color: var(--navy)
     }
 
     .auth-submit {
       width: 100%;
       padding: 0.75rem;
-      background: var(--forest);
+      background: var(--navy);
       color: var(--white);
       border: none;
       border-radius: 10px;
@@ -1235,8 +1296,8 @@
 
     /* -- RESPONSIVE -------------------------- */
     @media(max-width:640px) {
-      .nav {
-        padding: 0 1.4rem;
+      nav {
+        padding: 1.4rem 1.4rem
       }
 
       .hero-footer {
@@ -1282,9 +1343,22 @@
 
     <div class="hero-terrain"></div>
 
-    <nav class="nav">
-      <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
-      <a class="nav-buy" href="/natchez-trace-route-guide.html">See the Natchez Trace Guide →</a>
+    <nav>
+      <a class="logo" href="#">
+        <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="18" r="15" stroke="var(--forest)" stroke-width="2.5" />
+          <line x1="18" y1="6" x2="18" y2="30" stroke="var(--forest)" stroke-width="2.2" stroke-linecap="round" />
+          <line x1="6" y1="18" x2="30" y2="18" stroke="var(--forest)" stroke-width="2.2" stroke-linecap="round" />
+          <path d="M12 12L24 24M24 12L12 24" stroke="var(--forest)" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        <span class="logo-text">OpenRide</span>
+      </a>
+      <div style="display:flex;align-items:center;gap:0.9rem;">
+        <span class="nav-badge">Beta</span>
+        <div id="navAuthArea">
+          <button class="nav-btn" onclick="openAuth('signup')">Sign up free</button>
+        </div>
+      </div>
     </nav>
 
     <div class="hero-content">
@@ -1433,7 +1507,7 @@
           <p>A nearly flat, continuous crushed limestone path through the Appalachian Mountains from Cumberland to
             Pittsburgh.</p>
           <button class="plan-btn" disabled
-            style="background: var(--parch2); color: var(--muted); cursor: not-allowed;">Coming Soon</button>
+            style="background: var(--sand); color: var(--muted); cursor: not-allowed;">Coming Soon</button>
         </div>
       </div>
       <!-- Tour Card 3 -->
@@ -1451,7 +1525,7 @@
           <p>Classic New England riding linking historic bed & breakfasts, covered bridges, and the best maple stops in
             the Green Mountains.</p>
           <button class="plan-btn" disabled
-            style="background: var(--parch2); color: var(--muted); cursor: not-allowed;">Coming Soon</button>
+            style="background: var(--sand); color: var(--muted); cursor: not-allowed;">Coming Soon</button>
         </div>
       </div>
     </div>
@@ -1472,9 +1546,7 @@
   <div class="modal-overlay" id="authModal">
     <div class="auth-modal">
       <button class="auth-modal-close" onclick="closeAuth()">&times;</button>
-      <div class="auth-badge">
-        <div class="auth-badge-inner">Ride</div>
-      </div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.1em;color:var(--forest);text-align:center;margin-bottom:0.25rem;">Open<span style="color:var(--accent);">Ride</span>.bike</div>
       <div class="auth-title" id="authTitle">Save Your Tour Plan</div>
       <div class="auth-sub" id="authSub">Create a free account to save your itinerary, earn badges, and join the
         OpenRide community.</div>
@@ -1519,7 +1591,9 @@
       sb.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
           currentUser = session.user; await loadProfile(session.user.id); renderNavLoggedIn(); closeAuth();
-          if (pendingAnswers) { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("? Your tour plan is saved! Head to your profile to see it � and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
+          const redirect = new URLSearchParams(window.location.search).get('redirect');
+          if (redirect) { window.location.href = redirect; return; }
+          if (pendingAnswers) { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("? Your tour plan is saved! Head to your profile to see it  and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
         }
         if (event === 'SIGNED_OUT') { currentUser = null; currentProfile = null; renderNavLoggedOut(); }
       });
@@ -1549,7 +1623,7 @@
     }
 
     // -- AUTH MODAL ------------------------------------------------------------
-    let authMode = 'signup';
+    var authMode = 'signup';
     function openAuth(mode = 'signup', answers = null) { authMode = mode; if (answers) pendingAnswers = answers; switchTab(mode); document.getElementById('authModal').classList.add('open'); setTimeout(() => document.getElementById('authEmail').focus(), 100); }
     function closeAuth() { document.getElementById('authModal').classList.remove('open'); document.getElementById('authError').classList.remove('show'); }
     function switchTab(mode) {
@@ -1569,8 +1643,16 @@
       try {
         if (authMode === 'signup') {
           const { data, error } = await sb.auth.signUp({ email, password }); if (error) throw error;
-          if (data.user && name) await sb.from('profiles').update({ rider_name: name }).eq('id', data.user.id);
-          if (data.user && pendingAnswers) await sb.from('profiles').update({ bike_type: pendingAnswers.ebike ? 'ebike' : null, lodging_pref: pendingAnswers.lodging, seasons: [pendingAnswers.season] }).eq('id', data.user.id);
+          if (data.user) {
+            const profileData = { id: data.user.id };
+            if (name) profileData.rider_name = name;
+            if (pendingAnswers) {
+              profileData.bike_type = pendingAnswers.ebike ? 'ebike' : null;
+              profileData.lodging_pref = pendingAnswers.lodging;
+              profileData.seasons = [pendingAnswers.season];
+            }
+            await sb.from('profiles').upsert(profileData, { onConflict: 'id' });
+          }
         } else { const { error } = await sb.auth.signInWithPassword({ email, password }); if (error) throw error; }
       } catch (err) { showAuthError(err.message || 'Something went wrong.'); btn.disabled = false; btn.textContent = authMode === 'signup' ? 'Create My Free Account ?' : 'Sign In ?'; }
     }
@@ -1633,7 +1715,15 @@ Quick replies: [QR: option 1 | option 2 | option 3]`;
     let history = [], loading = false;
     const msgsEl = document.getElementById('chatMessages'), inputEl = document.getElementById('chatInput'), sendBtn = document.getElementById('sendBtn');
 
-    window.addEventListener('load', () => { initAuth(); callApi([{ role: 'user', content: 'Give a warm 2-sentence greeting and ask your first planning question.' }], true); });
+    window.addEventListener('load', () => {
+      initAuth();
+      callApi([{ role: 'user', content: 'Give a warm 2-sentence greeting and ask your first planning question.' }], true);
+      // Delay login modal so auth and DOM are fully initialized
+      setTimeout(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('login') === 'true') openAuth('login');
+      }, 300);
+    });
     inputEl.addEventListener('input', () => { inputEl.style.height = 'auto'; inputEl.style.height = Math.min(inputEl.scrollHeight, 90) + 'px'; });
     inputEl.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
 
