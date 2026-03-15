@@ -24,7 +24,7 @@ body{background:var(--ivory);color:var(--ink);font-family:'DM Sans',sans-serif;}
 .hero-eyebrow{font-size:0.78rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--moss);margin-bottom:0.5rem;}
 .hero-name{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--forest);line-height:1;margin-bottom:0.25rem;}
 .hero-email{font-size:0.85rem;color:var(--muted);}
-.content{padding:2rem 2.5rem;max-width:960px;margin:0 auto;}
+.content{padding:2rem 2.5rem;max-width:900px;}
 .section-eyebrow{font-size:0.78rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--moss);margin-bottom:1rem;display:block;margin-top:2rem;}
 .guides-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.06);margin-bottom:2rem;}
 .guides-head{background:#2C4A2E;padding:0.65rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.04em;color:#ffffff;}
@@ -117,7 +117,8 @@ async function init() {
   if (!session) { window.location.href = '/?login=true&redirect=/profile.html'; return; }
   const user = session.user;
   const email = user.email;
-  const name = user.user_metadata?.full_name || email.split('@')[0];
+  const { data: profile } = await sb.from('profiles').select('rider_name').eq('id', user.id).single();
+  const name = profile?.rider_name || user.user_metadata?.full_name || email.split('@')[0];
   const since = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   document.getElementById('nav-email').textContent = email;
