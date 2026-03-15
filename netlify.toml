@@ -1,4 +1,12 @@
 [build]
+  command = """cat > config.js << CONFIGEOF
+const CONFIG = {
+  supabaseUrl: '$SUPABASE_URL',
+  supabaseAnon: '$SUPABASE_ANON',
+  anthropicKey: '$ANTHROPIC_KEY',
+  mapboxToken: '$MAPBOX_TOKEN',
+};
+CONFIGEOF"""
   functions = "functions"
 
 [functions]
