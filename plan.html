@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan Your Tour — OpenRide.bike</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --forest: #2C4A2E;
+  --moss: #4A7C59;
+  --sage: #8AAF8A;
+  --parch: #F4EFE4;
+  --accent: #C17F3A;
+  --ink: #1e2a1f;
+  --navy: #2C4A2E;
+  --ivory: #FDFBF7;
+  --cream: #F2EBE1;
+  --white: #FFFFFF;
+  --muted: #7A8C7D;
+  --border: #D5C8B5;
+  --sand: #E8DFD0;
+  --earth: #6B5B4B;
+  --yellow: #F4D03F;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--ivory);color:var(--ink);font-family:'DM Sans',sans-serif;}
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 60px;
+  background: rgba(28, 42, 31, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(138,175,138,0.15);
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem; letter-spacing: 0.1em;
+  color: var(--parch); text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+
+/* ── PLAN HEADER ── */
+.plan-header {
+  max-width: 760px; margin: 0 auto;
+  padding: 6rem 2rem 1.5rem;
+  text-align: center;
+}
+.plan-header .eyebrow {
+  font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--moss); margin-bottom: 0.5rem;
+}
+.plan-header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+  color: var(--forest); letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+}
+.plan-header .sub {
+  font-size: 0.95rem; color: var(--ink);
+  opacity: 0.7; line-height: 1.6;
+}
+
+/* ── CHAT WIDGET ── */
+.chat-section {
+  padding: 0 2rem 8rem;
+  background: var(--ivory);
+  position: relative;
+}
+.chat-widget {
+  max-width: 760px; margin: 0 auto;
+  background: transparent; border: none; box-shadow: none;
+  display: flex; flex-direction: column;
+  position: relative; z-index: 5;
+}
+.chat-messages {
+  padding: 0.5rem 0 1.5rem;
+  display: flex; flex-direction: column; gap: 1.5rem;
+  min-height: 20px; max-height: 550px;
+  overflow-y: auto; scroll-behavior: smooth;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.msg { display: flex; gap: 1.25rem; max-width: 100%; animation: msgIn .25s ease both; align-items: flex-start; }
+.msg.guide { align-self: flex-start; }
+.msg.user { align-self: flex-start; }
+@keyframes msgIn { from { opacity:0; transform:translateY(5px) } to { opacity:1; transform:translateY(0) } }
+.msg-avatar { width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;margin-top:4px; }
+.msg.guide .msg-avatar { display: none; }
+.msg.user .msg-avatar { display: none; }
+.msg-bubble { padding:0;border-radius:0;line-height:1.6;font-size:1rem;color:var(--ink);flex:1; }
+.msg.guide .msg-bubble, .msg.user .msg-bubble { background:transparent;border:none; }
+.msg-bubble p { margin-bottom: 0.6rem; }
+.msg-bubble p:last-child { margin-bottom: 0; }
+.msg-bubble strong { font-weight: 600; }
+.quick-replies { display:flex;flex-wrap:wrap;gap:0.4rem;padding-left:2.25rem;animation:msgIn .3s .1s ease both; }
+.qr-btn { padding:0.36rem 0.8rem;border-radius:999px;border:1.5px solid var(--border);background:var(--white);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.77rem;font-weight:500;cursor:pointer;transition:all .15s; }
+.qr-btn:hover { background:var(--navy);color:var(--white);border-color:var(--navy); }
+.typing { display:flex;gap:0.6rem;align-self:flex-start;animation:msgIn .2s ease both; }
+.typing-dots { background:var(--cream);border:1px solid var(--border);border-radius:16px;border-bottom-left-radius:4px;padding:0.7rem 0.9rem;display:flex;gap:3px;align-items:center; }
+.typing-dots span { width:5px;height:5px;border-radius:50%;background:var(--muted);animation:bounce 1.2s infinite; }
+.typing-dots span:nth-child(2) { animation-delay:.2s }
+.typing-dots span:nth-child(3) { animation-delay:.4s }
+@keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-4px)} }
+.search-tag { display:inline-flex;align-items:center;gap:0.3rem;background:var(--ivory);border:1px solid var(--border);border-radius:20px;padding:0.2rem 0.6rem;font-size:0.7rem;color:#4A7C59;align-self:flex-start; }
+.route-card { background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:0.4rem;box-shadow:0 4px 12px rgba(26,43,76,0.08);font-size:0.82rem; }
+.rc-head { background:var(--navy);color:var(--white);padding:0.6rem 0.85rem;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:0.04em; }
+.rc-body { padding:0.75rem 0.85rem;color:var(--ink); }
+.rc-sub { color:#4A7C59;font-style:normal;font-weight:500;margin-bottom:0.35rem;font-size:0.8rem; }
+.rc-stats { display:flex;gap:1rem;margin-top:0.5rem;padding-top:0.5rem;border-top:1px solid var(--border);flex-wrap:wrap; }
+.stat-l { font-size:0.63rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.04em; }
+.stat-v { color:var(--navy);font-weight:600;font-size:0.8rem; }
+.itin { background:var(--cream);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:0.4rem;font-size:0.82rem; }
+.itin-head { background:var(--yellow);color:var(--navy);padding:0.5rem 0.85rem;font-weight:700;font-size:0.72rem;letter-spacing:0.04em;text-transform:uppercase; }
+.itin-day { padding:0.5rem 0.85rem;border-bottom:1px solid var(--sand);display:flex;justify-content:space-between;align-items:center;gap:0.5rem;background:var(--white); }
+.itin-day:last-child { border-bottom:none }
+.day-name { font-weight:600;color:var(--forest);font-size:0.8rem }
+.day-info { color:var(--earth);font-size:0.73rem;text-align:right }
+.pdf-card { background:linear-gradient(135deg,var(--navy),var(--ink));border-radius:10px;padding:1rem 1.1rem;color:var(--white);margin-top:0.4rem; }
+.pdf-card h4 { font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:0.04em;margin-bottom:0.4rem; }
+.pdf-card p { font-size:0.8rem;opacity:0.9;line-height:1.5;margin-bottom:0.75rem; }
+.pdf-btn { display:inline-flex;align-items:center;gap:0.4rem;background:var(--accent);color:var(--white);padding:0.5rem 1.1rem;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;border:none;cursor:pointer;transition:opacity .15s; }
+.pdf-btn:hover { opacity:.88 }
+.pdf-btn:disabled { opacity:.5;cursor:not-allowed }
+.save-plan-card { background:var(--ivory);border:1px solid var(--border);border-radius:10px;padding:0.9rem 1rem;margin-top:0.4rem;font-size:0.82rem;color:var(--ink); }
+.save-plan-btn { margin-top:0.65rem;display:inline-flex;background:var(--yellow);color:var(--navy);border:none;padding:0.5rem 1.1rem;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:background .15s; }
+.save-plan-btn:hover { background:#E5C33A; }
+.chat-input-area { padding:1rem 0 0;background:transparent;position:relative; }
+.input-wrap { background:var(--white);border:1px solid var(--border);border-radius:28px;display:flex;align-items:center;padding:0.5rem 0.5rem 0.5rem 1.5rem;transition:all .2s ease;box-shadow:0 8px 24px rgba(26,43,76,0.06);position:relative; }
+.input-wrap:focus-within { border-color:#d0d0d0;box-shadow:0 12px 32px rgba(26,43,76,0.1); }
+.input-wrap textarea { flex:1;border:none;outline:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--ink);resize:none;max-height:160px;line-height:1.5;padding:0.4rem 0; }
+.input-wrap textarea::placeholder { color:var(--muted); }
+.send-btn { width:32px;height:32px;border-radius:50%;background:var(--navy);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:0.85rem;flex-shrink:0;transition:background .15s,transform .1s;margin-left:0.8rem; }
+.send-btn:hover { background:#4A7C59; }
+.send-btn:active { transform:scale(0.95); }
+.send-btn:disabled { background:var(--sand);color:var(--muted);cursor:not-allowed; }
+
+/* ── AUTH MODAL ── */
+.modal-overlay { display:none;position:fixed;inset:0;background:rgba(44,74,46,0.5);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px); }
+.modal-overlay.open { display:flex }
+.auth-modal { background:var(--white);border-radius:18px;padding:2rem;width:min(420px,92vw);position:relative;box-shadow:0 16px 48px rgba(0,0,0,0.22); }
+.auth-modal-close { position:absolute;top:1rem;right:1.1rem;background:none;border:none;font-size:1.1rem;color:var(--sage);cursor:pointer }
+.auth-title { font-family:'Bebas Neue',sans-serif;font-size:1.6rem;font-weight:400;color:var(--navy);letter-spacing:0.04em;text-align:center;margin-bottom:0.35rem }
+.auth-sub { font-size:0.85rem;color:#6a5a4a;text-align:center;margin-bottom:1.25rem;line-height:1.5 }
+.auth-tabs { display:flex;gap:0;border:1.5px solid var(--sand);border-radius:8px;overflow:hidden;margin-bottom:1.25rem }
+.auth-tab { flex:1;padding:0.55rem;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s }
+.auth-tab.active { background:var(--navy);color:var(--white) }
+.auth-field { margin-bottom:1rem }
+.auth-label { display:block;font-size:0.78rem;font-weight:500;color:#4A7C59;margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.06em }
+.auth-input { width:100%;padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--ink);outline:none;background:var(--ivory);transition:border-color .15s }
+.auth-input:focus { border-color:var(--navy) }
+.auth-submit { width:100%;padding:0.75rem;background:var(--navy);color:var(--white);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;margin-top:0.5rem;transition:background .15s }
+.auth-submit:hover { background:var(--ink); }
+.auth-submit:disabled { opacity:.6;cursor:not-allowed }
+.auth-divider { text-align:center;color:var(--muted);font-size:0.8rem;margin:0.85rem 0 }
+.auth-error { display:none;background:#fef2f2;border:1px solid #fecaca;color:#991b1b;border-radius:8px;padding:0.6rem 0.85rem;font-size:0.82rem;margin-bottom:0.75rem }
+.auth-error.show { display:block }
+
+@media(max-width:640px) {
+  .chat-section { padding:0 1rem 3.5rem }
+  .chat-messages { max-height:400px }
+  .plan-header { padding:5rem 1rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="/">Open<span style="color:#C17F3A;">Ride</span>.bike</a>
+  <div id="navAuthArea" style="display:flex;align-items:center;gap:0.75rem;">
+    <button onclick="openAuth('login')" style="background:none;border:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;">Sign In</button>
+    <span style="color:rgba(244,239,228,0.3);font-size:0.85rem;">|</span>
+    <a href="#" onclick="openAuth('signup');return false;" style="background:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;text-decoration:none;">Create Account</a>
+  </div>
+</nav>
+
+<div class="plan-header">
+  <p class="eyebrow">AI Tour Planner</p>
+  <h1>Plan Your Natchez Trace Tour</h1>
+  <p class="sub">Tell me how you ride and I'll build your day-by-day itinerary.</p>
+</div>
+
+<section class="chat-section">
+  <div class="chat-widget">
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-area">
+      <div class="input-wrap">
+        <textarea id="chatInput" placeholder="Where do you want to go?" rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="handleSend()">&#8594;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="auth-modal">
+    <button class="auth-modal-close" onclick="closeAuth()">&times;</button>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:0.1em;color:var(--forest);text-align:center;margin-bottom:0.25rem;">Open<span style="color:var(--accent);">Ride</span>.bike</div>
+    <div class="auth-title" id="authTitle">Save Your Tour Plan</div>
+    <div class="auth-sub" id="authSub">Create a free account to save your itinerary, earn badges, and join the OpenRide community.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignup" onclick="switchTab('signup')">Create Account</button>
+      <button class="auth-tab" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+    </div>
+    <div class="auth-error" id="authError"></div>
+    <div id="signupFields">
+      <div class="auth-field">
+        <label class="auth-label">Your Name</label>
+        <input class="auth-input" id="authName" type="text" placeholder="e.g. Sarah Whitmore" autocomplete="name" />
+      </div>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Email</label>
+      <input class="auth-input" id="authEmail" type="email" placeholder="your@email.com" autocomplete="email" />
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Password</label>
+      <input class="auth-input" id="authPassword" type="password" placeholder="Password" autocomplete="current-password" />
+    </div>
+    <button class="auth-submit" id="authSubmit" onclick="submitAuth()">Create My Free Account</button>
+    <div class="auth-divider">or</div>
+    <div style="text-align:center;font-size:0.78rem;color:var(--muted);">
+      Already have an account? <span style="color:var(--moss);cursor:pointer;font-weight:500;" onclick="switchTab('login')">Sign in</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// -- SUPABASE --------------------------------------------------------------
+const sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnon);
+
+let currentUser = null, currentProfile = null, pendingAnswers = null;
+
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) { currentUser = session.user; await loadProfile(session.user.id); renderNavLoggedIn(); }
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session?.user) {
+      currentUser = session.user; await loadProfile(session.user.id); renderNavLoggedIn(); closeAuth();
+      const redirect = new URLSearchParams(window.location.search).get('redirect');
+      if (redirect) { window.location.href = redirect; return; }
+      if (pendingAnswers) { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("Your tour plan is saved! Head to your profile to see it and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
+    }
+    if (event === 'SIGNED_OUT') { currentUser = null; currentProfile = null; renderNavLoggedOut(); }
+  });
+}
+async function loadProfile(uid) { const { data } = await sb.from('profiles').select('*').eq('id', uid).single(); currentProfile = data; }
+
+function renderNavLoggedIn() {
+  const userHTML = `<a href="/profile.html" style="color:rgba(244,239,228,0.8);font-family:'DM Sans',sans-serif;font-size:0.85rem;text-decoration:none;letter-spacing:0.03em;">Account</a>
+    <span style="color:rgba(244,239,228,0.3);font-size:0.85rem;">|</span>
+    <button onclick="sb.auth.signOut()" style="background:none;border:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;">Sign Out</button>`;
+  ['navAuthArea'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = userHTML; });
+}
+function renderNavLoggedOut() {
+  const n = document.getElementById('navAuthArea');
+  if (n) n.innerHTML = `<button onclick="openAuth('login')" style="background:none;border:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;">Sign In</button>
+    <span style="color:rgba(244,239,228,0.3);font-size:0.85rem;">|</span>
+    <a href="#" onclick="openAuth('signup');return false;" style="background:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;text-decoration:none;">Create Account</a>`;
+}
+async function signOut() { await sb.auth.signOut(); }
+async function saveTour(a) {
+  if (!currentUser) return;
+  await sb.from('tours').insert({ user_id: currentUser.id, route_id: a.route, status: 'planned', pace: a.pace, lodging: a.lodging, transport: a.transport, season: a.season, ebike: a.ebike });
+  const { count } = await sb.from('tours').select('*', { count: 'exact', head: true }).eq('user_id', currentUser.id);
+  if (count === 1) await sb.from('user_badges').insert({ user_id: currentUser.id, badge_id: 'first-tour' }).onConflict('user_id,badge_id').ignore();
+}
+
+// -- AUTH MODAL ------------------------------------------------------------
+var authMode = 'signup';
+function openAuth(mode = 'signup', answers = null) { authMode = mode; if (answers) pendingAnswers = answers; switchTab(mode); document.getElementById('authModal').classList.add('open'); setTimeout(() => document.getElementById('authEmail').focus(), 100); }
+function closeAuth() { document.getElementById('authModal').classList.remove('open'); document.getElementById('authError').classList.remove('show'); }
+function switchTab(mode) {
+  authMode = mode;
+  document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
+  document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+  document.getElementById('signupFields').style.display = mode === 'signup' ? '' : 'none';
+  document.getElementById('authSubmit').textContent = mode === 'signup' ? 'Create My Free Account' : 'Sign In';
+  document.getElementById('authTitle').textContent = mode === 'signup' ? 'Save Your Tour Plan' : 'Welcome Back';
+  document.getElementById('authSub').textContent = mode === 'signup' ? 'Create a free account to save your itinerary, earn badges, and join the OpenRide community.' : 'Sign in to access your saved tours and profile.';
+}
+async function submitAuth() {
+  const email = document.getElementById('authEmail').value.trim(), password = document.getElementById('authPassword').value, name = document.getElementById('authName')?.value.trim(), btn = document.getElementById('authSubmit');
+  if (!email || !password) { showAuthError('Please enter your email and password.'); return; }
+  if (authMode === 'signup' && password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
+  btn.disabled = true; btn.textContent = authMode === 'signup' ? 'Creating account...' : 'Signing in...'; document.getElementById('authError').classList.remove('show');
+  try {
+    if (authMode === 'signup') {
+      const { data, error } = await sb.auth.signUp({ email, password }); if (error) throw error;
+      if (data.user) {
+        const profileData = { id: data.user.id };
+        if (name) profileData.rider_name = name;
+        if (pendingAnswers) {
+          profileData.bike_type = pendingAnswers.ebike ? 'ebike' : null;
+          profileData.lodging_pref = pendingAnswers.lodging;
+          profileData.seasons = [pendingAnswers.season];
+        }
+        await sb.from('profiles').upsert(profileData, { onConflict: 'id' });
+      }
+    } else { const { error } = await sb.auth.signInWithPassword({ email, password }); if (error) throw error; }
+  } catch (err) { showAuthError(err.message || 'Something went wrong.'); btn.disabled = false; btn.textContent = authMode === 'signup' ? 'Create My Free Account' : 'Sign In'; }
+}
+function showAuthError(msg) { const el = document.getElementById('authError'); el.textContent = msg; el.classList.add('show'); }
+document.getElementById('authModal').addEventListener('click', e => { if (e.target === document.getElementById('authModal')) closeAuth(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
+
+// -- SYSTEM PROMPT ---------------------------------------------------------
+const SYSTEM = `You are the OpenRide AI Tour Planner for the Natchez Trace Parkway. Your job is to build a complete day-by-day itinerary based on the rider's pace, lodging preference, bike type, travel dates, and group size. Ask one question at a time.
+
+You do NOT invent routes. You do NOT recommend riding open highways arbitrarily. Your value is calculating exact daily mileage between commercial lodging or campsites along our hand-crafted, safe routes.
+
+--------------------------------
+AVAILABLE ROUTES (STRICT LIST):
+--------------------------------
+- **Natchez Trace Parkway Lower Trace (MS)**: 82 miles, 3-4 days, beginner-friendly, smooth paved parkway, zero commercial traffic, antebellum B&Bs, Windsor Ruins, Emerald Mound, free NPS camping. Best: spring/fall. Perfect for e-bikes, road bikes, hybrids.
+- *Redirect any other requests by saying: "Currently, I can only generate custom lodging itineraries for the Lower Natchez Trace. Other routes like the GAP Trail or Pacific Coast are coming soon!"*
+
+--------------------------------
+TOUR PLANNING FLOW
+--------------------------------
+Gather info one question at a time to build the itinerary:
+1. What kind of bike are they riding? (e.g., e-bike, touring bike, road bike)
+2. What is their preferred daily pace? (e.g., 20, 40, or 60+ miles a day)
+3. Where do they want to sleep? (e.g., camping, B&Bs, hotels, or a mix)
+4. Tell them: "Great, I'll calculate your route on the Natchez Trace to hit those overnight spots."
+5. Show the day-by-day plan > ITINERARY_SUMMARY
+6. When plan complete: SAVE_NUDGE (not logged in) or PDF_READY (logged in)
+
+--------------------------------
+NUTRITION & GEAR KNOWLEDGE
+--------------------------------
+- E-bike: confirm range covers daily mileage + buffer; bring charger.
+- Essential inn-to-inn: 2 kits, rain jacket, chamois cream (non-negotiable), 2 spare tubes, multi-tool, pump.
+- Nutrition: Eat before hungry, drink before thirsty. 60-90g carbs/hour at touring pace.
+
+--------------------------------
+SURFACE KNOWLEDGE (Natchez Trace)
+--------------------------------
+- Overall: Excellent. NPS smooth asphalt, 3-5ft shoulder, zero commercial traffic
+- MP 30-32: Windsor Ruins detour - narrow 2-lane, NO shoulder, ride single file
+
+--------------------------------
+BEHAVIOR RULES
+--------------------------------
+- Short replies (2-4 sentences) for simple questions.
+- Always end with: "Want to keep planning, or do you have more questions?"
+- VERY IMPORTANT: If they ask for a route we don't curate, politely refuse and steer them to the Natchez Trace.
+
+OUTPUT FORMATS (use exactly):
+ROUTE_CARD:{"name":"Natchez Trace Parkway","subtitle":"Lower Trace Self-Guided Tour","distance":"82 miles","days":"3-4 days","difficulty":"Beginner","terrain":"Smooth paved parkway","highlights":"Emerald Mound, Windsor Ruins, antebellum B&Bs","seasons":"Spring & Fall"}
+ITINERARY_SUMMARY:[{"day":1,"title":"Arrive & Explore Natchez","miles":"0","overnight":"Natchez, MS"},{"day":2,"title":"Natchez to Port Gibson","miles":"42","overnight":"Port Gibson, MS"},{"day":3,"title":"Port Gibson to Rocky Springs","miles":"40","overnight":"Rocky Springs"}]
+SEARCH:search query here
+SAVE_NUDGE:{"route":"natchez-trace-lower","pace":"moderate","lodging":"bnb","transport":"driving","season":"spring","ebike":false}
+PDF_READY:{"route":"natchez-trace-lower","pace":"moderate","lodging":"bnb","transport":"driving","season":"spring","ebike":false}
+Quick replies: [QR: option 1 | option 2 | option 3]`;
+
+// -- CHAT ------------------------------------------------------------------
+let history = [], loading = false;
+const msgsEl = document.getElementById('chatMessages'), inputEl = document.getElementById('chatInput'), sendBtn = document.getElementById('sendBtn');
+
+window.addEventListener('load', () => {
+  initAuth();
+  callApi([{ role: 'user', content: 'Give a warm 2-sentence greeting and ask your first planning question.' }], true);
+  setTimeout(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('login') === 'true') openAuth('login');
+  }, 300);
+});
+inputEl.addEventListener('input', () => { inputEl.style.height = 'auto'; inputEl.style.height = Math.min(inputEl.scrollHeight, 90) + 'px'; });
+inputEl.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
+
+function handleSend(text) {
+  const msg = (text || inputEl.value).trim(); if (!msg || loading) return;
+  addUserMsg(msg); inputEl.value = ''; inputEl.style.height = 'auto';
+  const ctx = currentUser ? ' [USER IS LOGGED IN]' : ' [USER IS NOT LOGGED IN]';
+  history.push({ role: 'user', content: msg + ctx }); callApi(history, false);
+}
+
+async function callApi(msgs, isInit) {
+  loading = true; sendBtn.disabled = true; showTyping();
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': CONFIG.anthropicKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1000, system: SYSTEM, messages: msgs, tools: [{ type: 'web_search_20250305', name: 'web_search' }] }) });
+    const d = await r.json();
+    const txt = (d.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+    hideTyping();
+    const sm = txt.match(/SEARCH:([^\n]+)/);
+    if (sm) { const q = sm[1].trim(), clean = txt.replace(/SEARCH:[^\n]+/, '').trim(); if (clean) renderGuide(clean); history.push({ role: 'assistant', content: txt }); doSearch(q); return; }
+    renderGuide(txt); history.push({ role: 'assistant', content: txt });
+  } catch (e) { hideTyping(); renderGuide("Sorry, I had a connection hiccup - try again!"); }
+  loading = false; sendBtn.disabled = false;
+}
+
+async function doSearch(q) {
+  loading = true; sendBtn.disabled = true; addSearchTag(q); showTyping();
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': CONFIG.anthropicKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1000, system: SYSTEM, messages: [...history, { role: 'user', content: `Search for: "${q}" - share practical results (names, prices, contacts) conversationally, then continue planning.` }], tools: [{ type: 'web_search_20250305', name: 'web_search' }] }) });
+    const d = await r.json(); const txt = (d.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+    hideTyping(); renderGuide(txt); history.push({ role: 'assistant', content: txt });
+  } catch (e) { hideTyping(); renderGuide("Search hit a snag - let me continue from what I know."); }
+  loading = false; sendBtn.disabled = false;
+}
+
+function renderGuide(raw) {
+  let text = raw;
+  const qrM = text.match(/\[QR:\s*([^\]]+)\]/), qrs = qrM ? qrM[1].split('|').map(s => s.trim()) : [];
+  if (qrM) text = text.replace(qrM[0], '').trim();
+  let rc = null, it = null, pr = null, sn = null;
+  const rcM = text.match(/ROUTE_CARD:(\{[^\n]+\})/); if (rcM) { try { rc = JSON.parse(rcM[1]); } catch (e) { } text = text.replace(rcM[0], '').trim(); }
+  const itM = text.match(/ITINERARY_SUMMARY:(\[[^\n]+\])/); if (itM) { try { it = JSON.parse(itM[1]); } catch (e) { } text = text.replace(itM[0], '').trim(); }
+  const prM = text.match(/PDF_READY:(\{[^\n]+\})/); if (prM) { try { pr = JSON.parse(prM[1]); } catch (e) { } text = text.replace(prM[0], '').trim(); }
+  const snM = text.match(/SAVE_NUDGE:(\{[^\n]+\})/); if (snM) { try { sn = JSON.parse(snM[1]); } catch (e) { } text = text.replace(snM[0], '').trim(); }
+  const wrap = document.createElement('div'); wrap.style.cssText = 'display:flex;flex-direction:column;gap:0.4rem;';
+  const row = document.createElement('div'); row.className = 'msg guide';
+  const inner = document.createElement('div'); inner.style.cssText = 'display:flex;flex-direction:column;gap:0.4rem;min-width:0;width:100%;';
+  if (text) { const b = document.createElement('div'); b.className = 'msg-bubble'; b.innerHTML = fmt(text); inner.appendChild(b); }
+  if (rc) inner.appendChild(mkRouteCard(rc));
+  if (it) inner.appendChild(mkItin(it));
+  if (sn) inner.appendChild(mkSaveNudge(sn));
+  if (pr) inner.appendChild(mkPdf(pr));
+  row.appendChild(inner); wrap.appendChild(row);
+  if (qrs.length) { const qd = document.createElement('div'); qd.className = 'quick-replies'; qrs.forEach(q => { const b = document.createElement('button'); b.className = 'qr-btn'; b.textContent = q; b.onclick = q === 'View My Profile' ? () => window.location = 'profile.html' : () => handleSend(q); qd.appendChild(b); }); wrap.appendChild(qd); }
+  msgsEl.appendChild(wrap); scroll();
+}
+
+function addUserMsg(text) { const row = document.createElement('div'); row.className = 'msg user'; const av = document.createElement('div'); av.className = 'msg-avatar'; const b = document.createElement('div'); b.className = 'msg-bubble'; b.innerHTML = `<p>${esc(text)}</p>`; row.appendChild(av); row.appendChild(b); msgsEl.appendChild(row); scroll(); }
+function addSearchTag(q) { const t = document.createElement('div'); t.className = 'search-tag'; t.innerHTML = `Searching: <em>${esc(q)}</em>`; msgsEl.appendChild(t); scroll(); }
+
+function mkRouteCard(d) { const el = document.createElement('div'); el.className = 'route-card'; el.innerHTML = `<div class="rc-head">${esc(d.name)}</div><div class="rc-body"><div class="rc-sub">${esc(d.subtitle)}</div><div>${esc(d.highlights)}</div><div class="rc-stats"><div><div class="stat-l">Distance</div><div class="stat-v">${esc(d.distance)}</div></div><div><div class="stat-l">Duration</div><div class="stat-v">${esc(d.days)}</div></div><div><div class="stat-l">Level</div><div class="stat-v">${esc(d.difficulty)}</div></div><div><div class="stat-l">Season</div><div class="stat-v">${esc(d.seasons)}</div></div></div></div>`; return el; }
+function mkItin(days) { const el = document.createElement('div'); el.className = 'itin'; let h = `<div class="itin-head">Your Itinerary</div>`; days.forEach(d => { h += `<div class="itin-day"><div><span class="day-name">Day ${d.day} - </span>${esc(d.title)}</div><div class="day-info">${d.miles !== '0' ? d.miles + ' mi · ' : ''}${esc(d.overnight)}</div></div>`; }); el.innerHTML = h; return el; }
+function mkSaveNudge(a) { const el = document.createElement('div'); el.className = 'save-plan-card'; el.innerHTML = `<p><strong>Want to save this plan?</strong> Create a free account and I'll save your itinerary, give you your first badge, and have everything ready when you come back.</p><button class="save-plan-btn" onclick="openAuth('signup', ${esc(JSON.stringify(a))})">Save My Tour Plan</button>`; return el; }
+function mkPdf(a) { const el = document.createElement('div'); el.className = 'pdf-card'; const desc = `${a.pace} pace · ${a.lodging === 'bnb' ? 'B&B lodging' : a.lodging} · ${a.season}${a.ebike ? ' · e-bike' : ''}`; el.innerHTML = `<h4>Your Custom Guide is Ready</h4><p>${esc(desc)} - cue sheets, lodging picks, dining, gear list &amp; GPX.</p><button class="pdf-btn" id="pdfBtn" onclick="genPdf(${esc(JSON.stringify(a))})">Download PDF Guide</button>`; return el; }
+function genPdf(a) { const btn = document.getElementById('pdfBtn'); if (btn) { btn.disabled = true; btn.textContent = 'Building your guide...'; } setTimeout(() => { renderGuide("Your PDF guide is downloading. Full custom itinerary, cue sheets, lodging picks, dining, gear list, and GPX file.\n\nSafe travels. Every mile a new discovery."); if (btn) btn.textContent = 'Done'; }, 2000); }
+
+function fmt(t) { return t.split('\n\n').map(p => `<p>${p.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</p>`).join(''); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+let typEl = null;
+function showTyping() { typEl = document.createElement('div'); typEl.className = 'typing'; typEl.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`; msgsEl.appendChild(typEl); scroll(); }
+function hideTyping() { if (typEl) { typEl.remove(); typEl = null; } }
+function scroll() { setTimeout(() => { msgsEl.scrollTop = msgsEl.scrollHeight; }, 50); }
+</script>
+</body>
+</html>

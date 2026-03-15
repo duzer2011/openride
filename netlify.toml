@@ -6,6 +6,11 @@
   node_bundler = "esbuild"
   included_files = ["guides/**"]
 
+[[redirects]]
+  from = "/plan"
+  to = "/plan.html"
+  status = 200
+
 [[headers]]
   for = "/.netlify/functions/*"
   [headers.values]
