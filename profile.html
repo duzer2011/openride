@@ -3,206 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Profile | OpenRide.bike</title>
+<title>My Account — OpenRide.bike</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-/* ── TOKENS ── */
-:root {
-  --forest: #2C4A2E;
-  --moss:   #4A7C59;
-  --sage:   #8AAF8A;
-  --parch:  #F4EFE4;
-  --parch2: #EDE8D8;
-  --accent: #C17F3A;
-  --ink:    #1e2a1f;
-}
-body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans-serif; margin: 0; }
-
-/* ── NAV ── */
-.nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2.5rem; height: 60px;
-  background: rgba(28, 42, 31, 0.92);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(138,175,138,0.15);
-}
-.nav-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.4rem; letter-spacing: 0.1em;
-  color: var(--parch); text-decoration: none;
-}
-.nav-logo span { color: var(--accent); }
-
-/* ── PROFILE LAYOUT ── */
-.profile-wrap { max-width: 720px; margin: 0 auto; padding: 100px 1.5rem 3rem; }
-.profile-hero { text-align: center; margin-bottom: 2.5rem; }
-.profile-emoji { font-size: 3.5rem; margin-bottom: 0.5rem; }
-.profile-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.08em; color: var(--forest); }
-.profile-email { font-size: 0.85rem; color: var(--moss); margin-top: 0.25rem; }
-
-.profile-card {
-  background: white; border-radius: 6px; padding: 1.5rem;
-  margin-bottom: 1.25rem;
-  border: 1px solid rgba(138,175,138,0.15);
-}
-.profile-card h2 {
-  font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
-  letter-spacing: 0.1em; color: var(--forest); margin: 0 0 1rem;
-  text-transform: uppercase;
-}
-.profile-card p { font-size: 0.9rem; line-height: 1.6; color: var(--ink); margin: 0 0 0.75rem; }
-
-.guide-row {
-  display: flex; align-items: center; gap: 1rem;
-  padding: 0.75rem 0; border-bottom: 1px solid rgba(138,175,138,0.1);
-}
-.guide-row:last-child { border-bottom: none; }
-.guide-row-title { font-weight: 600; font-size: 0.9rem; }
-.guide-row-meta { font-size: 0.78rem; color: var(--moss); }
-.guide-row-link {
-  margin-left: auto; font-size: 0.8rem; color: var(--accent);
-  text-decoration: none; font-weight: 600;
-}
-
-.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-.stat-box { text-align: center; }
-.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--forest); }
-.stat-label { font-size: 0.75rem; color: var(--moss); letter-spacing: 0.05em; text-transform: uppercase; }
-
-.account-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0.6rem 0; border-bottom: 1px solid rgba(138,175,138,0.1);
-  font-size: 0.88rem;
-}
-.account-row:last-child { border-bottom: none; }
-.account-label { color: var(--moss); }
-.account-value { color: var(--ink); font-weight: 500; }
-
-.cta-bar {
-  text-align: center; margin-top: 2rem; padding: 1.5rem;
-  background: var(--forest); border-radius: 6px; color: var(--parch);
-}
-.cta-bar a {
-  color: var(--accent); text-decoration: none; font-weight: 600;
-  border-bottom: 1px solid rgba(193,127,58,0.3);
-}
-
-.loading { text-align: center; padding: 120px 1rem; font-size: 1rem; color: var(--moss); }
+:root{--forest:#2C4A2E;--moss:#4A7C59;--sage:#8AAF8A;--ivory:#FDFBF7;--cream:#F2EBE1;--ink:#1C2D27;--white:#FFFFFF;--muted:#7A8C7D;--border:#D5C8B5;--accent:#C17F3A;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--ivory);color:var(--ink);font-family:'DM Sans',sans-serif;}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(28,42,31,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(138,175,138,0.15);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.1em;color:#F4EFE4;text-decoration:none;}
+.nav-logo span{color:#C17F3A;}
+.nav-right{display:flex;align-items:center;gap:0.75rem;}
+.nav-email{font-size:0.82rem;color:rgba(244,239,228,0.7);}
+.nav-sep{color:rgba(244,239,228,0.25);}
+.nav-signout{background:none;border:none;color:rgba(244,239,228,0.7);font-size:0.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.hero{background:var(--cream);border-bottom:1px solid var(--border);padding:6rem 2.5rem 2rem;}
+.hero-eyebrow{font-size:0.78rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--moss);margin-bottom:0.5rem;}
+.hero-name{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--forest);line-height:1;margin-bottom:0.25rem;}
+.hero-email{font-size:0.85rem;color:var(--muted);}
+.content{padding:2rem 2.5rem;max-width:960px;margin:0 auto;}
+.section-eyebrow{font-size:0.78rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--moss);margin-bottom:1rem;display:block;margin-top:2rem;}
+.guides-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.06);margin-bottom:2rem;}
+.guides-head{background:#2C4A2E;padding:0.65rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.04em;color:#ffffff;}
+.guide-row{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-bottom:1px solid var(--border);}
+.guide-row:last-child{border-bottom:none;}
+.guide-name{font-size:0.88rem;font-weight:500;color:var(--ink);}
+.guide-sub{font-size:0.72rem;color:var(--muted);}
+.guide-actions{display:flex;align-items:center;gap:0.75rem;}
+.badge{font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:#EAF3DE;color:#3B6D11;padding:0.2rem 0.55rem;border-radius:999px;}
+.guide-btn{font-size:0.75rem;font-weight:600;color:#ffffff;background:#C17F3A;border:none;padding:0.35rem 0.85rem;border-radius:2px;cursor:pointer;text-decoration:none;display:inline-block;}
+.empty-row{padding:1.25rem 1rem;font-size:0.85rem;color:var(--muted);font-style:italic;}
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:2rem;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.06);}
+.card-head{background:#2C4A2E;padding:0.6rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.04em;color:#ffffff;}
+.card-body{padding:1rem;}
+.stat-row{display:flex;gap:1.5rem;margin-bottom:0.75rem;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#2C4A2E;display:block;line-height:1;}
+.stat-lbl{font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.stat-note{font-size:0.75rem;color:var(--muted);}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:0.45rem 0;border-bottom:1px solid var(--border);font-size:0.85rem;}
+.detail-row:last-child{border-bottom:none;}
+.detail-lbl{color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:600;}
+.signout-btn{margin-top:0.75rem;width:100%;padding:0.6rem;border:1.5px solid var(--border);background:transparent;border-radius:7px;font-size:0.85rem;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.cta-bar{background:#2C4A2E;border-radius:10px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:3rem;}
+.cta-bar p{font-size:0.9rem;color:rgba(255,255,255,0.8);max-width:400px;line-height:1.5;margin:0;}
+.cta-btn{background:#C17F3A;color:#ffffff;border:none;padding:0.7rem 1.6rem;border-radius:2px;font-size:0.9rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Bebas Neue',sans-serif;letter-spacing:0.1em;flex-shrink:0;text-decoration:none;display:inline-block;}
 </style>
 </head>
 <body>
-
 <nav class="nav">
-  <a class="nav-logo" href="/">Open<span style="color:#C17F3A;">Ride</span>.bike</a>
-  <div id="navAuthArea" style="display:flex;align-items:center;gap:0.75rem;">
-    <button onclick="openAuth('login')" style="background:none;border:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;">Sign In</button>
-    <span style="color:rgba(244,239,228,0.3);font-size:0.85rem;">|</span>
-    <a href="#" onclick="openAuth('signup');return false;" style="background:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;text-decoration:none;">Create Account</a>
+  <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
+  <div class="nav-right">
+    <span class="nav-email" id="nav-email"></span>
+    <span class="nav-sep">|</span>
+    <button class="nav-signout" onclick="signOut()">Sign Out</button>
   </div>
 </nav>
 
-<div id="loadingState" class="loading">Loading your profile...</div>
+<div class="hero">
+  <div class="hero-eyebrow">My Account</div>
+  <div class="hero-name" id="hero-name">Welcome</div>
+  <div class="hero-email" id="hero-email"></div>
+</div>
 
-<div id="profileContent" class="profile-wrap" style="display:none;">
-  <div class="profile-hero">
-    <div class="profile-emoji" id="profileEmoji"></div>
-    <div class="profile-name" id="profileName"></div>
-    <div class="profile-email" id="profileEmail"></div>
+<div class="content">
+  <span class="section-eyebrow">My Guides</span>
+  <div class="guides-card">
+    <div class="guides-head">Purchased Guides</div>
+    <div id="guides-list"><div class="empty-row">Loading your guides...</div></div>
   </div>
 
-  <div class="profile-card">
-    <h2>Your Guides</h2>
-    <div id="guidesContainer">
-      <p style="color:var(--moss);font-size:0.88rem;">No guides purchased yet.</p>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-head">Riding Stats</div>
+      <div class="card-body">
+        <div class="stat-row">
+          <div><span class="stat-val" id="stat-miles">0</span><span class="stat-lbl">Miles</span></div>
+          <div><span class="stat-val" id="stat-days">0</span><span class="stat-lbl">Days</span></div>
+          <div><span class="stat-val" id="stat-routes">0</span><span class="stat-lbl">Tours</span></div>
+        </div>
+        <div class="stat-note">Stats update after your first tour is complete.</div>
+      </div>
     </div>
-  </div>
-
-  <div class="profile-card">
-    <h2>Stats</h2>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="stat-num" id="statGuides">0</div><div class="stat-label">Guides</div></div>
-      <div class="stat-box"><div class="stat-num" id="statBadges">0</div><div class="stat-label">Badges</div></div>
-      <div class="stat-box"><div class="stat-num" id="statTours">0</div><div class="stat-label">Tours Planned</div></div>
+    <div class="card">
+      <div class="card-head">Account Details</div>
+      <div class="card-body">
+        <div class="detail-row"><span class="detail-lbl">Email</span><span id="detail-email"></span></div>
+        <div class="detail-row"><span class="detail-lbl">Member Since</span><span id="detail-since"></span></div>
+        <div class="detail-row"><span class="detail-lbl">Plan</span><span style="color:#C17F3A;font-weight:600;">Guide Owner</span></div>
+        <button class="signout-btn" onclick="signOut()">Sign Out</button>
+      </div>
     </div>
-  </div>
-
-  <div class="profile-card">
-    <h2>Account</h2>
-    <div id="accountDetails"></div>
   </div>
 
   <div class="cta-bar">
-    Ready for your next route? <a href="/">Plan Your Next Tour</a>
+    <p>Ready to plan your next tour? Our AI tour guide will build your custom day-by-day itinerary.</p>
+    <a href="/" class="cta-btn">Plan Your Next Tour →</a>
   </div>
 </div>
 
 <script>
-  const sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnon);
+const sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnon);
 
-  async function init() {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session?.user) {
-      window.location.href = '/?login=true&redirect=/profile.html';
-      return;
-    }
+const GUIDES = {
+  'natchez-lower': { name: 'Natchez Trace — Lower Trace', sub: 'Jackson, MS → Natchez, MS · ~100 miles', url: '/guide/natchez-lower' }
+};
 
-    const user = session.user;
-    const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = '/?login=true&redirect=/profile.html'; return; }
+  const user = session.user;
+  const email = user.email;
+  const name = user.user_metadata?.full_name || email.split('@')[0];
+  const since = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
-    // Update nav to show logged-in state
-    const nav = document.getElementById('navAuthArea');
-    nav.innerHTML = `<span style="color:rgba(244,239,228,0.8);font-family:'DM Sans',sans-serif;font-size:0.85rem;letter-spacing:0.03em;">${user.email}</span>
-      <span style="color:rgba(244,239,228,0.3);font-size:0.85rem;">|</span>
-      <button onclick="sb.auth.signOut().then(()=>window.location.href='/')" style="background:none;border:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;">Sign Out</button>`;
+  document.getElementById('nav-email').textContent = email;
+  document.getElementById('hero-name').textContent = name;
+  document.getElementById('hero-email').textContent = email + ' · Member since ' + since;
+  document.getElementById('detail-email').textContent = email;
+  document.getElementById('detail-since').textContent = since;
 
-    // Hero
-    document.getElementById('profileEmoji').textContent = profile?.avatar_emoji || '\u{1F6B4}';
-    document.getElementById('profileName').textContent = profile?.rider_name || user.email.split('@')[0];
-    document.getElementById('profileEmail').textContent = user.email;
+  const { data: purchases } = await sb.from('purchases').select('route_slug').or(`user_id.eq.${user.id},email.eq.${email}`);
+  const list = document.getElementById('guides-list');
 
-    // Guides
-    const { data: purchases } = await sb.from('purchases').select('*').or(`user_id.eq.${user.id},email.eq.${user.email}`);
-    if (purchases && purchases.length > 0) {
-      const container = document.getElementById('guidesContainer');
-      container.innerHTML = purchases.map(p => `<div class="guide-row">
-        <div>
-          <div class="guide-row-title">${formatSlug(p.route_slug)}</div>
-          <div class="guide-row-meta">${p.pdf_variant || ''} &middot; ${new Date(p.created_at).toLocaleDateString()}</div>
+  if (purchases && purchases.length > 0) {
+    list.innerHTML = purchases.map(p => {
+      const g = GUIDES[p.route_slug] || { name: p.route_slug, sub: '', url: '#' };
+      return `<div class="guide-row">
+        <div><div class="guide-name">${g.name}</div><div class="guide-sub">${g.sub}</div></div>
+        <div class="guide-actions">
+          <span class="badge">Purchased</span>
+          <a href="${g.url}" class="guide-btn">Open Web Guide →</a>
         </div>
-        <a class="guide-row-link" href="/guide/${p.route_slug}/">View Guide</a>
-      </div>`).join('');
-      document.getElementById('statGuides').textContent = purchases.length;
-    }
-
-    // Badges
-    const { data: badges } = await sb.from('user_badges').select('*').eq('user_id', user.id);
-    document.getElementById('statBadges').textContent = badges?.length || 0;
-
-    // Tours
-    const { data: tours } = await sb.from('tours').select('*').eq('user_id', user.id);
-    document.getElementById('statTours').textContent = tours?.length || 0;
-
-    // Account details
-    document.getElementById('accountDetails').innerHTML = `
-      <div class="account-row"><span class="account-label">Email</span><span class="account-value">${user.email}</span></div>
-      <div class="account-row"><span class="account-label">Name</span><span class="account-value">${profile?.rider_name || 'Not set'}</span></div>
-      <div class="account-row"><span class="account-label">Member since</span><span class="account-value">${new Date(user.created_at).toLocaleDateString()}</span></div>`;
-
-    // Show content
-    document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('profileContent').style.display = 'block';
+      </div>`;
+    }).join('') + `<div class="empty-row">Browse routes to add more guides to your collection.</div>`;
+  } else {
+    list.innerHTML = `<div class="empty-row">No guides purchased yet. <a href="/natchez-trace-lower.html" style="color:#C17F3A;">Browse routes →</a></div>`;
   }
+}
 
-  function formatSlug(slug) {
-    return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-  }
+async function signOut() {
+  await sb.auth.signOut();
+  window.location.href = '/';
+}
 
-  init();
+init();
 </script>
 </body>
 </html>
