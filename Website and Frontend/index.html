@@ -1319,6 +1319,10 @@
         max-height: 400px
       }
     }
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px;background:rgba(28,42,31,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(138,175,138,0.15);}
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.1em;color:var(--parch);text-decoration:none;}
+    .nav-logo span{color:var(--accent);}
+    .nav-buy{background:var(--accent);color:white;border:none;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.12em;padding:0.55rem 1.4rem;border-radius:2px;cursor:pointer;text-decoration:none;}
   </style>
 </head>
 
@@ -1345,8 +1349,8 @@
 
     <nav class="nav">
       <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
-      <div style="display:flex;align-items:center;gap:1rem;">
-        <button onclick="openAuth('login')" style="background:none;border:none;color:rgba(244,239,228,0.8);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.04em;">Sign In</button>
+      <div id="navAuthArea" style="display:flex;align-items:center;gap:1rem;">
+        <button onclick="openAuth('login')" style="background:none;border:none;color:rgba(244,239,228,0.8);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;">Sign In</button>
         <a class="nav-buy" href="#" onclick="openAuth('signup');return false;">Create Account</a>
       </div>
     </nav>
