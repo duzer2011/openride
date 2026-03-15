@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Profile | OpenRide.bike</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ── TOKENS ── */
+:root {
+  --forest: #2C4A2E;
+  --moss:   #4A7C59;
+  --sage:   #8AAF8A;
+  --parch:  #F4EFE4;
+  --parch2: #EDE8D8;
+  --accent: #C17F3A;
+  --ink:    #1e2a1f;
+}
+body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans-serif; margin: 0; }
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem; height: 60px;
+  background: rgba(28, 42, 31, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(138,175,138,0.15);
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem; letter-spacing: 0.1em;
+  color: var(--parch); text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+
+/* ── PROFILE LAYOUT ── */
+.profile-wrap { max-width: 720px; margin: 0 auto; padding: 100px 1.5rem 3rem; }
+.profile-hero { text-align: center; margin-bottom: 2.5rem; }
+.profile-emoji { font-size: 3.5rem; margin-bottom: 0.5rem; }
+.profile-name { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.08em; color: var(--forest); }
+.profile-email { font-size: 0.85rem; color: var(--moss); margin-top: 0.25rem; }
+
+.profile-card {
+  background: white; border-radius: 6px; padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(138,175,138,0.15);
+}
+.profile-card h2 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+  letter-spacing: 0.1em; color: var(--forest); margin: 0 0 1rem;
+  text-transform: uppercase;
+}
+.profile-card p { font-size: 0.9rem; line-height: 1.6; color: var(--ink); margin: 0 0 0.75rem; }
+
+.guide-row {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.75rem 0; border-bottom: 1px solid rgba(138,175,138,0.1);
+}
+.guide-row:last-child { border-bottom: none; }
+.guide-row-title { font-weight: 600; font-size: 0.9rem; }
+.guide-row-meta { font-size: 0.78rem; color: var(--moss); }
+.guide-row-link {
+  margin-left: auto; font-size: 0.8rem; color: var(--accent);
+  text-decoration: none; font-weight: 600;
+}
+
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.stat-box { text-align: center; }
+.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--forest); }
+.stat-label { font-size: 0.75rem; color: var(--moss); letter-spacing: 0.05em; text-transform: uppercase; }
+
+.account-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.6rem 0; border-bottom: 1px solid rgba(138,175,138,0.1);
+  font-size: 0.88rem;
+}
+.account-row:last-child { border-bottom: none; }
+.account-label { color: var(--moss); }
+.account-value { color: var(--ink); font-weight: 500; }
+
+.cta-bar {
+  text-align: center; margin-top: 2rem; padding: 1.5rem;
+  background: var(--forest); border-radius: 6px; color: var(--parch);
+}
+.cta-bar a {
+  color: var(--accent); text-decoration: none; font-weight: 600;
+  border-bottom: 1px solid rgba(193,127,58,0.3);
+}
+
+.loading { text-align: center; padding: 120px 1rem; font-size: 1rem; color: var(--moss); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="/">Open<span style="color:#C17F3A;">Ride</span>.bike</a>
+  <div id="navAuthArea" style="display:flex;align-items:center;gap:0.75rem;">
+    <button onclick="openAuth('login')" style="background:none;border:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;">Sign In</button>
+    <span style="color:rgba(244,239,228,0.3);font-size:0.85rem;">|</span>
+    <a href="#" onclick="openAuth('signup');return false;" style="background:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;text-decoration:none;">Create Account</a>
+  </div>
+</nav>
+
+<div id="loadingState" class="loading">Loading your profile...</div>
+
+<div id="profileContent" class="profile-wrap" style="display:none;">
+  <div class="profile-hero">
+    <div class="profile-emoji" id="profileEmoji"></div>
+    <div class="profile-name" id="profileName"></div>
+    <div class="profile-email" id="profileEmail"></div>
+  </div>
+
+  <div class="profile-card">
+    <h2>Your Guides</h2>
+    <div id="guidesContainer">
+      <p style="color:var(--moss);font-size:0.88rem;">No guides purchased yet.</p>
+    </div>
+  </div>
+
+  <div class="profile-card">
+    <h2>Stats</h2>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-num" id="statGuides">0</div><div class="stat-label">Guides</div></div>
+      <div class="stat-box"><div class="stat-num" id="statBadges">0</div><div class="stat-label">Badges</div></div>
+      <div class="stat-box"><div class="stat-num" id="statTours">0</div><div class="stat-label">Tours Planned</div></div>
+    </div>
+  </div>
+
+  <div class="profile-card">
+    <h2>Account</h2>
+    <div id="accountDetails"></div>
+  </div>
+
+  <div class="cta-bar">
+    Ready for your next route? <a href="/natchez-trace-lower.html">Browse the Natchez Trace</a>
+  </div>
+</div>
+
+<script>
+  const sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnon);
+
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.user) {
+      window.location.href = '/?login=true&redirect=/profile.html';
+      return;
+    }
+
+    const user = session.user;
+    const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
+
+    // Update nav to show logged-in state
+    const nav = document.getElementById('navAuthArea');
+    nav.innerHTML = `<span style="color:rgba(244,239,228,0.8);font-family:'DM Sans',sans-serif;font-size:0.85rem;letter-spacing:0.03em;">${user.email}</span>
+      <span style="color:rgba(244,239,228,0.3);font-size:0.85rem;">|</span>
+      <button onclick="sb.auth.signOut().then(()=>window.location.href='/')" style="background:none;border:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;">Sign Out</button>`;
+
+    // Hero
+    document.getElementById('profileEmoji').textContent = profile?.avatar_emoji || '\u{1F6B4}';
+    document.getElementById('profileName').textContent = profile?.rider_name || user.email.split('@')[0];
+    document.getElementById('profileEmail').textContent = user.email;
+
+    // Guides
+    const { data: purchases } = await sb.from('purchases').select('*').or(`user_id.eq.${user.id},email.eq.${user.email}`);
+    if (purchases && purchases.length > 0) {
+      const container = document.getElementById('guidesContainer');
+      container.innerHTML = purchases.map(p => `<div class="guide-row">
+        <div>
+          <div class="guide-row-title">${formatSlug(p.route_slug)}</div>
+          <div class="guide-row-meta">${p.pdf_variant || ''} &middot; ${new Date(p.created_at).toLocaleDateString()}</div>
+        </div>
+        <a class="guide-row-link" href="/guide/${p.route_slug}/">View Guide</a>
+      </div>`).join('');
+      document.getElementById('statGuides').textContent = purchases.length;
+    }
+
+    // Badges
+    const { data: badges } = await sb.from('user_badges').select('*').eq('user_id', user.id);
+    document.getElementById('statBadges').textContent = badges?.length || 0;
+
+    // Tours
+    const { data: tours } = await sb.from('tours').select('*').eq('user_id', user.id);
+    document.getElementById('statTours').textContent = tours?.length || 0;
+
+    // Account details
+    document.getElementById('accountDetails').innerHTML = `
+      <div class="account-row"><span class="account-label">Email</span><span class="account-value">${user.email}</span></div>
+      <div class="account-row"><span class="account-label">Name</span><span class="account-value">${profile?.rider_name || 'Not set'}</span></div>
+      <div class="account-row"><span class="account-label">Member since</span><span class="account-value">${new Date(user.created_at).toLocaleDateString()}</span></div>`;
+
+    // Show content
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('profileContent').style.display = 'block';
+  }
+
+  function formatSlug(slug) {
+    return slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  }
+
+  init();
+</script>
+</body>
+</html>
