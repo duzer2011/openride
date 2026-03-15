@@ -21,6 +21,7 @@ exports.handler = async (event) => {
                 season: sessionData.season,
                 party_size: sessionData.party_size,
                 partner_emails: formData.partner_emails || '',
+                supabase_user_id: sessionData.user_id || '',
             },
             custom_text: {
                 submit: {
@@ -31,7 +32,7 @@ exports.handler = async (event) => {
                 }
             },
             success_url: 'https://openride.bike/success?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url: 'https://openride.bike/natchez-trace-route-guide.html',
+            cancel_url: 'https://openride.bike/natchez-trace-lower.html',
         });
 
         console.log("✅ Stripe Session Created:", session.id);
