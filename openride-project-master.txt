@@ -112,24 +112,39 @@ C:\OpenRide.bike\ or outputs folder.
   -------------------------------- ------------ ----------- -------------------------
   **Component**                    **Status**   **Owner**   **Notes**
 
-  index.html                       **Done**     Claude      Homepage with hero, route
-                                                            cards, feature pills,
-                                                            Mapbox
+  index.html (ROOT)                **Done**     Claude      SINGLE SOURCE OF TRUTH.
+                                                            Homepage with hero, route
+                                                            cards, AI chat, auth modal,
+                                                            Supabase integration.
+                                                            Never edit Website and
+                                                            Frontend/index.html.
 
-  natchez-trace-route-guide.html   **Done**     Claude      Full route guide page ---
-                                                            Natchez Trace
+  natchez-trace-lower.html         **Done**     Claude      Lower Trace route guide
+                                                            page with consistent nav
 
-  profile.html                     **Done**     Claude      Rider profile + badge
-                                                            system + UGC feed
+  natchez-trace.html               **Done**     Claude      Natchez Trace overview
+                                                            page with consistent nav
 
-  community.html                   **Done**     Claude      Community feed with
-                                                            shareable posts
+  profile.html                     **Done**     Claude      Account page --- guides,
+                                                            stats, account details.
+                                                            Auth-gated, redirects to
+                                                            login if not signed in.
 
-  openride-tour-builder.jsx        **Done**     Claude      AI tour builder chat
-                                                            interface (React)
+  guide/natchez-lower/index.html   **Done**     Claude      Protected web guide ---
+                                                            auth + purchase gated.
+                                                            Full rendering engine
+                                                            ported from PDF template.
 
-  openride-blog-generator.jsx      **Done**     Claude      Blog post generator using
-                                                            Claude API (React)
+  guide/natchez-lower/guide-data.json **Done**  Claude      Generated route data for
+                                                            web guide (3 days,
+                                                            moderate/bnb/spring)
+
+  config.js                        **Done**     Claude      Generated at build time
+                                                            from Netlify env vars via
+                                                            generate-config.js. In
+                                                            .gitignore. Contains
+                                                            supabaseUrl, supabaseAnon,
+                                                            mapboxToken.
   -------------------------------- ------------ ----------- -------------------------
 
 **2.2 PDF & Route Engine**
@@ -291,29 +306,45 @@ within a stage can be parallel.
   ---------------------- ------------ ------------- -------------------------
   **Component**          **Status**   **Owner**     **Notes**
 
+  Auth system             **Done**     Claude        Signup, login, sign out
+                                                    working. Supabase auth
+                                                    with JWT. Profile upsert
+                                                    on signup.
+
+  Stripe checkout setup   **Done**     Claude        $19 guide. checkout.js
+                                                    passes user_id in Stripe
+                                                    metadata.
+
+  PDF auto-delivery       **Done**     Claude        webhook.js sends PDF via
+                                                    Resend on purchase.
+                                                    Records purchase in
+                                                    Supabase.
+
+  purchases table         **Done**     Claude        Supabase table with RLS
+                                                    policies. Indexes on
+                                                    email+route, user+route.
+
+  check-purchase.js       **Done**     Claude        Netlify function. Verifies
+                                                    JWT, queries purchases by
+                                                    user_id OR email.
+
+  config.js build         **Done**     Claude        generate-config.js creates
+                                                    config.js from Netlify env
+                                                    vars at deploy time. No
+                                                    secrets in git.
+
+  Consistent nav          **Done**     Claude        All pages use identical
+                                                    nav: Bebas Neue logo,
+                                                    Sign In | Create Account,
+                                                    forest green bar.
+
   ImprovMX MX Records    Pending      You           Add MX records in Netlify
                                                     DNS for
                                                     hello@openride.bike
 
-  Natchez homepage fixes  Pending      Antigravity   Fix card stats: 82 mi,
-                                                    3-4 days, Smooth +
-                                                    description
-
   Facebook route poll     Pending      You           Post 5 Phase 1 routes to
                                                     80k group --- votes =
                                                     build order
-
-  Supabase schema deploy  Pending      Antigravity   Run schema.sql ---
-                                                    includes
-                                                    bathroom_facilities,
-                                                    route_airports
-
-  Stripe checkout setup   Pending      Antigravity   Product: $19 guide +
-                                                    preparation fields at
-                                                    checkout
-
-  PDF auto-delivery       Pending      Antigravity   Stripe webhook → send PDF
-                                                    on purchase confirmation
   ---------------------- ------------ ------------- -------------------------
 
 **Stage 2: Affiliate Revenue**
@@ -668,36 +699,24 @@ direction.
 |                                   | operator.                         |
 +-----------------------------------+-----------------------------------+
 
-**7. Immediate Next Actions**
-
-These should happen before the next build session begins.
+**7. Current Priorities (Updated 2026-03-15)**
 
 +-----------------------------------------------------------------------+
-| **DO THIS BEFORE NEXT SESSION**                                       |
+| **PRIORITY ORDER**                                                    |
 |                                                                       |
-| 1. Create Claude Project --- name: 'OpenRide.bike'                    |
+| 1. Test full purchase → guide access flow end to end                  |
 |                                                                       |
-| 2. Paste Section 1 into Project system prompt                         |
+| 2. Switch Stripe from test to live mode                               |
 |                                                                       |
-| 3. Upload these files to Project knowledge:                           |
+| 3. Affiliate links on natchez-trace-lower.html                        |
 |                                                                       |
-| • openride-build-plan.docx (this document)                            |
+| 4. Pre/post purchase email sequences via Resend                       |
 |                                                                       |
-| • openride-founding-catalog.md                                        |
+| 5. Blog post #1 deployed                                              |
 |                                                                       |
-| • openride-ai-ops-system.md                                           |
+| 6. Middle and Upper Trace guides                                      |
 |                                                                       |
-| • openride-fitness-prep.docx                                          |
-|                                                                       |
-| • schema.sql                                                          |
-|                                                                       |
-| 4. Add Netlify MX records for hello@openride.bike                     |
-|                                                                       |
-| MX1: mx1.improvmx.com (priority 10)                                   |
-|                                                                       |
-| MX2: mx2.improvmx.com (priority 20)                                   |
-|                                                                       |
-| 5. Post Facebook route poll to 80k group                              |
+| 7. Tour Kit product page                                              |
 +-----------------------------------------------------------------------+
 
 ## PDF Preview Standard
@@ -713,3 +732,23 @@ Rules:
 - These classes must be in the <style> block of every route page
 
 Copy the pattern from natchez-trace-lower.html. Do not deviate.
+
+## Claude Code Session Rules
+
+These rules apply to every Claude Code session on this project:
+
+- Never change anything not explicitly asked for
+- Ask before assuming on links, colors, layouts
+- One change at a time
+- Every new page copies nav exactly from natchez-trace-lower.html
+- index.html at repo root is the only homepage file. Never edit or
+  recreate Website and Frontend/index.html (deleted).
+- Always update this master doc at end of each session
+- config.js is generated at build time via generate-config.js.
+  Never commit config.js to git. Update Netlify env vars instead.
+
+## Session Log
+
+**2026-03-15** — Auth + purchase system, profile page, web guide,
+consistent nav across all pages, config.js build pipeline,
+single source of truth cleanup.
