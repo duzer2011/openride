@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Your Order — OpenRide.bike</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/config.js"></script>
+  <style>
+    :root {
+      --forest: #2C4A2E;
+      --moss:   #4A7C59;
+      --sage:   #8AAF8A;
+      --parch:  #F4EFE4;
+      --accent: #C17F3A;
+      --ink:    #1e2a1f;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--parch); color: var(--ink); min-height: 100vh; }
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 60px;
+      background: rgba(28, 42, 31, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(138,175,138,0.15);
+    }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.1em; color: var(--parch); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-links button { background: none; border: none; color: rgba(244,239,228,0.7); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; letter-spacing: 0.03em; }
+    .nav-links a { color: rgba(244,239,228,0.7); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer; letter-spacing: 0.03em; text-decoration: none; }
+    .nav-links .sep { color: rgba(244,239,228,0.3); font-size: 0.85rem; }
+    .page-wrap { max-width: 560px; margin: 0 auto; padding: 88px 24px 80px; }
+    .order-header { margin-bottom: 32px; }
+    .order-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--forest); letter-spacing: 0.04em; margin-bottom: 6px; }
+    .order-header p { color: #555; font-size: 0.95rem; line-height: 1.5; }
+    .order-summary { background: #fff; border: 1px solid #ddd; border-radius: 3px; padding: 20px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; }
+    .product-name { font-weight: 600; font-size: 0.95rem; color: var(--ink); }
+    .product-desc { font-size: 0.82rem; color: #666; margin-top: 2px; }
+    .price { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--forest); letter-spacing: 0.04em; }
+    .auth-notice { background: #fff8ec; border: 1px solid var(--accent); border-radius: 3px; padding: 14px 18px; margin-bottom: 24px; font-size: 0.88rem; color: #6b4a1a; display: none; }
+    .auth-notice a { color: var(--accent); font-weight: 600; text-decoration: underline; }
+    .error-msg { background: #fee; border: 1px solid #fcc; border-radius: 3px; padding: 12px 16px; font-size: 0.87rem; color: #c00; margin-bottom: 16px; display: none; }
+    .form-section { background: #fff; border: 1px solid #ddd; border-radius: 3px; padding: 24px; margin-bottom: 24px; }
+    .form-section h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--forest); letter-spacing: 0.06em; margin-bottom: 4px; }
+    .section-desc { font-size: 0.82rem; color: #888; margin-bottom: 20px; }
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 8px; }
+    .option-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .option-btn { padding: 8px 16px; border: 2px solid #ddd; border-radius: 3px; background: #fff; font-size: 0.85rem; font-weight: 600; color: #444; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+    .option-btn:hover { border-color: var(--moss); color: var(--forest); }
+    .option-btn.selected { border-color: var(--forest); background: var(--forest); color: #fff; }
+    input[type="email"] { width: 100%; padding: 10px 14px; border: 2px solid #ddd; border-radius: 3px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; transition: border-color 0.15s; }
+    input[type="email"]:focus { outline: none; border-color: var(--moss); }
+    .field-note { font-size: 0.78rem; color: #999; margin-top: 5px; }
+    .btn-checkout { width: 100%; padding: 16px; background: var(--accent); color: #fff; border: none; border-radius: 3px; font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.1em; cursor: pointer; transition: background 0.15s; }
+    .btn-checkout:hover { background: #a86b2e; }
+    .btn-checkout:disabled { background: #bbb; cursor: not-allowed; }
+    .secure-note { text-align: center; font-size: 0.78rem; color: #999; margin-top: 10px; }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
+  <div class="nav-links">
+    <button onclick="window.location.href='/?signin=true'">Sign In</button>
+    <span class="sep">|</span>
+    <a href="/?signup=true">Create Account</a>
+  </div>
+</nav>
+<div class="page-wrap">
+  <div class="order-header">
+    <h1>Complete Your Order</h1>
+    <p>Tell us a little about your ride — your guide will be customized and delivered instantly.</p>
+  </div>
+  <div class="order-summary">
+    <div>
+      <div class="product-name">Natchez Trace South — Digital Guide</div>
+      <div class="product-desc">PDF + GPX + Cue Sheet · Instant delivery</div>
+    </div>
+    <div class="price">$19</div>
+  </div>
+  <div class="auth-notice" id="auth-notice">
+    <strong>Want to access your guide on any device?</strong>
+    <a href="/?signin=true">Sign in or create a free account</a> — takes 30 seconds.
+    Or continue without an account and we'll email your guide.
+  </div>
+  <div class="error-msg" id="error-msg"></div>
+  <form id="checkout-form">
+    <div class="form-section">
+      <h2>Your Ride Style</h2>
+      <p class="section-desc">Helps us customize daily mileage and pacing in your guide.</p>
+      <div class="field">
+        <label>Pace</label>
+        <div class="option-group" id="pace-group">
+          <button type="button" class="option-btn selected" data-value="relaxed">Relaxed</button>
+          <button type="button" class="option-btn" data-value="moderate">Moderate</button>
+          <button type="button" class="option-btn" data-value="ambitious">Ambitious</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Accommodation preference</label>
+        <div class="option-group" id="accommodation-group">
+          <button type="button" class="option-btn selected" data-value="camping">Camping</button>
+          <button type="button" class="option-btn" data-value="bnb">B&amp;Bs / Inns</button>
+          <button type="button" class="option-btn" data-value="mixed">Mixed</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>When are you riding?</label>
+        <div class="option-group" id="season-group">
+          <button type="button" class="option-btn selected" data-value="spring">Spring</button>
+          <button type="button" class="option-btn" data-value="summer">Summer</button>
+          <button type="button" class="option-btn" data-value="fall">Fall</button>
+          <button type="button" class="option-btn" data-value="winter">Winter</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Riding with others?</label>
+        <div class="option-group" id="party-group">
+          <button type="button" class="option-btn selected" data-value="1">Solo</button>
+          <button type="button" class="option-btn" data-value="2">Couple</button>
+          <button type="button" class="option-btn" data-value="3+">Group</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-section" id="partner-section" style="display:none;">
+      <h2>Riding Partner Email</h2>
+      <p class="section-desc">We'll send them a copy of the guide too — no extra charge.</p>
+      <div class="field">
+        <input type="email" id="partner-email" placeholder="partner@email.com">
+        <div class="field-note">Optional. Add more addresses separated by commas.</div>
+      </div>
+    </div>
+    <div class="form-section" id="guest-email-section" style="display:none;">
+      <h2>Where should we send your guide?</h2>
+      <p class="section-desc">You're not signed in — enter your email to receive the PDF.</p>
+      <div class="field">
+        <input type="email" id="guest-email" placeholder="your@email.com">
+      </div>
+    </div>
+    <button type="submit" class="btn-checkout" id="btn-submit">Continue to Payment →</button>
+    <p class="secure-note">🔒 Secure checkout via Stripe · Instant PDF delivery</p>
+  </form>
+</div>
+<script>
+  const supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+  let currentUser = null;
+  let selections = { pace: 'relaxed', accommodation: 'camping', season: 'spring', party_size: '1' };
+
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    currentUser = session?.user ?? null;
+    updateAuthUI();
+  });
+
+  function updateAuthUI() {
+    const guestSection = document.getElementById('guest-email-section');
+    const authNotice = document.getElementById('auth-notice');
+    if (currentUser) {
+      guestSection.style.display = 'none';
+      authNotice.style.display = 'none';
+    } else {
+      guestSection.style.display = 'block';
+      authNotice.style.display = 'block';
+    }
+  }
+
+  document.querySelectorAll('.option-group').forEach(group => {
+    group.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        if (group.id === 'pace-group') selections.pace = btn.dataset.value;
+        if (group.id === 'accommodation-group') selections.accommodation = btn.dataset.value;
+        if (group.id === 'season-group') selections.season = btn.dataset.value;
+        if (group.id === 'party-group') {
+          selections.party_size = btn.dataset.value;
+          document.getElementById('partner-section').style.display = btn.dataset.value !== '1' ? 'block' : 'none';
+        }
+      });
+    });
+  });
+
+  document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-submit');
+    const errorEl = document.getElementById('error-msg');
+    errorEl.style.display = 'none';
+
+    if (!currentUser) {
+      const guestEmail = document.getElementById('guest-email').value.trim();
+      if (!guestEmail || !guestEmail.includes('@')) {
+        showError('Please enter a valid email address so we can send your guide.');
+        return;
+      }
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Connecting to Stripe...';
+
+    const partnerEmails = document.getElementById('partner-email')?.value.trim() || '';
+    const guestEmail = document.getElementById('guest-email')?.value.trim() || '';
+
+    const payload = {
+      sessionData: {
+        supabase_user_id: currentUser?.id || '',
+        customer_email: currentUser?.email || guestEmail,
+      },
+      formData: {
+        pace: selections.pace,
+        accommodation: selections.accommodation,
+        season: selections.season,
+        party_size: selections.party_size,
+        partner_emails: partnerEmails,
+      }
+    };
+
+    try {
+      const response = await fetch('/.netlify/functions/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.url) throw new Error(data.error || 'Checkout failed — please try again.');
+      window.location.href = data.url;
+    } catch (err) {
+      showError(err.message);
+      btn.disabled = false;
+      btn.textContent = 'Continue to Payment →';
+    }
+  });
+
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+</script>
+</body>
+</html>

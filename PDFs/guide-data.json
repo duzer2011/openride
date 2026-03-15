@@ -1,0 +1,600 @@
+{
+  "route": {
+    "name": "Natchez Trace Parkway",
+    "subtitle": "Lower Trace Self-Guided Cycling Tour",
+    "origin": "Natchez, MS",
+    "destination": "Rocky Springs, MS",
+    "header_label": "Natchez Trace Parkway · Lower Trace Tour",
+    "stats": {
+      "distance": "~82 Miles",
+      "difficulty": "Beginner",
+      "bike_types": [
+        "road",
+        "hybrid",
+        "ebike"
+      ],
+      "seasons": "Spring / Fall"
+    },
+    "essentials": [
+      [
+        "START POINT",
+        "Natchez Visitor Center, Natchez, MS (Milepost 0)"
+      ],
+      [
+        "END POINT",
+        "Rocky Springs Campsite, MS (Milepost 54.8)"
+      ],
+      [
+        "RESUPPLY",
+        "Natchez (start), Port Gibson (MP 39.2) — stock up, limited options between"
+      ],
+      [
+        "CASH",
+        "Bring cash — many small towns and local restaurants are cash only"
+      ],
+      [
+        "CELL SERVICE",
+        "Spotty in many sections — download offline maps before departing"
+      ],
+      [
+        "TRAFFIC",
+        "No trucks or commercial vehicles ever permitted on the Parkway"
+      ],
+      [
+        "WATER",
+        "Available at NPS visitor centers and campgrounds — carry 2L minimum"
+      ],
+      [
+        "EMERGENCY",
+        "NPS Ranger Station: (601) 446-6672  ·  Call 911 for emergencies"
+      ]
+    ],
+    "logistics": {
+      "driving": "Leave your car at the Natchez Visitor Center (free, secure NPS lot). Arrange a return shuttle to pick you up at Rocky Springs on your final day, or have someone drive your car to meet you.",
+      "flying": "Fly into Jackson–Evers International Airport (JAN), ~90 min from Natchez. Downtown Karla Brown offers bike-friendly shuttle service from Jackson airport to Natchez — approximately $45/person including your bike. Book in advance: find her via NatchezTraceTravel.com",
+      "bike_shipping": "BikeFlights.com ships your bike to your hotel and back home. Starts around $60 each way. Book 1–2 weeks ahead.",
+      "ebike_note": "E-bike riders: confirm charging availability when booking lodging. All recommended B&Bs below can accommodate e-bike charging. Rocky Springs NPS campsite has no power — plan battery accordingly."
+    },
+    "closing": "This route guide was curated by a professional bicycle tour guide with over 10 years of experience leading tours on the Natchez Trace Parkway. Every stop, every note, and every recommendation comes from real miles ridden on this road.",
+    "seasons": {
+      "spring": "March–May is peak season. Wildflowers are spectacular. Book B&Bs 6+ weeks ahead. Insects emerge in April — pack repellent. Mornings can be cool (40s°F), afternoons warm (70s°F). Best overall window: mid-March to early May.",
+      "fall": "September–November brings cooler temps and fall color. October is the sweet spot. Fewer crowds than spring. B&Bs more available but still book ahead for weekends. Daylight shorter — plan to finish riding by 5:30pm in November.",
+      "summer": "June–August is hot and humid (90s°F+). Only recommended for early morning starts. Be on the road by 7am and off by noon. Carry extra water. Not recommended for first-timers.",
+      "winter": "December–February is quiet and mild by northern standards (40–60°F), but some B&Bs and restaurants have reduced hours. Call ahead. Can be beautiful and uncrowded."
+    }
+  },
+  "config": {
+    "pace": "moderate",
+    "lodging": "bnb",
+    "season": "spring"
+  },
+  "days": [
+    {
+      "number": 1,
+      "title": "ARRIVAL & NATCHEZ EXPLORATION",
+      "miles": "0 miles riding",
+      "elevation": null,
+      "description": "Arrive in Natchez — one of the oldest cities on the Mississippi River. Spend the afternoon and evening exploring before your ride begins tomorrow.",
+      "cues": [
+        [
+          "—",
+          "Natchez Bluffs",
+          "Walk",
+          "Stunning Mississippi River overlooks. Best at sunset.",
+          false,
+          false
+        ],
+        [
+          "—",
+          "Antebellum Mansions",
+          "Tour",
+          "Stanton Hall, Longwood, Dunleith — book tours ahead in spring.",
+          false,
+          false
+        ],
+        [
+          "—",
+          "Downtown Natchez",
+          "Explore",
+          "Historic Main Street, local restaurants, shops.",
+          false,
+          false
+        ],
+        [
+          "—",
+          "Overnight: Natchez",
+          "—",
+          "See lodging recommendations below.",
+          false,
+          true
+        ]
+      ],
+      "tip": null,
+      "overnight_town": "natchez",
+      "lodging": [
+        {
+          "name": "The Burn Luxury Inn",
+          "type": "B&B",
+          "price": "$150–200/night",
+          "notes": "Stunning antebellum property, full breakfast included, pool and gardens. Nell is an exceptional host.",
+          "booking": "Booking.com or direct",
+          "ebike_charging": true,
+          "highlight": true
+        },
+        {
+          "name": "Sunnyside B&B",
+          "type": "B&B",
+          "price": "$125–175/night",
+          "notes": "Intimate, owner Colleen is fascinating — expect a 3-hour breakfast conversation about the home's history.",
+          "booking": "Direct: (601) 807-1148",
+          "ebike_charging": true,
+          "highlight": true
+        },
+        {
+          "name": "Riverboat B&B",
+          "type": "B&B",
+          "price": "$125–150/night",
+          "notes": "Bikes welcome, great central location, homemade breakfast with farm-fresh eggs.",
+          "booking": "Direct: (601) 445-8217",
+          "ebike_charging": true,
+          "highlight": false
+        },
+        {
+          "name": "Natchez Grand Hotel",
+          "type": "Hotel",
+          "price": "$100–150/night",
+          "notes": "Convenient downtown location, river views from some rooms. Rooms are aging — manage expectations.",
+          "booking": "Booking.com",
+          "ebike_charging": true,
+          "highlight": false
+        }
+      ],
+      "dinner": [
+        {
+          "name": "Magnolia Grill",
+          "type": "Seafood / Southern",
+          "price": "$$",
+          "notes": "Shrimp & grits, river view, right Under-the-Hill. The obvious first-night pick. 4.5★ / 1,700 reviews.",
+          "hours": "Tue–Sun 11am–9/10pm, closed Mon",
+          "phone": "(601) 446-7670"
+        },
+        {
+          "name": "Frankie's on Main",
+          "type": "American / Upscale",
+          "price": "$$$",
+          "notes": "Renovated bank building, excellent food, great atmosphere. Best for a celebratory first night. 4.6★",
+          "hours": "Tue–Sat 11am–10pm, closed Sun–Mon",
+          "phone": "(601) 861-6713"
+        },
+        {
+          "name": "The Camp",
+          "type": "Casual / American",
+          "price": "$$",
+          "notes": "Also Under-the-Hill, river views, more casual. Catfish, burgers, great atmosphere. 4.5★",
+          "hours": "Daily 11am–8/9pm",
+          "phone": "(601) 897-0466"
+        }
+      ],
+      "breakfast": [
+        {
+          "name": "Natchez Coffee Co",
+          "type": "Cafe / Breakfast",
+          "price": "$",
+          "notes": "Opens 6am. Very popular with locals. Perfect pre-ride fuel. 4.3★ / 800+ reviews.",
+          "hours": "Mon–Sat 6am–5pm, Sun 6am–2pm",
+          "phone": "(601) 304-1415"
+        },
+        {
+          "name": "The Little Easy",
+          "type": "Brunch Cafe",
+          "price": "$$",
+          "notes": "Chicken & waffles, mimosas, charming atmosphere. Great if you have a relaxed morning. 4.3★",
+          "hours": "Daily 8am–2pm (Fri also 6–9pm)",
+          "phone": "(601) 653-0774"
+        }
+      ],
+      "terrain_summary": "No riding today — arrival day.",
+      "terrain_detail": null,
+      "history": "Natchez sits on a bluff 200 feet above the Mississippi River and has been continuously inhabited for over 10,000 years. The Natchez people maintained their capital here until colonial wars in the 1730s dispersed them. By the early 1800s, Natchez had become the wealthiest city per capita in the United States — built on cotton and enslaved labor. The antebellum mansions you see today are the legacy of that era. The city was largely spared during the Civil War, preserving much of its extraordinary 19th century architecture intact.",
+      "poi": [
+        [
+          "Natchez Bluffs & Under-the-Hill",
+          "Walk",
+          "The bluffs overlook the Mississippi — best at sunset. Under-the-Hill was once the most notorious district on the frontier."
+        ],
+        [
+          "Stanton Hall",
+          "Tour",
+          "One of the grandest antebellum mansions in America. Tours run daily. Allow 60-90 min. Book ahead in spring."
+        ],
+        [
+          "Longwood",
+          "Tour",
+          "An unfinished octagonal mansion — construction stopped when the Civil War began and was never resumed. Upper floors still hold the builder's tools. 4.9★"
+        ],
+        [
+          "Historic Natchez City Cemetery",
+          "Walk",
+          "Extraordinary 19th century monuments. Free, open daily. Allow 30 minutes."
+        ]
+      ],
+      "lunch": null,
+      "dinner_note": "Natchez has the best dining on the route. Magnolia Grill for a river-view first night, or Frankie's on Main for something special."
+    },
+    {
+      "number": 2,
+      "title": "NATCHEZ TO PORT GIBSON",
+      "miles": "~42 miles",
+      "elevation": "~2,100 ft",
+      "description": "Your first day of riding begins at the Natchez Visitor Center. The Parkway wraps you in forest and calm immediately. Keep eyes open for deer, wild turkey, and armadillos in the early miles. Smooth NPS pavement, light car traffic, and your pace entirely your own.",
+      "cues": [
+        [
+          "0.0",
+          "Natchez Visitor Center — START",
+          "Head N",
+          "Parking, restrooms, water. Official Parkway start.",
+          false,
+          false
+        ],
+        [
+          "1.2",
+          "Under-the-Hill area",
+          "Continue N",
+          "Optional last coffee/food stop before the Trace.",
+          false,
+          false
+        ],
+        [
+          "10.3",
+          "Emerald Mound",
+          "Turn R",
+          "MUST STOP. 2nd largest Native American mound in US. Sunrise here is magical. Allow 30 min.",
+          true,
+          false
+        ],
+        [
+          "15.5",
+          "Mount Locust Historic Inn",
+          "Continue N",
+          "Oldest remaining inn on the Old Natchez Trace. NPS interpretive site.",
+          false,
+          false
+        ],
+        [
+          "17.5",
+          "Loess Bluff",
+          "Continue N",
+          "Unique geological formation. Short walk to overlook.",
+          false,
+          false
+        ],
+        [
+          "25.0",
+          "Sunken Trace",
+          "Continue N",
+          "Walk the original sunken trail worn by centuries of foot traffic.",
+          false,
+          false
+        ],
+        [
+          "30.0",
+          "Grindstone Ford / Mangum Mound",
+          "Continue N",
+          "Ancient mound and creek crossing. Good shaded rest stop.",
+          false,
+          false
+        ],
+        [
+          "35.0",
+          "Coles Creek Picnic Area",
+          "Continue N",
+          "Good lunch stop. Restrooms and water available.",
+          false,
+          false
+        ],
+        [
+          "39.2",
+          "PORT GIBSON — END DAY 2",
+          "Exit L",
+          "Turn left toward town. Motels and B&Bs. RESUPPLY HERE for Day 3.",
+          false,
+          true
+        ]
+      ],
+      "tip": "★  PORT GIBSON OVERNIGHT: First Presbyterian Church (the Golden Hand steeple) is a must-see on your evening walk. The Corner on Church B&B is highly recommended. Dinner: ask your host for current restaurant recommendations.",
+      "overnight_town": "port_gibson",
+      "lodging": [
+        {
+          "name": "Isabella Bed & Breakfast",
+          "type": "B&B",
+          "price": "$100–150/night",
+          "notes": "Cyclist-specific reviews praise this place — locked bike storage, cold drinks waiting on arrival, expert local tips. 4.9★",
+          "booking": "Direct: (601) 437-5097",
+          "ebike_charging": true,
+          "highlight": true
+        },
+        {
+          "name": "Collina House",
+          "type": "B&B / Plantation",
+          "price": "$100–150/night",
+          "notes": "Gorgeous 1800s plantation property, very welcoming hosts Scott and Katy, full breakfast. 5.0★",
+          "booking": "Direct: (504) 481-3166",
+          "ebike_charging": true,
+          "highlight": false
+        }
+      ],
+      "dinner": [
+        {
+          "name": "Ask your B&B host",
+          "type": "Local recommendation",
+          "price": "varies",
+          "notes": "Port Gibson dining options change frequently. Both Isabella and Collina hosts are excellent at current restaurant recommendations. The town is small — trust local knowledge.",
+          "hours": "—",
+          "phone": "—"
+        },
+        {
+          "name": "61 Fish Market",
+          "type": "Seafood",
+          "price": "$",
+          "notes": "Fresh fried catfish, open until 7pm. Good early dinner option if you arrive before 6:30pm. 4.5★",
+          "hours": "Daily 9am–7pm (Sun noon–6pm)",
+          "phone": "(601) 437-4009"
+        }
+      ],
+      "breakfast": [
+        {
+          "name": "Your B&B hosts",
+          "type": "Full Southern breakfast",
+          "price": "Included",
+          "notes": "Both Isabella and Collina serve full Southern breakfasts. This is genuinely the best meal option in town — take your time and fuel up for the day.",
+          "hours": "By arrangement",
+          "phone": "—"
+        },
+        {
+          "name": "Mississippi's Finest",
+          "type": "Soul food",
+          "price": "$",
+          "notes": "Opens at 11am — good lunch stop rather than breakfast. Fried chicken and rice & gravy are exceptional. 4.7★",
+          "hours": "Mon–Sat 11am–3pm, closed Sun",
+          "phone": "(601) 448-5277"
+        }
+      ],
+      "terrain_summary": "~42 miles · Rolling hills · Smooth NPS asphalt all day",
+      "terrain_detail": "A longer day but consistent terrain — smooth NPS asphalt with a 3-5ft paved shoulder throughout. Gentle rolling hills through dense hardwood forest. No significant climbs. The biggest elevation is gradual and spread over miles. Moderate pace riders typically complete this in 3.5-5 hours of riding time.",
+      "history": "This is the most historically dense day on the route. Emerald Mound at mile 10 is one of the most significant pre-Columbian sites in the country — a ceremonial platform mound covering eight acres, built by the Plaquemine culture between 1300-1600 CE. Further north, Mount Locust was the first inn on the Trace, serving the boatmen walking home to Nashville after floating goods to New Orleans. The Sunken Trace near mile 25 shows the physical depth of the route's history — the trail worn six to eight feet below grade by centuries of foot and hoof traffic.",
+      "poi": [
+        [
+          "Emerald Mound (MP 10.3)",
+          "Must Stop — Allow 30 min",
+          "Second largest Native American earthwork in the US. Climb to the top. The size is staggering — eight acres at the base, built basket by basket."
+        ],
+        [
+          "Mount Locust Inn (MP 15.5)",
+          "Stop — Allow 15 min",
+          "Built 1779, the oldest remaining inn on the Old Trace. NPS interpretive talks in spring. The surrounding grounds are beautiful."
+        ],
+        [
+          "Sunken Trace (MP 25.0)",
+          "Stop — Allow 15 min",
+          "The original trail worn six to eight feet below grade by centuries of use. Walking down into it changes your relationship to the history."
+        ],
+        [
+          "Port Gibson Church Street",
+          "Evening Walk",
+          "The Golden Hand steeple of First Presbyterian Church is unmistakable — and unexplained. Walk Church Street before dinner."
+        ]
+      ],
+      "lunch": [
+        [
+          "Coles Creek Picnic Area (MP 35)",
+          "NPS Picnic Area",
+          "Free",
+          "Ideal lunch stop — shaded tables, restrooms, water. Bring food from Natchez or your B&B breakfast."
+        ],
+        [
+          "Natchez Coffee Co (pre-ride)",
+          "Cafe",
+          "$",
+          "Stock up before you leave. Limited options until Port Gibson."
+        ]
+      ],
+      "dinner_note": "Port Gibson: limited options but the Isabella or Collina hosts always know what's good and open. The 61 Fish Market closes at 7pm — worth it for the catfish."
+    },
+    {
+      "number": 3,
+      "title": "PORT GIBSON TO ROCKY SPRINGS",
+      "miles": "~40 miles",
+      "elevation": "~2,400 ft",
+      "description": "Today features the single most memorable detour on the Lower Trace — the Windsor Ruins. Plan extra time. The day ends at Rocky Springs, a ghost town slowly reclaimed by forest, where the free NPS campsite sits among ruins of what was once a community of 2,600 people.",
+      "cues": [
+        [
+          "0.0",
+          "Port Gibson — START DAY 3",
+          "To Pkwy",
+          "Stock up food and water. Limited resupply ahead.",
+          false,
+          false
+        ],
+        [
+          "1.0",
+          "Re-enter Natchez Trace Pkwy",
+          "Head N",
+          "Resume from MP 39.2. Continue northbound.",
+          false,
+          false
+        ],
+        [
+          "41.0",
+          "Windsor Ruins Turnoff",
+          "Turn LEFT",
+          "MUST STOP. Onto Rodney Rd — 0.5 mi to ruins. 23 haunting columns in the forest. Allow 45-60 min.",
+          true,
+          false
+        ],
+        [
+          "41.5",
+          "Return to Parkway",
+          "Turn RIGHT",
+          "Rejoin Parkway heading north after Windsor Ruins.",
+          false,
+          false
+        ],
+        [
+          "45.7",
+          "Sunken Trace (2nd section)",
+          "Continue N",
+          "Original deeply worn trail. Short walk, very worth it.",
+          false,
+          false
+        ],
+        [
+          "47.5",
+          "Coles Creek Picnic Area",
+          "Continue N",
+          "LAST WATER before Rocky Springs. Fill all bottles here.",
+          false,
+          false
+        ],
+        [
+          "50.0",
+          "Owens Creek Waterfall",
+          "Continue N",
+          "Small but lovely waterfall. Easy 2-min walk off road.",
+          false,
+          false
+        ],
+        [
+          "54.8",
+          "Rocky Springs — END",
+          "Turn R",
+          "Free NPS camping. Water at site. Ghost town ruins and 1837 church nearby.",
+          false,
+          true
+        ]
+      ],
+      "tip": "★  ROCKY SPRINGS CAMP: Water spigot on site. Bear boxes provided. Walk the ghost town trail at dusk — ruins of stores, homes and the standing church are extraordinary. No cell service. Stargazing exceptional on clear nights.",
+      "overnight_town": "rocky_springs",
+      "lodging": [
+        {
+          "name": "Rocky Springs NPS Campground",
+          "type": "NPS Campsite",
+          "price": "Free",
+          "notes": "First come, first served. Water spigot on site. Bear boxes provided. The 1837 Methodist Church and ghost town ruins are a short walk away.",
+          "booking": "No reservation needed",
+          "ebike_charging": false,
+          "highlight": true
+        }
+      ],
+      "dinner": [],
+      "breakfast": [],
+      "terrain_summary": "~40 miles · Rolling hills · NPS asphalt + Windsor Ruins detour on county road",
+      "terrain_detail": "Your longest day. Smooth NPS asphalt throughout, with one notable exception: the Windsor Ruins detour onto Rodney Road is a narrow 2-lane county road with no shoulder. Ride single file, stay right. The detour is 1.5 miles each way on rougher pavement. The final approach to Rocky Springs includes a 0.3-mile gravel access road to the campsite — walk it if you're on 25mm road tires.",
+      "history": "Windsor Ruins and Rocky Springs tell two very different stories about the antebellum South's rise and fall. Windsor was the grandest mansion in Mississippi, built in 1861 and surviving the Civil War only to burn in 1890 from a dropped cigarette — 23 cast-iron columns are all that remain. Rocky Springs, by contrast, was a community of ordinary people whose town was slowly erased by yellow fever, war, soil exhaustion, and the boll weevil. The 1837 Methodist Church still stands among the ruins, holding services until 1904. Both sites sit quietly in the forest now, reclaimed by the same landscape that once fed them.",
+      "poi": [
+        [
+          "Windsor Ruins (MP 30 detour)",
+          "Must Stop — Allow 45-60 min",
+          "Turn onto Rodney Road at MP 30. 1.5 miles to the ruins. Twenty-three Corinthian columns in a forest clearing. Open sky, no walls, vines climbing the ironwork. It earns the detour."
+        ],
+        [
+          "Sunken Trace, Section 2 (MP 45.7)",
+          "Stop — Allow 15 min",
+          "The deeper of the two Sunken Trace sections. If you missed the first one, don't miss this."
+        ],
+        [
+          "Owens Creek Waterfall (MP 50.0)",
+          "Quick Stop",
+          "Small waterfall, 2-min trail. Cool and shaded — a good final rest before camp."
+        ],
+        [
+          "Rocky Springs Ghost Town (MP 54.8)",
+          "Explore at camp",
+          "Walk the ghost town trail at dusk. The 1837 church, foundations, and the original spring are all within easy walking distance of the campsite."
+        ]
+      ],
+      "lunch": [
+        [
+          "Pack from Port Gibson",
+          "Essential",
+          "$",
+          "Last food before Rocky Springs. The 61 Fish Market at MP 39 is your best bet — get there before 12:30pm for lunch, or pack from your B&B breakfast."
+        ],
+        [
+          "Coles Creek Picnic Area (MP 47.5)",
+          "Last Water Stop",
+          "Free",
+          "FILL ALL BOTTLES HERE. This is the last reliable water before Rocky Springs. Do not skip this stop."
+        ]
+      ],
+      "dinner_note": "⚠ No food at Rocky Springs. Carry dinner and tomorrow's breakfast from Port Gibson. Non-negotiable."
+    }
+  ],
+  "gear": {
+    "all": [
+      [
+        "Navigation",
+        "Offline maps downloaded (Google Maps or Gaia GPS), this cue sheet",
+        "Garmin or Wahoo GPS with GPX loaded"
+      ],
+      [
+        "Clothing",
+        "Padded shorts, jersey x2, lightweight rain jacket, arm warmers",
+        "Chamois cream, sun sleeves for hot days"
+      ],
+      [
+        "Safety",
+        "Front and rear lights, helmet, ID, emergency contacts, basic first aid",
+        "Personal locator beacon for remote sections"
+      ],
+      [
+        "Other",
+        "Cash $50+ minimum, sunscreen, insect repellent (essential spring)",
+        "Small padlock for bike at overnight stops"
+      ]
+    ],
+    "style": [
+      [
+        "Bike",
+        "Road or hybrid bike, spare tubes x2, pump, multi-tool, chain lube",
+        "Handlebar bag or small frame bag"
+      ],
+      [
+        "Luggage",
+        "Small backpack or handlebar bag — B&Bs carry your overnight essentials",
+        "Lightweight dry bag for rain protection"
+      ],
+      [
+        "Food & Water",
+        "2x bottles minimum, snacks for the day — meals at restaurants nightly",
+        "Electrolyte tabs for hot days"
+      ]
+    ]
+  },
+  "navigation": [
+    [
+      "GPX File",
+      "Import to Garmin, Wahoo, Komoot, Ride with GPS, or Apple Maps",
+      "Included in your download from openride.bike"
+    ],
+    [
+      "Ride with GPS",
+      "View interactive map, turn cues on your phone, export GPX",
+      "ridewithgps.com — search OpenRide Natchez Trace"
+    ],
+    [
+      "Google Maps Offline",
+      "Download the region over WiFi before your trip",
+      "Open Google Maps → find area → tap Download"
+    ],
+    [
+      "NPS Parkway Map",
+      "Official map with all mileposts, facilities, campgrounds marked",
+      "nps.gov/natr — free PDF download"
+    ],
+    [
+      "Komoot",
+      "Excellent cycling-specific routing and navigation app",
+      "komoot.com — search Natchez Trace"
+    ]
+  ]
+}

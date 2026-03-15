@@ -1,6 +1,7 @@
 import sys, json, os
 sys.path.insert(0, r'C:\OpenRide.bike\PDF Engine')
 from natchez_trace import ROUTE
+from natchez_trace_days_patch import DAY_ENRICHMENT
 
 def export_guide_json(
     output_path,
@@ -12,6 +13,7 @@ def export_guide_json(
 
     route = ROUTE
     days = route['days'][pace]
+    enrichment = DAY_ENRICHMENT.get(pace, {})
 
     # Build day pages
     day_pages = []
@@ -30,6 +32,9 @@ def export_guide_json(
         dinner = town.get('dining', {}).get('dinner', [])
         breakfast = town.get('dining', {}).get('breakfast', [])
 
+        # Merge enrichment data for this day
+        enrich = enrichment.get(day['number'], {})
+
         day_pages.append({
             'number': day['number'],
             'title': day['title'],
@@ -42,6 +47,12 @@ def export_guide_json(
             'lodging': all_lodging,
             'dinner': dinner,
             'breakfast': breakfast,
+            'terrain_summary': enrich.get('terrain_summary', ''),
+            'terrain_detail': enrich.get('terrain_detail', ''),
+            'history': enrich.get('history', ''),
+            'poi': enrich.get('poi', []),
+            'lunch': enrich.get('lunch', []),
+            'dinner_note': enrich.get('dinner_note', ''),
         })
 
     # Gear list for lodging style
@@ -61,6 +72,7 @@ def export_guide_json(
             'essentials': route.get('essentials', {}),
             'logistics': route.get('logistics', {}),
             'closing': route.get('closing', ''),
+            'seasons': route.get('seasons', {}),
         },
         'config': {
             'pace': pace,

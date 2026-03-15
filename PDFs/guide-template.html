@@ -114,12 +114,15 @@ body {
   padding: 0.3in var(--margin) 0.2in;
   display: flex;
   flex-direction: column;
-  gap: 0.22in;
+  gap: 0.18in;
+  overflow: hidden;
 }
 
 /* ── DAY HERO BAND ── */
 .day-hero {
   background: var(--forest);
+  background-size: cover;
+  background-position: center center;
   margin: 0 calc(-1 * var(--margin));
   padding: 0.25in var(--margin) 0.22in;
   display: flex;
@@ -127,6 +130,23 @@ body {
   gap: 0.3in;
   position: relative;
   overflow: hidden;
+}
+
+.day-hero-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(28,42,31,0.92) 0%,
+    rgba(28,42,31,0.75) 50%,
+    rgba(28,42,31,0.45) 100%
+  );
+  z-index: 0;
+}
+
+.day-hero > * {
+  position: relative;
+  z-index: 1;
 }
 
 .day-hero::after {
@@ -579,6 +599,142 @@ body {
   line-height: 1.5;
 }
 
+/* ── HISTORY BLOCK ── */
+.history-block {
+  border-left: 3px solid var(--forest);
+  padding: 0.12in 0.18in;
+  background: rgba(244,239,228,0.4);
+}
+
+.history-block p {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 0.085in;
+  line-height: 1.7;
+  color: #3a3a3a;
+}
+
+/* ── TERRAIN BLOCK ── */
+.terrain-block {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.08in 0.15in;
+  padding: 0.1in 0;
+}
+
+.terrain-summary {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.16in;
+  color: var(--forest);
+  letter-spacing: 0.04em;
+}
+
+.terrain-detail {
+  font-size: 0.08in;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ── ENRICHMENT POI TABLE ── */
+.poi-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.08in;
+}
+
+.poi-table thead tr {
+  background: var(--forest);
+}
+
+.poi-table thead th {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.085in;
+  letter-spacing: 0.1em;
+  color: var(--sage);
+  padding: 0.06in 0.1in;
+  text-align: left;
+  font-weight: normal;
+}
+
+.poi-table tbody td {
+  padding: 0.06in 0.1in;
+  color: #333;
+  line-height: 1.4;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(44,74,46,0.06);
+}
+
+.poi-table tbody tr:nth-child(even) {
+  background: var(--parch2);
+}
+
+.poi-mp {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.12in;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.poi-name { font-weight: 600; }
+
+.poi-duration {
+  display: inline-block;
+  font-size: 0.065in;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--forest);
+  color: var(--sage);
+  padding: 0.015in 0.06in;
+  border-radius: 1px;
+}
+
+/* ── LUNCH LIST ── */
+.lunch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.06in;
+}
+
+.lunch-item {
+  display: grid;
+  grid-template-columns: 1.6in 1fr;
+  gap: 0.1in;
+  padding: 0.07in 0;
+  border-bottom: 1px solid rgba(44,74,46,0.07);
+}
+
+.lunch-item:last-child { border-bottom: none; }
+
+.lunch-name {
+  font-weight: 600;
+  font-size: 0.085in;
+  color: var(--forest);
+}
+
+.lunch-notes {
+  font-size: 0.078in;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* ── WARNING BOX ── */
+.warning-box {
+  background: rgba(193,127,58,0.08);
+  border: 1px solid rgba(193,127,58,0.3);
+  border-left: 3px solid var(--accent);
+  padding: 0.12in 0.16in;
+}
+
+.warning-box p {
+  font-size: 0.08in;
+  color: #555;
+  line-height: 1.5;
+}
+
+.warning-box strong {
+  color: var(--accent);
+}
+
 /* ── CLOSING PAGE ── */
 .closing-page {
   background: var(--forest);
@@ -641,6 +797,14 @@ body {
   size: 8.5in 11in;
   margin: 0;
 }
+
+.dining-list, .lodging-grid, .cue-list {
+  page-break-inside: avoid;
+}
+
+.section-head {
+  page-break-after: avoid;
+}
 </style>
 </head>
 <body id="guide-body">
@@ -649,11 +813,33 @@ body {
 
 <script>
 // ── HELPERS ──
+function formatTownName(key) {
+  if (!key) return '\u2014';
+  return key.replace(/_/g, ' ')
+    .split(' ')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
 function el(tag, cls, html) {
   const e = document.createElement(tag);
   if (cls) e.className = cls;
   if (html) e.innerHTML = html;
   return e;
+}
+
+// Map day overnight towns to hero images
+// Paths must be absolute for Puppeteer to load them
+const DAY_IMAGES = {
+  'natchez':     'C:/OpenRide.bike/images/natchez/natchez-trace-natchez-city-arrival.jpg',
+  'port_gibson': 'C:/OpenRide.bike/images/natchez/natchez-trace-windsor-ruins-visit.jpg',
+  'rocky_springs': 'C:/OpenRide.bike/images/natchez/natchez-trace-rocky-springs-camping.jpg',
+  'default':     'C:/OpenRide.bike/images/natchez/natchez-trace-parkway-couple-riding.jpg',
+};
+
+function getDayImage(overnightTown) {
+  const key = (overnightTown || '').toLowerCase();
+  return DAY_IMAGES[key] || DAY_IMAGES['default'];
 }
 
 function pageShell(routeLabel, pageNum, pageLabel) {
@@ -768,10 +954,48 @@ function buildEssentialsPage(guide, pageNum) {
 
   body.appendChild(cols);
 
+  // Seasonal conditions
+  const seasons = r.seasons || {};
+  if (Object.keys(seasons).length) {
+    const seasonsEl = el('div');
+    seasonsEl.innerHTML = sectionHead('Seasonal Riding Conditions');
+    const grid = el('div');
+    grid.style.cssText = 'display:grid;grid-template-columns:repeat(2,1fr);gap:0.12in;';
+    Object.entries(seasons).forEach(([season, notes]) => {
+      grid.innerHTML += `<div style="border:1px solid rgba(44,74,46,0.1);border-left:3px solid var(--accent);padding:0.12in 0.14in;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.13in;color:var(--forest);letter-spacing:0.06em;margin-bottom:0.04in;">${season}</div>
+        <div style="font-size:0.08in;color:#555;line-height:1.55;">${notes}</div>
+      </div>`;
+    });
+    seasonsEl.appendChild(grid);
+    body.appendChild(seasonsEl);
+  }
+
+  // How to use this guide box
+  const howTo = el('div');
+  howTo.style.cssText = 'background:var(--parch2);border:1px solid rgba(44,74,46,0.1);padding:0.18in 0.2in;margin-top:0.1in;';
+  howTo.innerHTML = `
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:0.13in;color:var(--forest);letter-spacing:0.08em;margin-bottom:0.1in;">How to Use This Guide</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.15in;">
+      <div>
+        <div style="font-size:0.07in;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.04in;">PDF Guide</div>
+        <div style="font-size:0.08in;color:#555;line-height:1.5;">Read each day page the night before. Review lodging and dining while you have WiFi.</div>
+      </div>
+      <div>
+        <div style="font-size:0.07in;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.04in;">GPX File</div>
+        <div style="font-size:0.08in;color:#555;line-height:1.5;">Load into Garmin, Wahoo, Komoot, or RideWithGPS before you leave home. Download offline maps.</div>
+      </div>
+      <div>
+        <div style="font-size:0.07in;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.04in;">Cue Sheet</div>
+        <div style="font-size:0.08in;color:#555;line-height:1.5;">Print and laminate for your map case or jersey pocket. Essential when cell service drops.</div>
+      </div>
+    </div>`;
+  body.appendChild(howTo);
+
   return page;
 }
 
-function buildDayPage(guide, day, pageNum) {
+function buildRidingPage(guide, day, pageNum) {
   const r = guide.route;
   const isArrival = day.miles === '0 miles riding' || day.miles === 0;
   const { page, body } = pageShell(
@@ -783,7 +1007,10 @@ function buildDayPage(guide, day, pageNum) {
   // Day hero band
   const hero = el('div', 'day-hero');
   hero.style.margin = '0 calc(-1 * var(--margin)) 0';
+  const imgPath = getDayImage(day.overnight_town);
+  hero.style.backgroundImage = `url('file:///${imgPath}')`;
   hero.innerHTML = `
+    <div class="day-hero-img-overlay"></div>
     <div class="day-num">0${day.number}</div>
     <div class="day-hero-content">
       <span class="day-eyebrow">Day ${day.number} of ${guide.days.length}</span>
@@ -798,7 +1025,7 @@ function buildDayPage(guide, day, pageNum) {
           <span class="day-meta-lbl">Elevation</span>
         </div>` : ''}
         <div class="day-meta-item">
-          <span class="day-meta-val">${day.overnight_town ? day.overnight_town.charAt(0).toUpperCase() + day.overnight_town.slice(1) : '\u2014'}</span>
+          <span class="day-meta-val">${formatTownName(day.overnight_town)}</span>
           <span class="day-meta-lbl">Overnight</span>
         </div>
       </div>
@@ -812,10 +1039,70 @@ function buildDayPage(guide, day, pageNum) {
     body.appendChild(desc);
   }
 
-  // Cue items (POIs / activities)
-  if (day.cues && day.cues.length) {
+  // History block (enrichment)
+  if (day.history) {
+    const histSection = el('div');
+    histSection.innerHTML = sectionHead('History & Context');
+    const histBlock = el('div', 'history-block');
+    histBlock.innerHTML = `<p>${day.history}</p>`;
+    histSection.appendChild(histBlock);
+    body.appendChild(histSection);
+  }
+
+  // Terrain block (enrichment) — skip on arrival days
+  if (!isArrival && (day.terrain_summary || day.terrain_detail)) {
+    const terrSection = el('div');
+    terrSection.innerHTML = sectionHead('Terrain');
+    const terrBlock = el('div', 'terrain-block');
+    terrBlock.innerHTML = `
+      ${day.terrain_summary ? `<div class="terrain-summary" style="grid-column:1/-1;">${day.terrain_summary}</div>` : ''}
+      ${day.terrain_detail ? `<div class="terrain-detail" style="grid-column:1/-1;">${day.terrain_detail}</div>` : ''}`;
+    terrSection.appendChild(terrBlock);
+    body.appendChild(terrSection);
+  }
+
+  // Enrichment POIs (riding days only — arrival days use cues below)
+  if (!isArrival && day.poi && day.poi.length) {
+    const poiSection = el('div');
+    poiSection.innerHTML = sectionHead('Points of Interest');
+    const table = document.createElement('table');
+    table.className = 'poi-table';
+    let thead = '<thead><tr><th>MP</th><th>Stop</th><th>Details</th><th></th></tr></thead>';
+    let tbody = '<tbody>';
+    day.poi.forEach(p => {
+      tbody += `<tr>
+        <td class="poi-mp">${p.milepost != null ? 'MP ' + p.milepost : ''}</td>
+        <td class="poi-name">${p.name || ''}</td>
+        <td>${p.description || ''}</td>
+        <td>${p.duration ? `<span class="poi-duration">${p.duration}</span>` : ''}</td>
+      </tr>`;
+    });
+    tbody += '</tbody>';
+    table.innerHTML = thead + tbody;
+    poiSection.appendChild(table);
+    body.appendChild(poiSection);
+  }
+
+  // Lunch options (enrichment) — skip on arrival days
+  if (!isArrival && day.lunch && day.lunch.length) {
+    const lunchSection = el('div');
+    lunchSection.innerHTML = sectionHead('Lunch Options');
+    const list = el('div', 'lunch-list');
+    day.lunch.forEach(l => {
+      const item = el('div', 'lunch-item');
+      item.innerHTML = `
+        <div class="lunch-name">${l.name || ''}</div>
+        <div class="lunch-notes">${l.notes || l.description || ''}</div>`;
+      list.appendChild(item);
+    });
+    lunchSection.appendChild(list);
+    body.appendChild(lunchSection);
+  }
+
+  // Cue items — arrival days only (riding days use enrichment POI table above)
+  if (isArrival && day.cues && day.cues.length) {
     const cueSection = el('div');
-    cueSection.innerHTML = sectionHead(isArrival ? 'Points of Interest' : 'Route Highlights & Stops');
+    cueSection.innerHTML = sectionHead('Points of Interest');
     const cueList = el('div', 'cue-list');
     day.cues.forEach(cue => {
       const item = el('div', 'cue-item');
@@ -852,10 +1139,39 @@ function buildDayPage(guide, day, pageNum) {
     body.appendChild(cueSection);
   }
 
+  return page;
+}
+
+function buildOvernightPage(guide, day, pageNum) {
+  const r = guide.route;
+  const { page, body } = pageShell(
+    `${r.name} \u00b7 ${r.header_label}`,
+    `Page ${pageNum}`,
+    `Overnight \u2014 ${formatTownName(day.overnight_town)}`
+  );
+
+  // Overnight hero — smaller than riding hero
+  const hero = el('div', 'day-hero');
+  hero.style.margin = '0 calc(-1 * var(--margin)) 0';
+  hero.style.padding = '0.18in var(--margin) 0.15in';
+  hero.innerHTML = `
+    <div class="day-hero-content">
+      <span class="day-eyebrow">Day ${day.number} \u2014 Overnight</span>
+      <div class="day-title">${formatTownName(day.overnight_town)}</div>
+    </div>`;
+  body.insertBefore(hero, body.firstChild);
+
+  // Dinner note (enrichment)
+  if (day.dinner_note) {
+    const noteBox = el('div', 'warning-box');
+    noteBox.innerHTML = `<p><strong>Dinner Note:</strong> ${day.dinner_note}</p>`;
+    body.appendChild(noteBox);
+  }
+
   // Lodging
   if (day.lodging && day.lodging.length) {
     const lodgSection = el('div');
-    lodgSection.innerHTML = sectionHead(`Overnight: ${day.overnight_town ? day.overnight_town.charAt(0).toUpperCase() + day.overnight_town.slice(1) : ''}`);
+    lodgSection.innerHTML = sectionHead(`Lodging: ${formatTownName(day.overnight_town)}`);
     const grid = el('div', 'lodging-grid');
     day.lodging.forEach(l => {
       const card = el('div', `lodging-card ${l.highlight ? 'highlight' : ''}`);
@@ -1021,9 +1337,10 @@ async function renderGuide() {
   // Page 1: Essentials
   body.appendChild(buildEssentialsPage(guide, pageNum++));
 
-  // Day pages
+  // Two pages per day: riding + overnight
   guide.days.forEach(day => {
-    body.appendChild(buildDayPage(guide, day, pageNum++));
+    body.appendChild(buildRidingPage(guide, day, pageNum++));
+    body.appendChild(buildOvernightPage(guide, day, pageNum++));
   });
 
   // Gear page

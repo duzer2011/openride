@@ -11,6 +11,16 @@
   to = "/plan.html"
   status = 200
 
+[[redirects]]
+  from = "/checkout"
+  to = "/checkout.html"
+  status = 200
+
+[[redirects]]
+  from = "/success"
+  to = "/success.html"
+  status = 200
+
 [[headers]]
   for = "/.netlify/functions/*"
   [headers.values]

@@ -15,13 +15,14 @@ exports.handler = async (event) => {
                 quantity: 1,
             }],
             mode: 'payment',
+            customer_email: sessionData.customer_email || undefined,
             metadata: {
-                pace: sessionData.pace,
-                accommodation: sessionData.accommodation,
-                season: sessionData.season,
-                party_size: sessionData.party_size,
+                pace: formData.pace,
+                accommodation: formData.accommodation,
+                season: formData.season,
+                party_size: formData.party_size,
                 partner_emails: formData.partner_emails || '',
-                supabase_user_id: sessionData.user_id || '',
+                supabase_user_id: sessionData.supabase_user_id || '',
             },
             custom_text: {
                 submit: {

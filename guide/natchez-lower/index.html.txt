@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natchez Trace Lower Guide - OpenRide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital@0;1&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script src="../../config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* ── TOKENS ── */
+        :root {
+            --forest: #2C4A2E;
+            --moss:   #4A7C59;
+            --sage:   #8AAF8A;
+            --parch:  #F4EFE4;
+            --parch2: #EDE8D8;
+            --accent: #C17F3A;
+            --ink:    #1e2a1f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #fdfbf7;
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: var(--parch);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(44, 74, 46, 0.1);
+            border-left-color: var(--forest);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
+            min-height: 100vh;
+        }
+
+        /* ── ADAPTED TEMPLATE STYLES ── */
+        .page {
+            padding: 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 2px dashed var(--parch2);
+            margin-bottom: 2rem;
+        }
+
+        .page:last-child { border-bottom: none; }
+
+        .page-header {
+            background: var(--forest);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-header-route { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.12em; color: var(--sage); }
+        .page-header-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; color: var(--parch); }
+        .page-header-logo span { color: var(--accent); }
+
+        .page-body { padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+        .day-hero {
+            background: var(--forest);
+            background-size: cover;
+            background-position: center;
+            margin: -2rem -2rem 0;
+            padding: 3rem 2rem 2rem;
+            display: flex;
+            align-items: flex-end;
+            gap: 2rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 250px;
+        }
+
+        .day-hero-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(28,42,31,0.9) 0%, rgba(28,42,31,0.4) 100%);
+        }
+
+        .day-hero > * { position: relative; z-index: 1; }
+        .day-num { font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: rgba(255,255,255,0.1); line-height: 0.8; }
+        .day-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--parch); line-height: 1; margin-bottom: 0.5rem; }
+        .day-meta { display: flex; gap: 2rem; }
+        .day-meta-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--parch); display: block; }
+        .day-meta-lbl { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage); }
+
+        .section-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+        .section-label { font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+        .section-head-line { flex: 1; height: 1px; background: rgba(44,74,46,0.15); }
+
+        .day-description { font-family: 'Lora', serif; font-size: 1.1rem; line-height: 1.7; color: #3a3a3a; }
+
+        .cue-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .cue-table thead { background: var(--forest); color: var(--sage); }
+        .cue-table th { font-family: 'Bebas Neue', sans-serif; padding: 0.8rem; text-align: left; }
+        .cue-table td { padding: 0.8rem; border-bottom: 1px solid var(--parch2); }
+        .col-mile { font-family: 'Bebas Neue', sans-serif; color: var(--accent); font-size: 1.2rem; }
+        .col-landmark { font-weight: 600; }
+
+        .lodging-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .lodging-card { border: 1px solid var(--parch2); border-left: 4px solid var(--sage); padding: 1.2rem; }
+        .lodging-card.highlight { border-left-color: var(--accent); background: var(--parch); }
+        .lodging-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--forest); }
+
+        .page-footer { background: var(--parch); padding: 1rem 2rem; display: flex; justify-content: space-between; font-size: 0.8rem; color: #888; }
+        
+        @media (max-width: 600px) {
+            .lodging-grid { grid-template-columns: 1fr; }
+            .day-hero { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .day-num { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body id="guide-body">
+    <div id="loading">
+        <div class="spinner"></div>
+        <p id="loading-text">Verifying Access...</p>
+    </div>
+
+    <div class="guide-container" id="guide-content" style="display:none;">
+        <!-- Populated by JS -->
+    </div>
+
+    <script>
+        const sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnon);
+
+        async function init() {
+            const loadingText = document.getElementById('loading-text');
+            
+            try {
+                // 1. Check Auth
+                const { data: { session } } = await sb.auth.getSession();
+                if (!session) {
+                    window.location.href = '/?login=true&redirect=/guide/natchez-lower';
+                    return;
+                }
+
+                // 2. Check Purchase
+                loadingText.textContent = 'Verifying Purchase...';
+                const response = await fetch('/.netlify/functions/check-purchase', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ route_slug: 'natchez-lower' })
+                });
+                
+                const { purchased } = await response.json();
+                if (!purchased) {
+                    window.location.href = '/natchez-trace-lower.html';
+                    return;
+                }
+
+                // 3. Load Data & Render
+                loadingText.textContent = 'Loading Guide Content...';
+                const guideRes = await fetch('./guide-data.json');
+                const guide = await guideRes.json();
+                
+                render(guide);
+
+                // 4. Show Content
+                document.getElementById('loading').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('guide-content').style.display = 'block';
+                }, 500);
+
+            } catch (err) {
+                console.error('Error:', err);
+                loadingText.innerHTML = `<span style="color:red">Error loading guide. Please try refreshing.</span>`;
+            }
+        }
+
+        // ── RENDERING ENGINE (Adapted from guide-template.html) ──
+        function el(tag, cls, html) {
+            const e = document.createElement(tag);
+            if (cls) e.className = cls;
+            if (html) e.innerHTML = html;
+            return e;
+        }
+
+        function formatTownName(key) {
+            if (!key) return '—';
+            return key.replace(/_/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        function pageShell(routeLabel, pageNum, pageLabel) {
+            const page = el('div', 'page');
+            const hdr = el('div', 'page-header');
+            hdr.innerHTML = `<span class="page-header-route">${routeLabel}</span><span class="page-header-logo">Open<span>Ride</span>.bike</span>`;
+            page.appendChild(hdr);
+            const body = el('div', 'page-body');
+            page.appendChild(body);
+            const ftr = el('div', 'page-footer');
+            ftr.innerHTML = `<span>${routeLabel}</span><span>${pageNum}</span>`;
+            page.appendChild(ftr);
+            return { page, body };
+        }
+
+        function sectionHead(label) {
+            return `<div class="section-head"><span class="section-label">${label}</span><div class="section-head-line"></div></div>`;
+        }
+
+        function render(guide) {
+            const container = document.getElementById('guide-content');
+            const r = guide.route;
+            let pageNum = 1;
+
+            // Simple render for web
+            guide.days.forEach(day => {
+                const isArrival = day.miles === '0 miles riding' || day.miles === 0;
+                const { page, body } = pageShell(r.name, `Page ${pageNum++}`, `Day ${day.number}`);
+                
+                const hero = el('div', 'day-hero');
+                hero.innerHTML = `
+                    <div class="day-hero-img-overlay"></div>
+                    <div class="day-num">0${day.number}</div>
+                    <div class="day-hero-content">
+                        <div class="day-title">${day.title}</div>
+                        <div class="day-meta">
+                            <div class="day-meta-item"><span class="day-meta-val">${isArrival ? 'Arrival' : day.miles}</span><span class="day-meta-lbl">Distance</span></div>
+                            <div class="day-meta-item"><span class="day-meta-val">${formatTownName(day.overnight_town)}</span><span class="day-meta-lbl">Overnight</span></div>
+                        </div>
+                    </div>`;
+                body.appendChild(hero);
+                body.appendChild(el('p', 'day-description', day.description));
+
+                if (day.poi && day.poi.length) {
+                    const poiSec = el('div');
+                    poiSec.innerHTML = sectionHead('Points of Interest');
+                    const list = el('div', 'day-description');
+                    day.poi.forEach(p => {
+                        list.innerHTML += `<p><strong>MP ${p.milepost}: ${p.name}</strong><br>${p.description}</p>`;
+                    });
+                    poiSec.appendChild(list);
+                    body.appendChild(poiSec);
+                }
+
+                if (day.lodging && day.lodging.length) {
+                    const lodgSec = el('div');
+                    lodgSec.innerHTML = sectionHead('Lodging');
+                    const grid = el('div', 'lodging-grid');
+                    day.lodging.forEach(l => {
+                        grid.innerHTML += `<div class="lodging-card ${l.highlight ? 'highlight' : ''}">
+                            <div class="lodging-name">${l.name}</div>
+                            <div style="font-size:0.9rem; color:var(--accent); margin:0.3rem 0;">${l.price || ''}</div>
+                            <div style="font-size:0.85rem; color:#666;">${l.notes || ''}</div>
+                        </div>`;
+                    });
+                    lodgSec.appendChild(grid);
+                    body.appendChild(lodgSec);
+                }
+
+                container.appendChild(page);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
