@@ -1343,20 +1343,12 @@
 
     <div class="hero-terrain"></div>
 
-    <nav>
-      <a class="logo" href="#">
-        <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
-          <circle cx="18" cy="18" r="15" stroke="var(--forest)" stroke-width="2.5" />
-          <line x1="18" y1="6" x2="18" y2="30" stroke="var(--forest)" stroke-width="2.2" stroke-linecap="round" />
-          <line x1="6" y1="18" x2="30" y2="18" stroke="var(--forest)" stroke-width="2.2" stroke-linecap="round" />
-          <path d="M12 12L24 24M24 12L12 24" stroke="var(--forest)" stroke-width="1.8" stroke-linecap="round" />
-        </svg>
-        <span class="logo-text">OpenRide</span>
-      </a>
-      <div style="display:flex;align-items:center;gap:0.9rem;">
-        <span class="nav-badge">Beta</span>
-        <div id="navAuthArea">
-          <button class="nav-btn" onclick="openAuth('signup')">Sign up free</button>
+    <nav class="nav">
+      <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <div id="navAuthArea" style="display:flex;align-items:center;gap:0.75rem;">
+          <button onclick="openAuth('login')" style="background:none;border:none;color:rgba(244,239,228,0.8);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.04em;">Sign In</button>
+          <a class="nav-buy" onclick="openAuth('signup');return false;" href="#">Create Account</a>
         </div>
       </div>
     </nav>
