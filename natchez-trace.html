@@ -165,8 +165,12 @@ body{background:var(--parch);color:var(--ink);font-family:'DM Sans',sans-serif;}
 </head>
 <body>
 <nav class="nav">
-  <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
-  <a class="nav-buy" href="#guides">Get Your Guide →</a>
+  <a class="nav-logo" href="/">Open<span style="color:#C17F3A;">Ride</span>.bike</a>
+  <div id="navAuthArea" style="display:flex;align-items:center;gap:0.75rem;">
+    <button onclick="openAuth('login')" style="background:none;border:none;color:rgba(244,239,228,0.7);font-family:'DM Sans',sans-serif;font-size:0.85rem;cursor:pointer;letter-spacing:0.03em;">Sign In</button>
+    <span style="color:rgba(244,239,228,0.3);font-size:0.85rem;">|</span>
+    <a class="nav-buy" href="#" onclick="openAuth('signup');return false;">Create Account</a>
+  </div>
 </nav>
 <section class="hero" aria-label="Natchez Trace Parkway cycling route">
   <div class="slides">
