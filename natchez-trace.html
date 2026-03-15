@@ -78,6 +78,8 @@ body{background:var(--parch);color:var(--ink);font-family:'DM Sans',sans-serif;}
 .a-section-head h2{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--forest);letter-spacing:0.03em;}
 .a-section-head span{font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);}
 .segment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:0;}
+@media(max-width:900px){.segment-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.segment-grid{grid-template-columns:1fr;}.segment-card{max-width:480px;margin:0 auto;width:100%;}.segments-inner{padding:0 1.25rem;}.bundle-inner{grid-template-columns:1fr;}.bundle-card{width:100%;}.a-practical-grid{grid-template-columns:1fr 1fr;}.a-highlights-grid{grid-template-columns:1fr;}.a-reviews-grid{grid-template-columns:1fr;}.pricing-strip{flex-wrap:wrap;}.pricing-item{flex:0 0 50%;}}
 .segment-card{background:white;border-radius:2px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,0.06);display:flex;flex-direction:column;transition:transform 0.2s,box-shadow 0.2s;}
 .segment-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.1);}
 .segment-img{height:190px;background-size:cover;background-position:center;position:relative;}
