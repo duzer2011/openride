@@ -46,3 +46,5 @@ deno.lock
 clean_dry_run.txt
 dry_run_out.txt
 sync_log.txt
+pipeline/cache/
+pipeline/output/
