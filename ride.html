@@ -922,6 +922,11 @@ function finishRide() {
   document.getElementById('finish-cues').textContent = cuesPlayed;
 
   showScreen('screen-finished');
+
+  // Trigger journal draft after 2 hours (riders settle in before writing)
+  setTimeout(() => {
+    showJournalPrompt();
+  }, 2 * 60 * 60 * 1000);
 }
 
 // ── WAYPOINT POPUP ──
@@ -965,6 +970,72 @@ function closePopup() {
 function showWaypointList() {
   // Could expand to a full overlay — for now just close any open popup
   closePopup();
+}
+
+function showJournalPrompt() {
+  const popup = document.getElementById('waypoint-popup');
+  document.getElementById('popup-category').textContent = 'End of Day';
+  document.getElementById('popup-name').textContent = "How was today's ride?";
+  document.getElementById('popup-desc').textContent =
+    'Speak or type a few thoughts — we\'ll draft your journal entry from your ride data.';
+
+  const actions = document.getElementById('popup-actions');
+  actions.innerHTML = '';
+
+  const textarea = document.createElement('textarea');
+  textarea.id = 'journal-input';
+  textarea.placeholder = 'What stood out today? Any moments worth remembering?';
+  textarea.style.cssText = 'width:100%;height:80px;padding:8px;border:1px solid rgba(138,175,138,0.3);border-radius:3px;background:rgba(44,74,46,0.2);color:var(--parch);font-family:DM Sans,sans-serif;font-size:0.85rem;resize:none;margin-bottom:8px;';
+  actions.appendChild(textarea);
+
+  const btn = document.createElement('button');
+  btn.className = 'popup-btn popup-btn-primary';
+  btn.textContent = 'Draft My Journal Entry';
+  btn.style.width = '100%';
+  btn.onclick = async () => {
+    btn.textContent = 'Drafting...';
+    btn.disabled = true;
+
+    const transcript = document.getElementById('journal-input').value;
+
+    try {
+      const resp = await fetch('/.netlify/functions/journal-draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          day_number: 1,
+          tour_name: 'Natchez Trace South',
+          miles_today: parseFloat(distanceTraveled.toFixed(1)),
+          elevation_gain_ft: 0,
+          moving_time_minutes: Math.floor(elapsedSeconds / 60),
+          waypoints_visited: Array.from(firedCues),
+          voice_transcript: transcript
+        })
+      });
+
+      const data = await resp.json();
+
+      if (data.draft) {
+        document.getElementById('popup-desc').textContent = data.draft;
+        actions.innerHTML = '';
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'popup-btn popup-btn-secondary';
+        copyBtn.textContent = 'Copy Draft';
+        copyBtn.style.width = '100%';
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(data.draft);
+          copyBtn.textContent = 'Copied!';
+        };
+        actions.appendChild(copyBtn);
+      }
+    } catch(err) {
+      btn.textContent = 'Try Again';
+      btn.disabled = false;
+    }
+  };
+  actions.appendChild(btn);
+
+  popup.classList.add('visible');
 }
 
 // ── UTILS ──
