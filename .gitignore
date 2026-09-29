@@ -48,3 +48,6 @@ dry_run_out.txt
 sync_log.txt
 pipeline/cache/
 pipeline/output/
+
+# Parked code, not deployed
+_archive/

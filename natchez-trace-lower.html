@@ -632,7 +632,81 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 }
 
 .faq-section{background:#f9f5ee;padding:4rem 2rem;}.faq-inner{max-width:860px;margin:0 auto;}.faq-section h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.08em;color:#2C4A2E;margin-bottom:2rem;}.faq-item{border-bottom:1px solid rgba(44,74,46,0.12);padding:1.25rem 0;}.faq-question{font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;color:#2C4A2E;margin-bottom:0.5rem;}.faq-answer{font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#4a4a3a;line-height:1.7;}
-</style>
+
+  .corridor-map-section {
+    padding: 60px 0 0;
+    background: #F4EFE4;
+  }
+  .corridor-map-section .section-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 24px 32px;
+  }
+  .corridor-map-section .section-heading {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 36px;
+    color: #2C4A2E;
+    letter-spacing: 0.03em;
+    margin-bottom: 10px;
+  }
+  .corridor-map-section .section-sub {
+    font-size: 15px;
+    color: #4A7C59;
+    line-height: 1.6;
+  }
+  .map-embed-wrap {
+    width: 100%;
+    border-top: 2px solid #2C4A2E;
+    border-bottom: 2px solid #2C4A2E;
+  }
+
+  
+  .ride-app-section { background: #2C4A2E; padding: 80px 24px; }
+  .ride-app-inner { max-width: 960px; margin: 0 auto; display: flex; gap: 64px; align-items: center; }
+  .ride-app-copy { flex: 1; min-width: 0; }
+  .ride-app-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #8AAF8A; margin-bottom: 14px; }
+  .ride-app-heading { font-family: "Bebas Neue", sans-serif; font-size: 48px; color: #F4EFE4; letter-spacing: 0.03em; line-height: 1; margin-bottom: 16px; }
+  .ride-app-body { font-size: 15px; color: #c8dcc8; line-height: 1.7; margin-bottom: 24px; }
+  .ride-feature-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .ride-feature-list li { font-size: 14px; color: #F4EFE4; padding-left: 16px; position: relative; line-height: 1.5; }
+  .ride-feature-list li::before { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 50%; background: #C17F3A; }
+  .ride-cta-btn { display: inline-block; background: #C17F3A; color: #F4EFE4; font-size: 14px; font-weight: 600; padding: 12px 24px; border-radius: 6px; text-decoration: none; letter-spacing: 0.02em; }
+  .ride-cta-btn:hover { background: #a86d31; }
+  .ride-app-phone-wrap { flex-shrink: 0; display: flex; justify-content: center; }
+  .ride-phone-frame { width: 220px; height: 440px; background: #111; border-radius: 32px; padding: 12px; border: 1.5px solid #333; }
+  .ride-phone-notch { width: 60px; height: 18px; background: #111; border-radius: 0 0 12px 12px; margin: 0 auto 4px; }
+  .ride-phone-screen { width: 100%; height: calc(100% - 22px); background: #1a2b1b; border-radius: 22px; overflow: hidden; position: relative; }
+  .ride-map-area { width: 100%; height: 52%; background: #2a3d2b; position: relative; overflow: hidden; }
+  .ride-map-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(74,124,89,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(74,124,89,0.15) 1px, transparent 1px); background-size: 20px 20px; }
+  .ride-dot { position: absolute; width: 14px; height: 14px; background: #E8420A; border-radius: 50%; border: 2px solid white; top: 50%; left: 48%; transform: translate(-50%,-50%); z-index: 3; }
+  .ride-dot-ring { position: absolute; width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(232,66,10,0.35); top: 50%; left: 48%; transform: translate(-50%,-50%); z-index: 2; }
+  .ride-turn-banner { position: absolute; top: 8px; left: 8px; right: 8px; background: #2C4A2E; border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; z-index: 4; }
+  .ride-turn-icon { width: 24px; height: 24px; background: #C17F3A; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ride-turn-text { flex: 1; }
+  .ride-turn-label { font-size: 9px; color: #8AAF8A; }
+  .ride-turn-main { font-size: 11px; font-weight: 500; color: #F4EFE4; }
+  .ride-turn-dist { font-size: 10px; color: #C17F3A; flex-shrink: 0; }
+  .ride-bottom-panel { position: absolute; bottom: 0; left: 0; right: 0; height: 48%; background: #1e2f1f; border-top: 1px solid rgba(138,175,138,0.2); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .ride-mile-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .ride-mile-num { font-size: 16px; font-weight: 500; color: #F4EFE4; }
+  .ride-mile-lbl { font-size: 9px; color: #8AAF8A; }
+  .ride-progress-track { height: 3px; background: rgba(138,175,138,0.2); border-radius: 2px; overflow: hidden; }
+  .ride-progress-fill { height: 100%; width: 38%; background: #C17F3A; border-radius: 2px; }
+  .ride-stops-label { font-size: 9px; color: #8AAF8A; text-transform: uppercase; letter-spacing: 0.06em; }
+  .ride-stop-item { display: flex; align-items: center; gap: 7px; padding: 6px 8px; background: rgba(255,255,255,0.04); border-radius: 6px; }
+  .ride-stop-pin { width: 18px; height: 18px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ride-stop-pin svg { transform: rotate(45deg); }
+  .ride-stop-info { flex: 1; min-width: 0; }
+  .ride-stop-name { font-size: 10px; font-weight: 500; color: #F4EFE4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ride-stop-sub { font-size: 9px; color: #8AAF8A; }
+  .ride-stop-dist { font-size: 9px; color: #C17F3A; flex-shrink: 0; }
+  .ride-stats-row { display: flex; gap: 6px; }
+  .ride-stat-card { flex: 1; background: rgba(255,255,255,0.04); border-radius: 5px; padding: 5px 6px; text-align: center; }
+  .ride-stat-val { font-size: 12px; font-weight: 500; color: #F4EFE4; }
+  .ride-stat-lbl { font-size: 8px; color: #8AAF8A; }
+  @media (max-width: 700px) { .ride-app-inner { flex-direction: column; } .ride-app-phone-wrap { order: -1; } }
+
+  </style>
 </head>
 <body>
 
@@ -737,8 +811,8 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
           <button class="sample-link" onclick="openModal('modal-gpx')">GPX Preview</button>
         </div>
       </div>
-      <a href="/plan.html" class="a-buy-btn">Start Planning Your Tour →</a>
-      <div class="a-sidebar-note">We'll build your guide based on<br>your pace, style &amp; dates</div>
+      <a href="/checkout?segment=lower" class="a-buy-btn">Get the Lower Trace Guide, $19 →</a>
+      <div class="a-sidebar-note">PDF guide, cue sheet &amp; GPX file<br>Instant download after checkout</div>
     </div>
   </div>
 </section>
@@ -884,6 +958,8 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   </div>
 </section>
 
+
+
 <!-- PRACTICAL INFO -->
 <section class="a-practical">
   <div class="a-practical-inner">
@@ -932,35 +1008,103 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   </div>
 </section>
 
-<!-- REVIEWS -->
-<section class="a-reviews">
-  <div class="a-reviews-inner">
-    <div class="a-reviews-head">
-      <h2>What Riders Are Saying</h2>
-      <span>Early Rider Reviews</span>
+<!-- FAQ -->
+
+<!-- RIDE APP SECTION -->
+<section class="ride-app-section">
+  <div class="ride-app-inner">
+
+    <div class="ride-app-copy">
+      <div class="ride-app-eyebrow">Included with your guide</div>
+      <h2 class="ride-app-heading">Your tour, in your pocket</h2>
+      <p class="ride-app-body">The OpenRide ride app runs on any phone — no download needed. Mount it on your handlebars and ride. It tracks your position, calls out turns, and surfaces the next food stop and overnight before you need it.</p>
+      <ul class="ride-feature-list">
+        <li>Turn-by-turn cues timed to your actual position</li>
+        <li>Next water, food, and lodging — with distance</li>
+        <li>Current mile marker, always visible</li>
+        <li>Works offline once loaded — no cell signal needed</li>
+      </ul>
+      <a href="/ride.html" class="ride-cta-btn">Try the demo app</a>
     </div>
-    <div class="a-reviews-grid">
-      <div class="a-review">
-        <div class="a-stars">★★★★★</div>
-        <p class="a-review-text">"Did the Lower Trace in 4 days with my wife. The guide had us totally dialed. We knew exactly where to eat, where to sleep, what to stop for. The Windsor Ruins at sunrise was worth the whole trip."</p>
-        <div class="a-reviewer"><div class="a-avatar">MK</div><div><div class="a-reviewer-name">Marcus K., Nashville, TN</div><div class="a-reviewer-route">Lower Trace · 4 days</div></div></div>
-      </div>
-      <div class="a-review">
-        <div class="a-stars">★★★★★</div>
-        <p class="a-review-text">"Rode this solo after a rough year. By Day 3 the Trace had completely reset me. I wasn't expecting the silence. Just open road, forest, and the occasional historic marker."</p>
-        <div class="a-reviewer"><div class="a-avatar">SL</div><div><div class="a-reviewer-name">Sarah L., Atlanta, GA</div><div class="a-reviewer-route">Lower Trace · 3 days</div></div></div>
-      </div>
-      <div class="a-review">
-        <div class="a-stars">★★★★★</div>
-        <p class="a-review-text">"Flew into Jackson and did the whole thing point-to-point. The resupply notes were spot on. Knew exactly which towns to stock up in and which ones to ride through."</p>
-        <div class="a-reviewer"><div class="a-avatar">DP</div><div><div class="a-reviewer-name">Dave P., Chicago, IL</div><div class="a-reviewer-route">Full Trace · 10 days</div></div></div>
+
+    <div class="ride-app-phone-wrap">
+      <div class="ride-phone-frame">
+        <div class="ride-phone-notch"></div>
+        <div class="ride-phone-screen">
+
+          <div class="ride-map-area">
+            <div class="ride-map-grid"></div>
+            <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 196 230" preserveAspectRatio="none">
+              <path d="M 98 220 Q 90 180 95 150 Q 100 120 92 90 Q 85 60 98 20" fill="none" stroke="#7a2a00" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
+              <path d="M 98 220 Q 90 180 95 150 Q 100 120 92 90 Q 85 60 98 20" fill="none" stroke="#E8420A" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <div class="ride-dot-ring"></div>
+            <div class="ride-dot"></div>
+            <div class="ride-turn-banner">
+              <div class="ride-turn-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 5l7 7-7 7M3 12h18" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="ride-turn-text">
+                <div class="ride-turn-label">Next turn</div>
+                <div class="ride-turn-main">Continue on Natchez Trace Pkwy</div>
+              </div>
+              <div class="ride-turn-dist">4.2 mi</div>
+            </div>
+          </div>
+
+          <div class="ride-bottom-panel">
+            <div class="ride-mile-wrap">
+              <div class="ride-mile-row">
+                <div>
+                  <div class="ride-mile-num">44.2</div>
+                  <div class="ride-mile-lbl">miles from Natchez</div>
+                </div>
+                <div style="text-align:right">
+                  <div class="ride-mile-num" style="font-size:12px;color:#8AAF8A">71.8</div>
+                  <div class="ride-mile-lbl">to go</div>
+                </div>
+              </div>
+              <div class="ride-progress-track"><div class="ride-progress-fill"></div></div>
+            </div>
+
+            <div class="ride-stops-label">Ahead on route</div>
+
+            <div class="ride-stop-item">
+              <div class="ride-stop-pin" style="background:#C17F3A">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z" fill="white" opacity="0.95"/></svg>
+              </div>
+              <div class="ride-stop-info">
+                <div class="ride-stop-name">Old Country Store</div>
+                <div class="ride-stop-sub">Food &middot; Lorman</div>
+              </div>
+              <div class="ride-stop-dist">6.1 mi</div>
+            </div>
+
+            <div class="ride-stop-item">
+              <div class="ride-stop-pin" style="background:#2C4A2E">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z" fill="white" opacity="0.95"/></svg>
+              </div>
+              <div class="ride-stop-info">
+                <div class="ride-stop-name">Canemount Plantation</div>
+                <div class="ride-stop-sub">Lodging &middot; Tonight's stop</div>
+              </div>
+              <div class="ride-stop-dist">18.4 mi</div>
+            </div>
+
+            <div class="ride-stats-row">
+              <div class="ride-stat-card"><div class="ride-stat-val">Day 2</div><div class="ride-stat-lbl">of 3</div></div>
+              <div class="ride-stat-card"><div class="ride-stat-val">68&deg;F</div><div class="ride-stat-lbl">feels like</div></div>
+              <div class="ride-stat-card"><div class="ride-stat-val">82%</div><div class="ride-stat-lbl">battery</div></div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
+
   </div>
 </section>
-
-
-<!-- FAQ -->
+<!-- END RIDE APP SECTION -->
 <section class="faq-section" id="faq">
   <div class="faq-inner">
     <h2>Frequently Asked Questions</h2>
@@ -980,7 +1124,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 <div class="cta-strip">
   <h2>Ready to Ride the Lower Trace?</h2>
   <p>$19 gets you the PDF guide, GPX file, and cue sheet. Everything you need to ride Jackson to Natchez self-supported.</p>
-  <a href="/plan.html" class="cta-btn">Start Planning Your Tour →</a>
+  <a href="/checkout?segment=lower" class="cta-btn">Get the Lower Trace Guide, $19 →</a>
 </div>
 
 <!-- MAPBOX -->

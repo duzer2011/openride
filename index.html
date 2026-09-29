@@ -1400,35 +1400,6 @@
   </section>
 
   <!-- -------------------------------------------
-     CHAT SECTION
--------------------------------------------- -->
-  <section class="chat-section">
-
-    <div class="chat-intro">
-      <p class="chat-intro-eyebrow">Plan Your Route &bull; Get Your Custom Guide</p>
-      <h2>Plan your perfect tour in <em>minutes.</em></h2>
-      <p>Tell our guide where you want to go, how you like to ride, and what matters most &bull; it'll build your
-        custom
-        itinerary, search rentals, and prepare your downloadable PDF guide.</p>
-    </div>
-
-    <div class="chat-widget">
-      <div class="chat-messages" id="chatMessages">
-        <!-- Messages will populate here -->
-      </div>
-
-      <div class="chat-input-area">
-        <div class="input-wrap">
-          <textarea id="chatInput" placeholder="Where do you want go?" rows="1"></textarea>
-          <button class="send-btn" id="sendBtn" onclick="handleSend()">Plan My Tour &rarr;</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="section-terrain"></div>
-  </section>
-
-  <!-- -------------------------------------------
        HOW IT WORKS
   -------------------------------------------- -->
   <section class="onboarding">
@@ -1446,15 +1417,13 @@
       </div>
       <div class="ob-step">
         <div class="ob-num">2</div>
-        <h3>Tell the AI How You Ride</h3>
-        <p>Let our guide know if you want 40-mile days between B&amp;Bs or 80-mile days pitching a tent. We adjust the
-          pace to you.</p>
+        <h3>Get the Route Guide</h3>
+        <p>A day-by-day PDF with lodging and camping options, a cue sheet, and the GPX file. $19, instant download.</p>
       </div>
       <div class="ob-step">
         <div class="ob-num">3</div>
-        <h3>Get Turn-by-Turn Directions</h3>
-        <p>The AI calculates your exact daily mileage and generates a custom PDF guide with door-to-door directions for
-          your specific lodging.</p>
+        <h3>Ride It Your Way</h3>
+        <p>Load the GPX on your phone or GPS, follow the cues, and set your own daily mileage. The guide shows where to stop.</p>
       </div>
     </div>
   </section>
@@ -1465,8 +1434,7 @@
   <section class="tours-section">
     <div class="tours-header">
       <h2>Featured Routes</h2>
-      <p>Curated and tested self-guided adventures. Pick a route and let our AI tour guide handle the daily mileage and
-        lodging.</p>
+      <p>Curated and tested self-guided adventures. Pick a route and ride it at your own pace.</p>
     </div>
     <div class="tours-grid">
       <!-- Tour Card 1 -->
@@ -1532,10 +1500,9 @@
   -------------------------------------------- -->
   <section class="cta-section">
     <h2>Ready to Ride?</h2>
-    <p>Your personalized day-by-day PDF guide includes maps, cue sheets, lodging, and e-bike charging info for every
+    <p>Your day-by-day PDF guide includes maps, cue sheets, lodging, and e-bike charging info for every
       stop. Download yours for $19.</p>
-    <button class="cta-btn" onclick="document.querySelector('.chat-section').scrollIntoView({behavior: 'smooth'})">Plan
-      Your First Route</button>
+    <a class="cta-btn" href="/natchez-trace-lower.html" style="text-decoration:none;display:inline-block;">Get the Natchez Trace Guide</a>
   </section>
 
   <!-- -- AUTH MODAL ---------------------------------------- -->
@@ -1589,7 +1556,7 @@
           currentUser = session.user; await loadProfile(session.user.id); renderNavLoggedIn(); closeAuth();
           const redirect = new URLSearchParams(window.location.search).get('redirect');
           if (redirect) { window.location.href = redirect; return; }
-          if (pendingAnswers) { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("? Your tour plan is saved! Head to your profile to see it  and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
+          if (pendingAnswers && typeof renderGuide === 'function') { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("? Your tour plan is saved! Head to your profile to see it  and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
         }
         if (event === 'SIGNED_OUT') { currentUser = null; currentProfile = null; renderNavLoggedOut(); }
       });
@@ -1654,142 +1621,13 @@
     document.getElementById('authModal').addEventListener('click', e => { if (e.target === document.getElementById('authModal')) closeAuth(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
 
-    // -- SYSTEM PROMPT ---------------------------------------------------------
-    const SYSTEM = `You are the OpenRide AI Itinerary Engine. Your strict job is to construct point-to-point itineraries for OpenRide's **existing curated cycling routes** based on rider pacing and lodging preferences.
-
-You do NOT invent routes. You do NOT recommend riding open highways arbitrarily. Your value is calculating exact daily mileage between commercial lodging or campsites along our hand-crafted, safe routes.
-
---------------------------------
-AVAILABLE ROUTES (STRICT LIST):
---------------------------------
-- **Natchez Trace Parkway Lower Trace (MS)**: 82 miles, 3�4 days, beginner-friendly, smooth paved parkway, zero commercial traffic, antebellum B&Bs, Windsor Ruins, Emerald Mound, free NPS camping. Best: spring/fall. Perfect for e-bikes, road bikes, hybrids.
-- *Redirect any other requests by saying: "Currently, I can only generate custom lodging itineraries for the Lower Natchez Trace. Other routes like the GAP Trail or Pacific Coast are coming soon!"*
-
---------------------------------
-TOUR PLANNING FLOW
---------------------------------
-Gather info one question at a time to build the itinerary:
-1. What kind of bike are they riding? (e.g., e-bike, touring bike, road bike)
-2. What is their preferred daily pace? (e.g., 20, 40, or 60+ miles a day)
-3. Where do they want to sleep? (e.g., camping, B&Bs, hotels, or a mix)
-4. Tell them: "Great, I'll calculate your route on the Natchez Trace to hit those overnight spots."
-5. Show the day-by-day plan ? ITINERARY_SUMMARY
-6. When plan complete: SAVE_NUDGE (not logged in) or PDF_READY (logged in)
-
---------------------------------
-NUTRITION & GEAR KNOWLEDGE
---------------------------------
-- E-bike: confirm range covers daily mileage + buffer; bring charger.
-- Essential inn-to-inn: 2 kits, rain jacket, chamois cream (non-negotiable), 2 spare tubes, multi-tool, pump.
-- Nutrition: Eat before hungry, drink before thirsty. 60�90g carbs/hour at touring pace.
-
---------------------------------
-SURFACE KNOWLEDGE (Natchez Trace)
---------------------------------
-- Overall: Excellent. NPS smooth asphalt, 3-5ft shoulder, zero commercial traffic
-- MP 30-32: Windsor Ruins detour � narrow 2-lane, NO shoulder, ride single file ?
-
---------------------------------
-BEHAVIOR RULES
---------------------------------
-- ? for pro tips, ? for warnings
-- Short replies (2�4 sentences) for simple questions.
-- Always end with: "Want to keep planning, or do you have more questions?"
-- VERY IMPORTANT: If they ask for a route we don't curate, politely refuse and steer them to the Natchez Trace.
-
-OUTPUT FORMATS (use exactly):
-ROUTE_CARD:{"name":"Natchez Trace Parkway","subtitle":"Lower Trace Self-Guided Tour","distance":"82 miles","days":"3�4 days","difficulty":"Beginner","terrain":"Smooth paved parkway","highlights":"Emerald Mound, Windsor Ruins, antebellum B&Bs","seasons":"Spring & Fall"}
-ITINERARY_SUMMARY:[{"day":1,"title":"Arrive & Explore Natchez","miles":"0","overnight":"Natchez, MS"},{"day":2,"title":"Natchez to Port Gibson","miles":"42","overnight":"Port Gibson, MS"},{"day":3,"title":"Port Gibson to Rocky Springs","miles":"40","overnight":"Rocky Springs"}]
-SEARCH:search query here
-SAVE_NUDGE:{"route":"natchez-trace-lower","pace":"moderate","lodging":"bnb","transport":"driving","season":"spring","ebike":false}
-PDF_READY:{"route":"natchez-trace-lower","pace":"moderate","lodging":"bnb","transport":"driving","season":"spring","ebike":false}
-Quick replies: [QR: option 1 | option 2 | option 3]`;
-
-    // -- CHAT ------------------------------------------------------------------
-    let history = [], loading = false;
-    const msgsEl = document.getElementById('chatMessages'), inputEl = document.getElementById('chatInput'), sendBtn = document.getElementById('sendBtn');
-
     window.addEventListener('load', () => {
       initAuth();
-      callApi([{ role: 'user', content: 'Give a warm 2-sentence greeting and ask your first planning question.' }], true);
-      // Delay login modal so auth and DOM are fully initialized
       setTimeout(() => {
         const params = new URLSearchParams(window.location.search);
         if (params.get('login') === 'true') openAuth('login');
       }, 300);
     });
-    inputEl.addEventListener('input', () => { inputEl.style.height = 'auto'; inputEl.style.height = Math.min(inputEl.scrollHeight, 90) + 'px'; });
-    inputEl.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
-
-    function handleSend(text) {
-      const msg = (text || inputEl.value).trim(); if (!msg || loading) return;
-      addUserMsg(msg); inputEl.value = ''; inputEl.style.height = 'auto';
-      const ctx = currentUser ? ' [USER IS LOGGED IN]' : ' [USER IS NOT LOGGED IN]';
-      history.push({ role: 'user', content: msg + ctx }); callApi(history, false);
-    }
-
-    async function callApi(msgs, isInit) {
-      loading = true; sendBtn.disabled = true; showTyping();
-      try {
-        const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': CONFIG.anthropicKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1000, system: SYSTEM, messages: msgs, tools: [{ type: 'web_search_20250305', name: 'web_search' }] }) });
-        const d = await r.json();
-        const txt = (d.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
-        hideTyping();
-        const sm = txt.match(/SEARCH:([^\n]+)/);
-        if (sm) { const q = sm[1].trim(), clean = txt.replace(/SEARCH:[^\n]+/, '').trim(); if (clean) renderGuide(clean); history.push({ role: 'assistant', content: txt }); doSearch(q); return; }
-        renderGuide(txt); history.push({ role: 'assistant', content: txt });
-      } catch (e) { hideTyping(); renderGuide("Sorry, I had a connection hiccup � try again!"); }
-      loading = false; sendBtn.disabled = false;
-    }
-
-    async function doSearch(q) {
-      loading = true; sendBtn.disabled = true; addSearchTag(q); showTyping();
-      try {
-        const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': CONFIG.anthropicKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' }, body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1000, system: SYSTEM, messages: [...history, { role: 'user', content: `Search for: "${q}" � share practical results (names, prices, contacts) conversationally, then continue planning.` }], tools: [{ type: 'web_search_20250305', name: 'web_search' }] }) });
-        const d = await r.json(); const txt = (d.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
-        hideTyping(); renderGuide(txt); history.push({ role: 'assistant', content: txt });
-      } catch (e) { hideTyping(); renderGuide("Search hit a snag � let me continue from what I know."); }
-      loading = false; sendBtn.disabled = false;
-    }
-
-    function renderGuide(raw) {
-      let text = raw;
-      const qrM = text.match(/\[QR:\s*([^\]]+)\]/), qrs = qrM ? qrM[1].split('|').map(s => s.trim()) : [];
-      if (qrM) text = text.replace(qrM[0], '').trim();
-      let rc = null, it = null, pr = null, sn = null;
-      const rcM = text.match(/ROUTE_CARD:(\{[^\n]+\})/); if (rcM) { try { rc = JSON.parse(rcM[1]); } catch (e) { } text = text.replace(rcM[0], '').trim(); }
-      const itM = text.match(/ITINERARY_SUMMARY:(\[[^\n]+\])/); if (itM) { try { it = JSON.parse(itM[1]); } catch (e) { } text = text.replace(itM[0], '').trim(); }
-      const prM = text.match(/PDF_READY:(\{[^\n]+\})/); if (prM) { try { pr = JSON.parse(prM[1]); } catch (e) { } text = text.replace(prM[0], '').trim(); }
-      const snM = text.match(/SAVE_NUDGE:(\{[^\n]+\})/); if (snM) { try { sn = JSON.parse(snM[1]); } catch (e) { } text = text.replace(snM[0], '').trim(); }
-      const wrap = document.createElement('div'); wrap.style.cssText = 'display:flex;flex-direction:column;gap:0.4rem;';
-      const row = document.createElement('div'); row.className = 'msg guide';
-      const inner = document.createElement('div'); inner.style.cssText = 'display:flex;flex-direction:column;gap:0.4rem;min-width:0;width:100%;';
-      if (text) { const b = document.createElement('div'); b.className = 'msg-bubble'; b.innerHTML = fmt(text); inner.appendChild(b); }
-      if (rc) inner.appendChild(mkRouteCard(rc));
-      if (it) inner.appendChild(mkItin(it));
-      if (sn) inner.appendChild(mkSaveNudge(sn));
-      if (pr) inner.appendChild(mkPdf(pr));
-      row.appendChild(inner); wrap.appendChild(row);
-      if (qrs.length) { const qd = document.createElement('div'); qd.className = 'quick-replies'; qrs.forEach(q => { const b = document.createElement('button'); b.className = 'qr-btn'; b.textContent = q; b.onclick = q === 'View My Profile' ? () => window.location = 'profile.html' : () => handleSend(q); qd.appendChild(b); }); wrap.appendChild(qd); }
-      msgsEl.appendChild(wrap); scroll();
-    }
-
-    function addUserMsg(text) { const row = document.createElement('div'); row.className = 'msg user'; const av = document.createElement('div'); av.className = 'msg-avatar'; av.textContent = '??'; const b = document.createElement('div'); b.className = 'msg-bubble'; b.innerHTML = `<p>${esc(text)}</p>`; row.appendChild(av); row.appendChild(b); msgsEl.appendChild(row); scroll(); }
-    function addSearchTag(q) { const t = document.createElement('div'); t.className = 'search-tag'; t.innerHTML = `?? Searching: <em>${esc(q)}</em>`; msgsEl.appendChild(t); scroll(); }
-
-    function mkRouteCard(d) { const el = document.createElement('div'); el.className = 'route-card'; el.innerHTML = `<div class="rc-head">?? ${esc(d.name)}</div><div class="rc-body"><div class="rc-sub">${esc(d.subtitle)}</div><div>${esc(d.highlights)}</div><div class="rc-stats"><div><div class="stat-l">Distance</div><div class="stat-v">${esc(d.distance)}</div></div><div><div class="stat-l">Duration</div><div class="stat-v">${esc(d.days)}</div></div><div><div class="stat-l">Level</div><div class="stat-v">${esc(d.difficulty)}</div></div><div><div class="stat-l">Season</div><div class="stat-v">${esc(d.seasons)}</div></div></div></div>`; return el; }
-    function mkItin(days) { const el = document.createElement('div'); el.className = 'itin'; let h = `<div class="itin-head">?? Your Itinerary</div>`; days.forEach(d => { h += `<div class="itin-day"><div><span class="day-name">Day ${d.day} � </span>${esc(d.title)}</div><div class="day-info">${d.miles !== '0' ? d.miles + ' mi � ' : ''}${esc(d.overnight)}</div></div>`; }); el.innerHTML = h; return el; }
-    function mkSaveNudge(a) { const el = document.createElement('div'); el.className = 'save-plan-card'; el.innerHTML = `<p>?? <strong>Want to save this plan?</strong> Create a free account and I'll save your itinerary, give you your first badge, and have everything ready when you come back.</p><button class="save-plan-btn" onclick="openAuth('signup', ${esc(JSON.stringify(a))})">Save My Tour Plan � It's Free ?</button>`; return el; }
-    function mkPdf(a) { const el = document.createElement('div'); el.className = 'pdf-card'; const desc = `${a.pace} pace � ${a.lodging === 'bnb' ? 'B&B lodging' : a.lodging} � ${a.season}${a.ebike ? ' � e-bike' : ''}`; el.innerHTML = `<h4>? Your Custom Guide is Ready</h4><p>${esc(desc)} � cue sheets, lodging picks, dining, gear list &amp; GPX.</p><button class="pdf-btn" id="pdfBtn" onclick="genPdf(${esc(JSON.stringify(a))})">? Download PDF Guide</button>`; return el; }
-    function genPdf(a) { const btn = document.getElementById('pdfBtn'); if (btn) { btn.disabled = true; btn.textContent = '? Building your guide...'; } setTimeout(() => { renderGuide("Your PDF guide is downloading! ?? Full custom itinerary, cue sheets, lodging picks, dining, gear list, and GPX file.\n\n? Safe travels � every mile a new discovery."); if (btn) btn.textContent = '? Done'; }, 2000); }
-
-    function fmt(t) { return t.split('\n\n').map(p => `<p>${p.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}</p>`).join(''); }
-    function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-
-    let typEl = null;
-    function showTyping() { typEl = document.createElement('div'); typEl.className = 'typing'; typEl.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`; msgsEl.appendChild(typEl); scroll(); }
-    function hideTyping() { if (typEl) { typEl.remove(); typEl = null; } }
-    function scroll() { setTimeout(() => { msgsEl.scrollTop = msgsEl.scrollHeight; }, 50); }
 
     // -- HERO SLIDESHOW ----------------------
     let currentSlide = 0;

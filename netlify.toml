@@ -8,8 +8,14 @@
 
 [[redirects]]
   from = "/plan"
-  to = "/plan.html"
-  status = 200
+  to = "/natchez-trace-lower.html"
+  status = 301
+
+[[redirects]]
+  from = "/plan.html"
+  to = "/natchez-trace-lower.html"
+  status = 301
+  force = true
 
 [[redirects]]
   from = "/checkout"
