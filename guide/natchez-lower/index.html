@@ -309,7 +309,19 @@
 
                 // 3. Load Data & Render
                 loadingText.textContent = 'Loading Guide Content...';
-                const guideRes = await fetch('./guide-data.json');
+                const guideRes = await fetch('/.netlify/functions/tour-content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ route_slug: 'natchez-lower' })
+                });
+                if (guideRes.status === 403) {
+                    window.location.href = '/natchez-trace-lower.html';
+                    return;
+                }
+                if (!guideRes.ok) throw new Error('tour-content ' + guideRes.status);
                 const guide = await guideRes.json();
 
                 renderGuide(guide);
