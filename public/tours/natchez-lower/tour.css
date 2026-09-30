@@ -105,8 +105,12 @@ th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(
 
 /* PRINT: each day is a one or two page cue sheet. Body classes are set by tour.js. */
 @media print {
-  @page { margin: 0.6in; }
-  body { background: #fff; font-size: 11pt; line-height: 1.45; }
+  @page { margin: 0.5in; }
+  body { background: #fff; font-size: 10pt; line-height: 1.4; }
+  p, ul, ol, table { margin-bottom: 0.5rem; }
+  li { margin-bottom: 0.15rem; }
+  h4 { margin: 0.6rem 0 0.25rem; font-size: 9pt; }
+  th, td { padding: 0.3rem 0.5rem; }
   .nav, .hero, .access, .cta, .footer, .no-print, .btn, .maps, #status, .section-head .btn { display: none !important; }
   .print-head { display: block; border-bottom: 2px solid var(--forest); margin-bottom: 0.6rem; padding-bottom: 0.3rem; font-size: 9pt; color: #333; }
   .section { padding: 0.4rem 0; border: 0; }
@@ -116,7 +120,7 @@ th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(
   .day-head h3, .day-kicker, .day-miles { color: #000; }
   .day-body { padding: 0.5rem 0.6rem; }
   .meals th { background: #eee; }
-  .warn, .confirm { background: #fff; border: 1px solid #999; border-left-width: 4px; }
+  .warn, .confirm { background: #fff; border: 1px solid #999; border-left-width: 4px; margin: 0.5rem 0; padding: 0.4rem 0.7rem; }
   table, .card, .meals tr { break-inside: avoid; }
   a { color: #000; text-decoration: none; }
   h2 { font-size: 18pt; }

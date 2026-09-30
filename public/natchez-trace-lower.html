@@ -234,103 +234,6 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   text-align: center; margin-top: 0.75rem; line-height: 1.5;
 }
 
-/* ── SAMPLE DOC MODAL ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; z-index: 500;
-  background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
-  align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal-box {
-  background: var(--parch); border-radius: 3px;
-  width: 90vw; max-width: 860px; height: 88vh;
-  display: flex; flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-}
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1rem 1.5rem;
-  background: var(--forest);
-  border-bottom: 1px solid rgba(138,175,138,0.2);
-  flex-shrink: 0;
-}
-.modal-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.1rem; letter-spacing: 0.1em; color: var(--parch);
-}
-.modal-tag {
-  font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--sage); margin-left: 0.75rem;
-}
-.modal-close {
-  background: none; border: none; color: var(--sage);
-  font-size: 1.4rem; cursor: pointer; line-height: 1;
-  padding: 0.25rem 0.5rem;
-  transition: color 0.15s;
-}
-.modal-close:hover { color: var(--parch); }
-.modal-body { flex: 1; overflow: hidden; position: relative; }
-.modal-pdf-scroll {
-  width: 100%; height: 100%; overflow-y: auto; background: #e8e0d0;
-  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px 0;
-}
-.modal-pdf-scroll canvas {
-  display: block; max-width: 100%; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-}
-.modal-blur-overlay {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 70%;
-  z-index: 10;
-  background: linear-gradient(
-    to bottom,
-    rgba(244,239,228,0) 0%,
-    rgba(244,239,228,0.5) 20%,
-    rgba(244,239,228,0.88) 40%,
-    rgba(244,239,228,0.98) 60%,
-    var(--parch) 100%
-  );
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 2rem;
-  pointer-events: none;
-}
-.modal-blur-cta {
-  pointer-events: all;
-  text-align: center;
-}
-.modal-blur-cta p {
-  font-family: 'Lora', serif;
-  font-size: 0.9rem;
-  color: var(--forest);
-  margin-bottom: 1rem;
-  font-style: italic;
-}
-.modal-blur-btn {
-  background: var(--accent);
-  color: white;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.1rem;
-  letter-spacing: 0.1em;
-  padding: 0.7rem 2rem;
-  border-radius: 2px;
-  text-decoration: none;
-  display: inline-block;
-  border: none;
-  cursor: pointer;
-}
-.modal-note {
-  padding: 0.75rem 1.5rem; font-size: 0.7rem;
-  color: #888; letter-spacing: 0.06em;
-  border-top: 1px solid rgba(44,74,46,0.1);
-  flex-shrink: 0;
-}
-
 /* Sample doc trigger links in sidebar */
 .sample-links { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.25rem; }
 .sample-link {
@@ -673,50 +576,6 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   }
 
   
-  .ride-app-section { background: #2C4A2E; padding: 80px 24px; }
-  .ride-app-inner { max-width: 960px; margin: 0 auto; display: flex; gap: 64px; align-items: center; }
-  .ride-app-copy { flex: 1; min-width: 0; }
-  .ride-app-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #8AAF8A; margin-bottom: 14px; }
-  .ride-app-heading { font-family: "Bebas Neue", sans-serif; font-size: 48px; color: #F4EFE4; letter-spacing: 0.03em; line-height: 1; margin-bottom: 16px; }
-  .ride-app-body { font-size: 15px; color: #c8dcc8; line-height: 1.7; margin-bottom: 24px; }
-  .ride-feature-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
-  .ride-feature-list li { font-size: 14px; color: #F4EFE4; padding-left: 16px; position: relative; line-height: 1.5; }
-  .ride-feature-list li::before { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 50%; background: #C17F3A; }
-  .ride-cta-btn { display: inline-block; background: #C17F3A; color: #F4EFE4; font-size: 14px; font-weight: 600; padding: 12px 24px; border-radius: 6px; text-decoration: none; letter-spacing: 0.02em; }
-  .ride-cta-btn:hover { background: #a86d31; }
-  .ride-app-phone-wrap { flex-shrink: 0; display: flex; justify-content: center; }
-  .ride-phone-frame { width: 220px; height: 440px; background: #111; border-radius: 32px; padding: 12px; border: 1.5px solid #333; }
-  .ride-phone-notch { width: 60px; height: 18px; background: #111; border-radius: 0 0 12px 12px; margin: 0 auto 4px; }
-  .ride-phone-screen { width: 100%; height: calc(100% - 22px); background: #1a2b1b; border-radius: 22px; overflow: hidden; position: relative; }
-  .ride-map-area { width: 100%; height: 52%; background: #2a3d2b; position: relative; overflow: hidden; }
-  .ride-map-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(74,124,89,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(74,124,89,0.15) 1px, transparent 1px); background-size: 20px 20px; }
-  .ride-dot { position: absolute; width: 14px; height: 14px; background: #E8420A; border-radius: 50%; border: 2px solid white; top: 50%; left: 48%; transform: translate(-50%,-50%); z-index: 3; }
-  .ride-dot-ring { position: absolute; width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(232,66,10,0.35); top: 50%; left: 48%; transform: translate(-50%,-50%); z-index: 2; }
-  .ride-turn-banner { position: absolute; top: 8px; left: 8px; right: 8px; background: #2C4A2E; border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; z-index: 4; }
-  .ride-turn-icon { width: 24px; height: 24px; background: #C17F3A; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .ride-turn-text { flex: 1; }
-  .ride-turn-label { font-size: 9px; color: #8AAF8A; }
-  .ride-turn-main { font-size: 11px; font-weight: 500; color: #F4EFE4; }
-  .ride-turn-dist { font-size: 10px; color: #C17F3A; flex-shrink: 0; }
-  .ride-bottom-panel { position: absolute; bottom: 0; left: 0; right: 0; height: 48%; background: #1e2f1f; border-top: 1px solid rgba(138,175,138,0.2); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-  .ride-mile-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
-  .ride-mile-num { font-size: 16px; font-weight: 500; color: #F4EFE4; }
-  .ride-mile-lbl { font-size: 9px; color: #8AAF8A; }
-  .ride-progress-track { height: 3px; background: rgba(138,175,138,0.2); border-radius: 2px; overflow: hidden; }
-  .ride-progress-fill { height: 100%; width: 38%; background: #C17F3A; border-radius: 2px; }
-  .ride-stops-label { font-size: 9px; color: #8AAF8A; text-transform: uppercase; letter-spacing: 0.06em; }
-  .ride-stop-item { display: flex; align-items: center; gap: 7px; padding: 6px 8px; background: rgba(255,255,255,0.04); border-radius: 6px; }
-  .ride-stop-pin { width: 18px; height: 18px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .ride-stop-pin svg { transform: rotate(45deg); }
-  .ride-stop-info { flex: 1; min-width: 0; }
-  .ride-stop-name { font-size: 10px; font-weight: 500; color: #F4EFE4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ride-stop-sub { font-size: 9px; color: #8AAF8A; }
-  .ride-stop-dist { font-size: 9px; color: #C17F3A; flex-shrink: 0; }
-  .ride-stats-row { display: flex; gap: 6px; }
-  .ride-stat-card { flex: 1; background: rgba(255,255,255,0.04); border-radius: 5px; padding: 5px 6px; text-align: center; }
-  .ride-stat-val { font-size: 12px; font-weight: 500; color: #F4EFE4; }
-  .ride-stat-lbl { font-size: 8px; color: #8AAF8A; }
-  @media (max-width: 700px) { .ride-app-inner { flex-direction: column; } .ride-app-phone-wrap { order: -1; } }
 
   </style>
 <script type="application/ld+json">
@@ -772,7 +631,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       "name": "Can I ride it Natchez to Jackson instead of Jackson to Natchez?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes, it is the same road. The tour is written southbound, Jackson to Natchez, so the shuttle, the layover days and the way home all fit that direction. Winds generally favor riding north, so southbound has some headwind days. The payoff is finishing in Natchez."
+        "text": "Yes, it is the same road. The tour is written southbound, Jackson to Natchez, so the ride out of Jackson, the layover days and the way home all fit that direction. Winds generally favor riding north, so southbound has some headwind days. The payoff is finishing in Natchez."
       }
     },
     {
@@ -804,7 +663,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       "name": "How do I handle the point-to-point logistics? What do I do with my car?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Fly into Jackson (JAN). On Day 1 you shuttle from your inn to the Clinton Visitor Center on the Trace, about 10 miles, or ride out through Clinton instead. Getting home from Natchez is the harder part. You can fly out of Natchez to Houston, pick up an Enterprise one-way rental to Jackson airport (the office is closed Sundays), or book a van ahead. If you drive to Jackson, the airport long-term lot is $13 a day. The tour page lists each option with phone numbers."
+        "text": "Fly into Jackson (JAN). On Day 1 you ride out through Clinton to the Trace, about 10 miles on city and suburban streets. A taxi van or a Jackson bike shop may shuttle you to the Clinton Visitor Center instead. Getting home from Natchez is the harder part. You can fly out of Natchez to Houston, pick up an Enterprise one-way rental to Jackson airport (the office is closed Sundays), or book a van ahead. If you drive to Jackson, the airport long-term lot is $13 a day. The tour page lists each option with phone numbers."
       }
     },
     {
@@ -850,6 +709,9 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   ]
 }
 </script>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 <body>
 
@@ -917,7 +779,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   <div class="route-strip-item"><span class="route-strip-lbl">End</span><span class="route-strip-val" id="strip-end">Natchez, MS</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Best Seasons</span><span class="route-strip-val">Mar, Apr &amp; Oct</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Fly-In Airport</span><span class="route-strip-val">Jackson, MS (JAN)</span></div>
-  <div class="route-strip-item"><span class="route-strip-lbl">Logistics</span><span class="route-strip-val">Day 1 shuttle + way home</span></div>
+  <div class="route-strip-item"><span class="route-strip-lbl">Logistics</span><span class="route-strip-val">Way home from Natchez</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Lodging</span><span class="route-strip-val">Historic Inns</span></div>
   <div class="route-strip-item"><span class="route-strip-lbl">Surface</span><span class="route-strip-val">Paved: Trace + State Roads</span></div>
 </div>
@@ -1009,7 +871,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       <div class="a-day-content">
         <h3>Jackson</h3>
         <div class="a-day-meta">Sunday night · Jackson, MS</div>
-        <p>Fly into Jackson (JAN) and sleep in a historic downtown inn. On Monday morning a shuttle takes you and the bikes out to the Trace.</p>
+        <p>Fly into Jackson (JAN) and sleep in a historic downtown inn. On Monday you ride out through Clinton to the Trace.</p>
       </div>
       <div class="a-day-img" style="background:url('/images/natchez/natchez-trace-parkway-couple-riding.jpg') center center / cover no-repeat" aria-label="Starting the tour from Jackson">
         <div class="a-day-img-overlay"><span>Jackson, MS · The Start</span></div>
@@ -1020,7 +882,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
       <div class="a-day-num" style="font-size:2.6rem;white-space:nowrap;">1-2</div>
       <div class="a-day-content">
         <h3>Vicksburg</h3>
-        <div class="a-day-meta">Est. 40-45 miles, then a layover day</div>
+        <div class="a-day-meta">Est. 50-60 miles, then a layover day</div>
         <p>Ride south on the Trace, then west on MS 27 into Vicksburg. The next day is the 16-mile National Military Park loop, or no bike at all.</p>
       </div>
       <div class="a-day-img" style="background:url('/images/natchez/natchez-trace-emerald-mound-visit.jpg') center center / cover no-repeat" aria-label="Riding toward Vicksburg on the Natchez Trace">
@@ -1097,7 +959,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
         <div class="a-pblock-title">Getting There</div>
         <ul>
           <li>Fly into Jackson, MS (JAN)</li>
-          <li>Day 1: shuttle from your inn to the Trace at Clinton</li>
+          <li>Day 1: ride out through Clinton to the Trace</li>
           <li>Home from Natchez: fly out, one-way rental, or a van</li>
           <li>The tour page has phone numbers and costs</li>
         </ul>
@@ -1138,11 +1000,11 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 <section class="faq-section" id="faq">
   <div class="faq-inner">
     <h2>Frequently Asked Questions</h2>
-<div class="faq-item"><div class="faq-question">Can I ride it Natchez to Jackson instead of Jackson to Natchez?</div><div class="faq-answer">Yes, it is the same road. The tour is written southbound, Jackson to Natchez, so the shuttle, the layover days and the way home all fit that direction. Winds generally favor riding north, so southbound has some headwind days. The payoff is finishing in Natchez.</div></div>
+<div class="faq-item"><div class="faq-question">Can I ride it Natchez to Jackson instead of Jackson to Natchez?</div><div class="faq-answer">Yes, it is the same road. The tour is written southbound, Jackson to Natchez, so the ride out of Jackson, the layover days and the way home all fit that direction. Winds generally favor riding north, so southbound has some headwind days. The payoff is finishing in Natchez.</div></div>
     <div class="faq-item"><div class="faq-question">Is the Natchez Trace suitable for beginners?</div><div class="faq-answer">It suits riders with some base fitness. Riding days run roughly 40-60 miles, with two layover days. The Trace itself is smooth NPS pavement with gentle grades and almost no commercial traffic. The biggest challenge is saddle conditioning, not the hills. Start training your sit bones at least 4 weeks before you go.</div></div>
     <div class="faq-item"><div class="faq-question">What is the best time of year to cycle the Natchez Trace?</div><div class="faq-answer">March to April and October are the best months. Spring brings rain, so carry a real rain jacket. Summer is rideable but hot and humid, so avoid July and August. Book inns 6 to 8 weeks ahead for the good months. Canemount has only six rooms.</div></div>
     <div class="faq-item"><div class="faq-question">Do I need a road bike or can I ride a hybrid or touring bike?</div><div class="faq-answer">Any bike works. Everything on the tour is paved: about half on the Natchez Trace Parkway and half on state and county roads. Road bikes are fastest, but loaded touring bikes and hybrids are common and comfortable. What matters more than bike type is bike fit. A poorly fitted bike becomes unbearable by the second day. Get a proper fit before your tour, not after.</div></div>
-    <div class="faq-item"><div class="faq-question">How do I handle the point-to-point logistics? What do I do with my car?</div><div class="faq-answer">Fly into Jackson (JAN). On Day 1 you shuttle from your inn to the Clinton Visitor Center on the Trace, about 10 miles, or ride out through Clinton instead. Getting home from Natchez is the harder part. You can fly out of Natchez to Houston, pick up an Enterprise one-way rental to Jackson airport (the office is closed Sundays), or book a van ahead. If you drive to Jackson, the airport long-term lot is $13 a day. The tour page lists each option with phone numbers.</div></div>
+    <div class="faq-item"><div class="faq-question">How do I handle the point-to-point logistics? What do I do with my car?</div><div class="faq-answer">Fly into Jackson (JAN). On Day 1 you ride out through Clinton to the Trace, about 10 miles on city and suburban streets. A taxi van or a Jackson bike shop may shuttle you to the Clinton Visitor Center instead. Getting home from Natchez is the harder part. You can fly out of Natchez to Houston, pick up an Enterprise one-way rental to Jackson airport (the office is closed Sundays), or book a van ahead. If you drive to Jackson, the airport long-term lot is $13 a day. The tour page lists each option with phone numbers.</div></div>
     <div class="faq-item"><div class="faq-question">What is the bad hour?</div><div class="faq-answer">Somewhere on your second day in the saddle, usually a dozen or so miles in, you hit a low patch. Legs heavy, head asking why you signed up. It passes. Eat something, drink something, keep turning the pedals. Riders who know it is coming get through it fine.</div></div>
     <div class="faq-item"><div class="faq-question">Can couples with different fitness levels ride together?</div><div class="faq-answer">Yes, but mismatched fitness is the most common reason tours go badly. The faster rider ends up waiting at every stop, gets cold, and grows resentful. The slower rider feels guilty and pushes too hard. The fix is simple: agree on a meeting system before you leave. Faster rider continues to the next waypoint, stops, eats, rests. Slower rider rides their own pace. You leapfrog the whole route and both riders have a great time.</div></div>
     <div class="faq-item"><div class="faq-question">Is camping available along the route?</div><div class="faq-answer">Camping is thin on this route, and the tour is built around inns. Natchez State Park has tent sites about 10 miles north of town. Rocky Springs, at milepost 54.8, is a free NPS campsite in a ghost town, but it has no drinkable water. A camping version of the tour would need its own chain of stops.</div></div>

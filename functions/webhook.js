@@ -12,7 +12,7 @@ async function sendWelcomeEmail(customerEmail, route) {
     await resend.emails.send({
         from: 'Chris at OpenRide <hello@openride.bike>',
         to: customerEmail,
-        subject: `Your ${route.name} tour is ready`,
+        subject: 'Your Natchez Trace tour is ready',
         html: `
       <p>Hi,</p>
       <p>Your ${route.name} tour is ready. Sign in with this email address and open it here:</p>

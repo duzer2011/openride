@@ -18,12 +18,12 @@
       ["Best months", "March to April, and October"],
       ["Best schedule", "Arrive Sunday, depart Saturday"]
     ],
-    "direction": "South. You shuttle out of Jackson to the Trace, ride to Vicksburg, then on down to Natchez. Winds generally favor riding north, so expect some headwind days. The payoff is finishing in Natchez.",
+    "direction": "South. You ride out of Jackson through Clinton to the Trace, on to Vicksburg, then down to Natchez. Winds generally favor riding north, so expect some headwind days. The payoff is finishing in Natchez.",
     "why_sunday": "Sunday to Saturday avoids the two weak spots. The Enterprise office in Natchez is closed Sundays, which rules out a Sunday one-way rental home, and Vicksburg has few dinner options on Sunday nights. It also puts the Trace days on weekdays, when traffic is lighter.",
     "bad_hour": "Somewhere on your second day in the saddle, usually a dozen or so miles in, you hit a low patch. Legs heavy, head asking why you signed up. It passes. Eat something, drink something, keep turning the pedals.",
     "best_months": "March to April and October. Book inns 6 to 8 weeks ahead for those months. Canemount has only six rooms. July and August are hot and humid. Spring brings rain, so carry a real rain jacket.",
     "day_summaries": [
-      "Shuttle out to the Trace at Clinton, ride south, then west on MS 27 into Vicksburg. Est. 40-45 miles.",
+      "Ride out through Clinton to the Trace, south to MS 27, then west into Vicksburg. Est. 50-60 miles.",
       "Vicksburg layover. The 16-mile National Military Park loop, or no bike at all.",
       "Vicksburg to Port Gibson and Windsor Ruins, then Canemount at Lorman. The longest day. Est. 45-60 miles.",
       "Canemount to Natchez. Thirty miles of the best road on the Trace, ending at the parkway's southern terminus. Est. 44 miles.",
@@ -77,14 +77,15 @@
     {
       "n": 1,
       "weekday": "Mon",
-      "title": "Shuttle to the Trace, ride to Vicksburg",
-      "miles_est": "40-45",
+      "title": "Ride out through Clinton to the Trace, then on to Vicksburg",
+      "miles_est": "50-60",
       "route": [
-        "Skip the Jackson traffic. Shuttle from the inn to the Clinton Visitor Center on the Natchez Trace (MP 89), about 10 miles. Ride south on the Trace to the MS 27 exit (MP 67), then west about 20 miles on MS 27 into Vicksburg.",
+        "Ride out of Jackson through Clinton to the Natchez Trace at the Clinton Visitor Center (MP 89). That is about 10 miles on city and suburban streets. Then ride south on the Trace to the MS 27 exit (MP 67), and west about 20 miles on MS 27 into Vicksburg.",
         "The Trace section rolls gently, with a maximum grade of about 3.6%. This is your first taste of the parkway: no trucks, no billboards, 11-foot lanes.",
-        "Prefer to skip the shuttle? Ride out through Clinton to the Trace instead. It adds about 10 miles on city and suburban streets, for an est. 50-60 miles total."
+        "Prefer to skip the city miles? A taxi van or a Jackson bike shop may shuttle you to the Clinton Visitor Center (MP 89). Call ahead to confirm."
       ],
       "road_notes": [
+        "The city and suburban streets between Jackson and Clinton are the busiest miles of the day.",
         "The Trace is smooth, with no shoulder.",
         "MS 27 turns four-lane undivided near Beechwood as you come into Vicksburg."
       ],
@@ -92,13 +93,12 @@
       "lunch": "Pack it. The Trace has no food. Raymond sits about 2 miles off the parkway near MP 78.",
       "snacks": "",
       "dinner": "Walnut Hills (open Monday, closed Tuesday) or Restaurant Anchuca (Mon 5-7:30). The restaurant at Cedar Grove is closed Mondays, but its bar is open.",
-      "water": "Clinton Visitor Center at the start.",
+      "water": "Fill bottles at the inn. The Clinton Visitor Center (MP 89) has water.",
       "side_trips": [],
       "warnings": [
-        "An UberXL will not reliably take bikes. The shuttle needs a van or a car with a bike rack."
+        "If you do shuttle, an UberXL will not reliably take bikes. You need a van or a car with a bike rack."
       ],
       "unconfirmed": [
-        "Shuttle from your Jackson inn to the Clinton Visitor Center. No source is confirmed yet. Ask your inn, a Jackson taxi van, or The Bike Crossing in Ridgeland (601-856-0049).",
         "Shoulder and traffic on MS 27.",
         "A lunch stop at Raymond."
       ]
