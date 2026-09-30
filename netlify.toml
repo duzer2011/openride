@@ -27,6 +27,18 @@
   force = true
 
 [[redirects]]
+  from = "/guide/natchez-lower"
+  to = "/tours/natchez-lower/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/guide/natchez-lower/"
+  to = "/tours/natchez-lower/"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/plan"
   to = "/natchez-trace-lower.html"
   status = 301

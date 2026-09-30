@@ -1,10 +1,10 @@
 // Server-side catalog: which Stripe price buys which route. Clients never send a price.
-// tour_path is where the rider lands after paying (moves to /tours/<slug>/ in Phase 3).
+// tour_path is where the rider lands after paying (the tour page).
 module.exports = {
     'natchez-lower': {
-        name: 'Lower Natchez Trace',
+        name: 'Natchez Trace Inn-to-Inn: Jackson to Natchez',
         price_id: 'price_1T91Cl1XJx7K3CRmxmOO3WWb',
-        tour_path: '/guide/natchez-lower/',
+        tour_path: '/tours/natchez-lower/',
         cancel_path: '/natchez-trace-lower.html'
     }
 };

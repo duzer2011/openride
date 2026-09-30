@@ -1,0 +1,138 @@
+:root {
+  --forest: #2C4A2E; --moss: #4A7C59; --sage: #8AAF8A; --parch: #F4EFE4; --parch2: #EDE8D8;
+  --accent: #C17F3A; --ink: #1e2a1f; --line: rgba(44, 74, 46, 0.16);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', system-ui, sans-serif; font-size: 17px; line-height: 1.65; overflow-x: hidden; }
+a { color: var(--moss); }
+p, ul, ol, table, dl { margin-bottom: 1rem; }
+ul { padding-left: 1.2rem; }
+li { margin-bottom: 0.4rem; }
+h1, h2, h3, h4 { font-family: 'Bebas Neue', 'DM Sans', sans-serif; font-weight: 400; letter-spacing: 0.04em; line-height: 1.05; color: var(--forest); }
+h2 { font-size: 2.2rem; margin-bottom: 1rem; }
+h3 { font-size: 1.5rem; margin-bottom: 0.6rem; }
+h4 { font-size: 1.1rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--moss); margin: 1.2rem 0 0.5rem; font-family: 'DM Sans', sans-serif; font-weight: 700; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 1.25rem; }
+.section { padding: 3rem 0; border-bottom: 1px solid var(--line); }
+.section-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.section-head h2 { margin-bottom: 0; }
+
+.nav { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 0 1.25rem; height: 58px; background: rgba(28, 42, 31, 0.96); }
+.nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.1em; color: var(--parch); text-decoration: none; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 1rem; align-items: center; }
+.nav-links a { color: rgba(244, 239, 228, 0.85); text-decoration: none; font-size: 0.9rem; }
+
+.hero { background: var(--forest); color: var(--parch); padding: 3.5rem 0 2.5rem; }
+.hero .kicker { color: var(--accent); }
+.hero h1 { color: var(--parch); font-size: clamp(2.4rem, 9vw, 4.2rem); margin: 0.4rem 0 1rem; }
+.hero p { color: rgba(244, 239, 228, 0.85); max-width: 640px; }
+.stats { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin-top: 1.5rem; }
+.stat b { display: block; font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; font-weight: 400; color: var(--parch); letter-spacing: 0.04em; }
+.stat span { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--sage); }
+.kicker { display: block; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.4rem; background: var(--accent); color: #fff; border: 2px solid var(--accent); border-radius: 3px; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.1em; text-decoration: none; cursor: pointer; }
+.btn:hover { background: #a86b2e; border-color: #a86b2e; }
+.btn.ghost { background: transparent; color: var(--forest); border-color: var(--forest); }
+.btn.ghost:hover { background: var(--forest); color: var(--parch); }
+.maps { display: inline-flex; align-items: center; min-height: 48px; padding: 0 0.4rem; font-weight: 700; }
+
+.access { background: #fff; border: 2px solid var(--forest); border-radius: 4px; padding: 1.5rem; margin: 2rem 0 0; }
+.access .price { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--forest); line-height: 1; }
+.access p { margin: 0.5rem 0 1rem; }
+.access .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+.access .note { font-size: 0.9rem; color: #555; margin: 0.75rem 0 0; }
+#status { font-size: 0.95rem; margin-top: 0.75rem; color: var(--moss); }
+
+table { border-collapse: collapse; width: 100%; background: #fff; }
+th, td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.glance th { width: 34%; color: var(--forest); font-weight: 700; }
+.pull { border-left: 4px solid var(--accent); padding: 0.2rem 0 0.2rem 1rem; margin: 1.2rem 0; }
+.pull b { color: var(--forest); }
+
+.summaries { list-style: none; padding: 0; counter-reset: d; }
+.summaries li { background: #fff; border: 1px solid var(--line); border-radius: 3px; padding: 0.9rem 1rem 0.9rem 3.4rem; position: relative; counter-increment: d; }
+.summaries li::before { content: counter(d); position: absolute; left: 0.9rem; top: 0.7rem; width: 1.7rem; height: 1.7rem; border-radius: 50%; background: var(--forest); color: var(--parch); font-family: 'Bebas Neue', sans-serif; text-align: center; line-height: 1.75rem; }
+.summaries a { font-weight: 700; }
+
+.day { background: #fff; border: 1px solid var(--line); border-radius: 4px; margin: 1.5rem 0; overflow: hidden; }
+.day-head { background: var(--forest); color: var(--parch); padding: 1rem 1.25rem; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+.day-head h3 { color: var(--parch); margin: 0.2rem 0 0; font-size: 1.7rem; }
+.day-kicker { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--sage); font-weight: 700; }
+.day-miles { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.06em; color: var(--accent); }
+.day-body { padding: 1.25rem; }
+.meals th { width: 6.5rem; color: var(--forest); background: var(--parch2); font-size: 0.9rem; }
+.meals { border: 1px solid var(--line); }
+.warn, .confirm { border-radius: 3px; padding: 0.8rem 1rem; margin: 1rem 0; }
+.warn { background: #fdf3e4; border-left: 4px solid var(--accent); }
+.confirm { background: var(--parch2); border-left: 4px solid var(--moss); }
+.warn ul, .confirm ul { margin: 0.4rem 0 0; }
+.checked { font-size: 0.85rem; color: #666; }
+
+.cards { display: grid; gap: 1rem; margin: 1.25rem 0; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 1.25rem; }
+.card dl { display: grid; grid-template-columns: 6rem 1fr; gap: 0.3rem 0.75rem; }
+.card dt { font-weight: 700; color: var(--forest); }
+.card .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin-top: 0.75rem; }
+.table-wrap { overflow-x: auto; }
+.updates { list-style: none; padding: 0; }
+
+.faq-item { border-bottom: 1px solid var(--line); padding: 1.1rem 0; }
+.faq-question { font-weight: 700; color: var(--forest); margin-bottom: 0.4rem; }
+.faq-answer { color: #3d4a3e; }
+
+.cta { background: var(--forest); color: var(--parch); text-align: center; padding: 3rem 1.25rem; }
+.cta h2 { color: var(--parch); }
+.footer { padding: 2rem 1.25rem; text-align: center; font-size: 0.85rem; color: #666; }
+.print-head { display: none; }
+[hidden] { display: none !important; }
+
+@media (min-width: 720px) {
+  .cards { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  body { font-size: 16.5px; }
+  h2 { font-size: 1.9rem; }
+  .glance th { width: 40%; }
+  .card dl { grid-template-columns: 1fr; }
+  .card dt { margin-top: 0.4rem; }
+  .btn { width: 100%; }
+  .card .actions .btn { width: auto; flex: 1 1 auto; }
+  .day-head { align-items: flex-start; }
+}
+
+/* PRINT: each day is a one or two page cue sheet. Body classes are set by tour.js. */
+@media print {
+  @page { margin: 0.6in; }
+  body { background: #fff; font-size: 11pt; line-height: 1.45; }
+  .nav, .hero, .access, .cta, .footer, .no-print, .btn, .maps, #status, .section-head .btn { display: none !important; }
+  .print-head { display: block; border-bottom: 2px solid var(--forest); margin-bottom: 0.6rem; padding-bottom: 0.3rem; font-size: 9pt; color: #333; }
+  .section { padding: 0.4rem 0; border: 0; }
+  .wrap { max-width: none; padding: 0; }
+  .day { border: 1px solid #999; margin: 0 0 0.6rem; break-inside: auto; }
+  .day-head { background: #fff; color: #000; border-bottom: 2px solid var(--forest); padding: 0.4rem 0.6rem; }
+  .day-head h3, .day-kicker, .day-miles { color: #000; }
+  .day-body { padding: 0.5rem 0.6rem; }
+  .meals th { background: #eee; }
+  .warn, .confirm { background: #fff; border: 1px solid #999; border-left-width: 4px; }
+  table, .card, .meals tr { break-inside: avoid; }
+  a { color: #000; text-decoration: none; }
+  h2 { font-size: 18pt; }
+  h3 { font-size: 14pt; }
+
+  /* Print this day */
+  body.print-day .section:not(.print-keep) { display: none; }
+  body.print-day .day:not(.print-target) { display: none; }
+  body.print-day .print-target { border: 0; }
+  body.print-day .print-head { display: block; }
+  body.print-day .section-head h2 { display: none; }
+
+  /* Print full tour */
+  body.print-full .section:not(.printable) { display: none; }
+  body.print-full .print-head { display: block; }
+  body.print-full .day { break-before: page; }
+  body.print-full .day:first-of-type { break-before: auto; }
+  body.print-full #lodging, body.print-full #getting, body.print-full #conditions { break-before: page; }
+}
