@@ -83,6 +83,7 @@ const html = `<!DOCTYPE html>
 <meta name="twitter:description" content="${esc(DESC)}">
 <meta name="twitter:image" content="${IMG}">
 <meta name="theme-color" content="#2C4A2E">
+<link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tours/${SLUG}/tour.css">
@@ -183,6 +184,7 @@ ${faqs}
 
 <script src="/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/offline.js"></script>
 <script src="/tours/${SLUG}/render.js"></script>
 <script src="/tours/${SLUG}/tour.js"></script>
 </body>

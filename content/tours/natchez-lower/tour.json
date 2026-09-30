@@ -77,6 +77,15 @@
     {
       "n": 1,
       "weekday": "Mon",
+      "tonight_town": "Vicksburg",
+      "map": {
+        "geojson": "/routes/natchez-lower.geojson",
+        "from_mp": 89,
+        "to_mp": 67,
+        "start_label": "Clinton Visitor Center, MP 89",
+        "end_label": "MS 27 exit, MP 67",
+        "note": "The Trace part of today's ride. Mileposts are approximate. The rest is city streets and MS 27."
+      },
       "title": "Ride out through Clinton to the Trace, then on to Vicksburg",
       "miles_est": "50-60",
       "route": [
@@ -106,6 +115,7 @@
     {
       "n": 2,
       "weekday": "Tue",
+      "tonight_town": "Vicksburg",
       "title": "Vicksburg layover",
       "miles_est": "16",
       "miles_is_estimate": false,
@@ -131,6 +141,7 @@
     {
       "n": 3,
       "weekday": "Wed",
+      "tonight_town": "Lorman",
       "title": "Vicksburg to Canemount via Port Gibson and Windsor Ruins",
       "miles_est": "45-60",
       "route": [
@@ -163,6 +174,15 @@
     {
       "n": 4,
       "weekday": "Thu",
+      "tonight_town": "Natchez",
+      "map": {
+        "geojson": "/routes/natchez-lower.geojson",
+        "from_mp": 30,
+        "to_mp": 0,
+        "start_label": "Trace at MP 30",
+        "end_label": "Natchez, MP 0",
+        "note": "The Trace part of today's ride. Mileposts are approximate. You join the Trace at MP 30 from MS 552 and finish about 2.5 miles into town."
+      },
       "title": "Canemount to Natchez",
       "miles_est": "44",
       "route": [
@@ -189,6 +209,7 @@
     {
       "n": 5,
       "weekday": "Fri",
+      "tonight_town": "Natchez",
       "title": "Natchez layover",
       "miles_est": "0-30",
       "miles_is_estimate": false,
@@ -210,6 +231,7 @@
     {
       "n": 6,
       "weekday": "Sat",
+      "tonight_town": "",
       "title": "Home",
       "miles_est": "",
       "route": [

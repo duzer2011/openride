@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>My tours | OpenRide</title>
+<meta name="theme-color" content="#2C4A2E">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/tours/natchez-lower/tour.css">
+<style>
+  .tour-item { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 1.25rem; margin: 1rem 0; }
+  .tour-item h3 { margin-bottom: 0.3rem; }
+  .tour-item .actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.75rem; }
+  .sync { font-size: 0.9rem; color: #555; margin: 0.2rem 0; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
+  <div class="nav-links"><a href="/natchez-trace-lower.html">Lower Trace</a></div>
+</nav>
+<main class="wrap" style="padding-top:2rem;padding-bottom:3rem;">
+  <h1 style="font-size:2.6rem;">My tours</h1>
+  <p id="msg" class="lead" role="status" aria-live="polite">Checking your account...</p>
+  <div id="list"></div>
+  <p id="signout-row" hidden><button type="button" class="btn ghost" id="signout">Sign out</button></p>
+</main>
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/offline.js"></script>
+<script>
+(function () {
+  // Every route that can be bought. The purchase check happens on the server.
+  var TOURS = [{ slug: 'natchez-lower', name: 'Natchez Trace Inn-to-Inn: Jackson to Natchez', url: '/tours/natchez-lower/' }];
+  var Off = window.OpenRideOffline;
+  var $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+
+  async function card(t, owned) {
+    var rec = Off ? await Off.read(t.slug) : null;
+    var sync = rec ? 'Saved for offline. Last synced ' + esc(Off.label(rec.synced_at)) + '.' : (owned ? 'Not saved for offline yet. Open the tour and tap Save for offline.' : '');
+    return '<div class="tour-item"><h3>' + esc(t.name) + '</h3><p class="sync">' + sync + '</p>' +
+      '<div class="actions"><a class="btn" href="' + t.url + '">Open tour</a></div></div>';
+  }
+
+  async function init() {
+    var msg = $('msg'), list = $('list');
+    var session = null, sb = null;
+    if (typeof supabase !== 'undefined' && typeof CONFIG !== 'undefined') {
+      sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnon);
+      sb.auth.onAuthStateChange(function (ev) { if (ev === 'SIGNED_OUT' && Off) Off.clearPaid().then(function () { location.reload(); }); });
+      try { var r = await sb.auth.getSession(); session = r.data && r.data.session; } catch (e) { /* offline */ }
+    }
+    if (!session) {
+      // Offline copies belong to the last signed-in phone user; show them only while a sign-in is still stored.
+      var saved = [];
+      if (Off && Off.hasAuthToken()) for (var i = 0; i < TOURS.length; i++) if (await Off.read(TOURS[i].slug)) saved.push(TOURS[i]);
+      if (saved.length) {
+        msg.textContent = 'You are offline. These tours are saved on this phone.';
+        list.innerHTML = (await Promise.all(saved.map(function (t) { return card(t, true); }))).join('');
+      } else {
+        msg.innerHTML = 'Sign in to see your tours. <a href="/?login=true&amp;redirect=/account/">Sign in or create an account</a>.';
+      }
+      return;
+    }
+    var owned = [];
+    var failed = false;
+    for (var j = 0; j < TOURS.length; j++) {
+      if (!navigator.onLine) { failed = true; break; }
+      try {
+        var res = await fetch('/.netlify/functions/check-purchase', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+          body: JSON.stringify({ route_slug: TOURS[j].slug })
+        });
+        if (res.ok && (await res.json()).purchased) owned.push(TOURS[j]);
+      } catch (e) { failed = true; }
+    }
+    if (failed && Off) for (var k = 0; k < TOURS.length; k++) if (!owned.includes(TOURS[k]) && await Off.read(TOURS[k].slug)) owned.push(TOURS[k]);
+    $('signout-row').hidden = false;
+    $('signout').addEventListener('click', async function () { await sb.auth.signOut(); if (Off) await Off.clearPaid(); location.reload(); });
+    if (!owned.length) {
+      msg.innerHTML = 'Signed in as ' + esc(session.user.email) + '. You have no tours yet. <a href="/natchez-trace-lower.html">See the Lower Trace tour</a>.';
+      return;
+    }
+    msg.textContent = failed ? 'You are offline. Showing the tours saved on this phone.' : 'Signed in as ' + session.user.email + '.';
+    list.innerHTML = (await Promise.all(owned.map(function (t) { return card(t, true); }))).join('');
+  }
+  init().catch(function () { $('msg').textContent = 'Could not load your tours. Refresh and try again.'; });
+})();
+</script>
+</body>
+</html>

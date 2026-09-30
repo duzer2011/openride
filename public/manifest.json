@@ -1,25 +1,18 @@
 {
-  "name": "OpenRide.bike",
+  "name": "OpenRide",
   "short_name": "OpenRide",
-  "description": "Self-guided cycling tours with GPS navigation and audio guides",
-  "start_url": "/ride.html",
+  "description": "Your self-guided bike tours, on your phone. Day by day, and saved for offline.",
+  "start_url": "/account/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#1e2a1f",
-  "theme_color": "#1e2a1f",
   "orientation": "portrait",
+  "background_color": "#F4EFE4",
+  "theme_color": "#2C4A2E",
   "icons": [
-    {
-      "src": "/icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
-  "categories": ["navigation", "sports", "travel"]
+  "categories": ["travel", "sports"]
 }

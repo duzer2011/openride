@@ -3,6 +3,7 @@ Allow: /
 Disallow: /checkout
 Disallow: /success
 Disallow: /profile
+Disallow: /account
 Disallow: /guide/
 Disallow: /content
 Disallow: /functions

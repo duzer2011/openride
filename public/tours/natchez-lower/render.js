@@ -58,6 +58,17 @@
       h += '<div class="warn"><strong>Heads up</strong><ul>' +
         d.warnings.map(function (w) { return '<li>' + rich(w) + '</li>'; }).join('') + '</ul></div>';
     }
+    if (d.map) {
+      h += '<figure class="day-map" data-map="' + esc(JSON.stringify(d.map)) + '" data-day="' + d.n + '">' +
+        '<div class="day-map-canvas" role="img" aria-label="Route line for day ' + d.n + '"></div>' +
+        '<figcaption>' + esc(d.map.note) + ' Route line: OpenStreetMap contributors.</figcaption>' +
+        '<button type="button" class="btn ghost no-print" data-locate>Show my position</button>' +
+        '<p class="locate-status no-print" role="status"></p></figure>';
+    }
+    if (d.gpx && d.gpx.url) {
+      h += '<p class="nav-note no-print"><strong>Open in your navigation app.</strong> <a href="' + esc(d.gpx.url) +
+        '">Download the GPX file for this day</a> and open it in Garmin, Wahoo, Komoot or Ride with GPS.</p>';
+    }
     if (arr(d.road_notes).length) {
       h += '<h4>Road notes</h4><ul>' + d.road_notes.map(function (w) { return '<li>' + rich(w) + '</li>'; }).join('') + '</ul>';
     }
@@ -136,15 +147,76 @@
       '</ul></div></section>';
   }
 
+  function stopFor(tour, d) {
+    if (!d.tonight_town) return null;
+    return tour.lodging.stops.filter(function (s) { return s.town === d.tonight_town; })[0] || null;
+  }
+
+  // The meal that matters at this hour. Falls back to the last meal the day has.
+  function nextMeal(d, hour) {
+    var order = [['Breakfast', d.breakfast, 9], ['Lunch', d.lunch, 14], ['Snacks', d.snacks, 17], ['Dinner', d.dinner, 99]]
+      .filter(function (m) { return m[1]; });
+    for (var i = 0; i < order.length; i++) if (hour < order[i][2]) return order[i];
+    return order[order.length - 1] || null;
+  }
+
+  function renderToday(tour, n, hour) {
+    var d = tour.days.filter(function (x) { return x.n === n; })[0];
+    if (!d) return '';
+    var meal = nextMeal(d, hour == null ? 12 : hour);
+    var stop = stopFor(tour, d);
+    var h = '<article class="today-card"><header class="day-head"><div><span class="day-kicker">Day ' + d.n + ' &middot; ' + esc(d.weekday) +
+      '</span><h3>' + esc(d.title) + '</h3></div>';
+    var ml = milesLabel(d);
+    if (ml) h += '<span class="day-miles">' + esc(ml) + '</span>';
+    h += '</header><div class="day-body">';
+    if (meal) h += '<div class="next"><span class="kicker">Next food stop &middot; ' + meal[0] + '</span><p>' + rich(meal[1]) + '</p></div>';
+    if (d.water) h += '<div class="next"><span class="kicker">Water</span><p>' + rich(d.water) + '</p></div>';
+    if (arr(d.warnings).length) {
+      h += '<div class="warn"><strong>Heads up</strong><ul>' + d.warnings.map(function (w) { return '<li>' + rich(w) + '</li>'; }).join('') + '</ul></div>';
+    }
+    h += confirmList(d.unconfirmed);
+    if (stop) {
+      h += '<h4>Tonight: ' + esc(stop.town) + '</h4><p><strong>' + esc(stop.name) + '</strong>. Dinner: ' + rich(stop.dinner) + '</p><div class="actions">';
+      if (stop.phone) h += '<a class="btn" href="tel:+1' + stop.phone.replace(/-/g, '') + '">Call ' + esc(stop.phone) + '</a>';
+      h += mapsLink(stop.maps_query, 'Directions');
+      if (stop.url) h += '<a class="maps" href="' + esc(stop.url) + '" target="_blank" rel="noopener">Book or view</a>';
+      h += '</div>';
+    }
+    h += '<p><a href="#day-' + d.n + '">See the full Day ' + d.n + '</a></p></div></article>';
+    return h;
+  }
+
+  function renderRide(tour) {
+    var tabs = tour.days.map(function (d) {
+      return '<button type="button" class="tab" data-tab="' + d.n + '">Day ' + d.n + '<small>' + esc(d.weekday) + '</small></button>';
+    }).join('');
+    return '<section class="section no-print-day" id="today"><div class="wrap">' +
+      '<span class="kicker">Ride mode</span><h2>Today</h2>' +
+      '<p id="today-status" class="lead"></p>' +
+      '<div class="tabs" role="tablist" aria-label="Choose a day">' + tabs + '</div>' +
+      '<div id="today-card"></div>' +
+      '<div class="trip-controls no-print"><label for="trip-start">Day 1 date (the Monday you ride out of Jackson)</label>' +
+      '<div class="actions"><input type="date" id="trip-start"><button type="button" class="btn ghost" id="trip-clear">Clear</button></div>' +
+      '<p class="hint">Set it and this page opens on the right day. Skip it and pick the day yourself.</p></div>' +
+      '<div class="offline-panel no-print" id="offline-panel"><div><strong>Save for offline</strong>' +
+      '<p id="offline-status">Load the whole tour onto this phone before you leave Wi-Fi.</p></div>' +
+      '<div class="actions"><button type="button" class="btn" id="offline-save">Save for offline</button>' +
+      '<button type="button" class="btn ghost" id="offline-remove" hidden>Remove saved copy</button></div></div>' +
+      '<p class="hint no-print" id="install-hint">Put it on your home screen: on iPhone tap Share, then Add to Home Screen. On Android open the browser menu and tap Install app.</p>' +
+      '<p class="hint no-print"><button type="button" class="btn ghost" id="install-btn" hidden>Install OpenRide</button></p>' +
+      '</div></section>';
+  }
+
   function renderPaid(tour) {
-    var h = '<section class="section printable" id="days"><div class="wrap"><div class="section-head"><h2>Day by day</h2>' +
+    var h = renderRide(tour) + '<section class="section printable" id="days"><div class="wrap"><div class="section-head"><h2>Day by day</h2>' +
       '<button type="button" class="btn no-print" data-print-full>Print full tour</button></div>';
     tour.days.forEach(function (d) { h += renderDay(d, tour); });
     h += '</div></section>';
     return h + renderLodging(tour) + renderGetting(tour) + renderConditions(tour) + renderUpdates(tour);
   }
 
-  var api = { esc: esc, rich: rich, renderDay: renderDay, renderPaid: renderPaid, fmtDate: fmtDate, milesLabel: milesLabel };
+  var api = { esc: esc, rich: rich, renderDay: renderDay, renderPaid: renderPaid, renderToday: renderToday, renderRide: renderRide, fmtDate: fmtDate, milesLabel: milesLabel };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TourRender = api;
 })(typeof window !== 'undefined' ? window : this);
