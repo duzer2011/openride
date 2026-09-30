@@ -80,6 +80,7 @@
       "tonight_town": "Vicksburg",
       "map": {
         "geojson": "/routes/natchez-lower.geojson",
+        "partial": true,
         "from_mp": 89,
         "to_mp": 67,
         "start_label": "Clinton Visitor Center, MP 89",
@@ -177,6 +178,7 @@
       "tonight_town": "Natchez",
       "map": {
         "geojson": "/routes/natchez-lower.geojson",
+        "partial": true,
         "from_mp": 30,
         "to_mp": 0,
         "start_label": "Trace at MP 30",

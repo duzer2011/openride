@@ -53,8 +53,30 @@
     } catch (e) { return iso; }
   }
 
+  // Register the service worker unless the kill switch is on. When it is on, remove the worker
+  // and its caches (saved tours stay; they belong to the rider).
+  async function registerSW() {
+    if (!('serviceWorker' in navigator)) return;
+    var kill = false;
+    try {
+      var r = await fetch('/sw-kill.json', { cache: 'no-store' });
+      kill = r.ok && (await r.json()).kill === true;
+    } catch (e) { /* offline: keep whatever is installed */ }
+    if (kill) {
+      var regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(function (g) { return g.unregister(); }));
+      var keys = await caches.keys();
+      await Promise.all(keys.filter(function (k) { return k !== PAID; }).map(function (k) { return caches.delete(k); }));
+      await new Promise(function (r) { setTimeout(r, 1200); });
+      keys = await caches.keys(); // the old worker may have written during the wipe
+      await Promise.all(keys.filter(function (k) { return k !== PAID; }).map(function (k) { return caches.delete(k); }));
+      return;
+    }
+    try { await navigator.serviceWorker.register('/sw.js'); } catch (e) { /* ignore */ }
+  }
+
   // Signed out anywhere (or never signed in): no paid copy stays on this device.
   if (!hasAuthToken()) clearPaid();
 
-  root.OpenRideOffline = { clearPaid: clearPaid, save: save, read: read, remove: remove, isSaved: isSaved, label: label, hasAuthToken: hasAuthToken };
+  root.OpenRideOffline = { clearPaid: clearPaid, save: save, read: read, remove: remove, isSaved: isSaved, label: label, hasAuthToken: hasAuthToken, registerSW: registerSW };
 })(typeof window !== 'undefined' ? window : this);

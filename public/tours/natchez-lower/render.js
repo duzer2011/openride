@@ -60,6 +60,7 @@
     }
     if (d.map) {
       h += '<figure class="day-map" data-map="' + esc(JSON.stringify(d.map)) + '" data-day="' + d.n + '">' +
+        (d.map.partial ? '<span class="map-badge">Trace section only. Full day route coming.</span>' : '') +
         '<div class="day-map-canvas" role="img" aria-label="Route line for day ' + d.n + '"></div>' +
         '<figcaption>' + esc(d.map.note) + ' Route line: OpenStreetMap contributors.</figcaption>' +
         '<button type="button" class="btn ghost no-print" data-locate>Show my position</button>' +

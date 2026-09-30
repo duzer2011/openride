@@ -42,7 +42,7 @@
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
-  if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+  window.addEventListener('load', function () { if (Off) Off.registerSW(); });
 
   async function card(t, owned) {
     var rec = Off ? await Off.read(t.slug) : null;

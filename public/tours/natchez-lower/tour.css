@@ -165,6 +165,7 @@ input[type="date"] { min-height: 48px; padding: 0 0.8rem; border: 2px solid var(
 .day-map figcaption, .locate-status { font-size: 0.85rem; color: #555; margin: 0.4rem 0; }
 .nav-note { background: var(--parch2); border-left: 4px solid var(--moss); padding: 0.7rem 1rem; }
 @media print { #today { display: none !important; } .day-map-canvas svg { max-height: 3in; } }
+.map-badge { display: inline-block; background: var(--parch2); border: 1px solid var(--line); border-radius: 3px; padding: 0.15rem 0.6rem; margin-bottom: 0.4rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; color: var(--forest); }
 .map-legend { font-size: 0.85rem; margin: 0.5rem 0 0; }
 .map-legend .dot { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--line); vertical-align: -0.1rem; }
 .map-legend .start { background: #4A7C59; }
