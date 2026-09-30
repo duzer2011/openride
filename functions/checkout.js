@@ -1,54 +1,55 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY.trim());
+const { createClient } = require('@supabase/supabase-js');
+const ROUTES = require('./lib/routes');
+
+const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const SITE = 'https://openride.bike';
+
+const json = (statusCode, body) => ({ statusCode, body: JSON.stringify(body) });
 
 exports.handler = async (event) => {
+    if (event.httpMethod !== 'POST') {
+        return { statusCode: 405, body: 'Method Not Allowed' };
+    }
+
     try {
-        if (event.httpMethod !== 'POST') {
-            return { statusCode: 405, body: 'Method Not Allowed' };
+        const authHeader = event.headers.authorization || event.headers.Authorization;
+        if (!authHeader) {
+            return json(401, { error: 'Sign in to buy a tour.' });
+        }
+        const token = authHeader.replace(/^Bearer\s+/i, '');
+        const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+        if (authError || !user) {
+            return json(401, { error: 'Sign in to buy a tour.' });
         }
 
-        const { sessionData, formData } = JSON.parse(event.body);
+        let route_slug;
+        try {
+            ({ route_slug } = JSON.parse(event.body || '{}'));
+        } catch (e) {
+            return json(400, { error: 'Invalid JSON' });
+        }
+        const route = Object.prototype.hasOwnProperty.call(ROUTES, route_slug) ? ROUTES[route_slug] : null;
+        if (!route) {
+            return json(400, { error: 'Unknown route.' });
+        }
 
+        // User id and email come from the verified token. Anything else the client sends is ignored.
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
-            line_items: [{
-                price: 'price_1T91Cl1XJx7K3CRmxmOO3WWb',
-                quantity: 1,
-            }],
+            line_items: [{ price: route.price_id, quantity: 1 }],
             mode: 'payment',
-            customer_email: sessionData.customer_email || undefined,
-            metadata: {
-                pace: formData.pace,
-                accommodation: formData.accommodation,
-                season: formData.season,
-                party_size: formData.party_size,
-                partner_emails: formData.partner_emails || '',
-                supabase_user_id: sessionData.supabase_user_id || '',
-            },
-            custom_text: {
-                submit: {
-                    message: 'Your personalized PDF guide will be emailed instantly after purchase.'
-                },
-                after_submit: {
-                    message: 'Added partners\' emails? We\'ll send them packing tips and logistics — no spam, no upsell.'
-                }
-            },
-            success_url: 'https://openride.bike/success?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url: 'https://openride.bike/natchez-trace-lower.html',
+            customer_email: user.email,
+            client_reference_id: user.id,
+            metadata: { route_slug, user_id: user.id },
+            success_url: `${SITE}${route.tour_path}?purchased=1`,
+            cancel_url: `${SITE}${route.cancel_path}`,
         });
 
-        console.log("✅ Stripe Session Created:", session.id);
-        const retrievedSession = await stripe.checkout.sessions.retrieve(session.id);
-        console.log('Metadata from Stripe:', JSON.stringify(retrievedSession.metadata, null, 2));
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ url: session.url }),
-        };
+        console.log('Stripe session created:', session.id, route_slug);
+        return json(200, { url: session.url });
     } catch (error) {
-        console.error("Stripe Error:", error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: error.message }),
-        };
+        console.error('Stripe Error:', error);
+        return json(500, { error: 'Checkout failed. Please try again.' });
     }
 };

@@ -57,6 +57,8 @@
     .btn-checkout:disabled { background: #bbb; cursor: not-allowed; }
     .secure-note { text-align: center; font-size: 0.78rem; color: #999; margin-top: 10px; }
   </style>
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <nav class="nav">
@@ -70,63 +72,68 @@
 <div class="page-wrap">
   <div class="order-summary">
     <div>
-      <div class="product-name">Natchez Trace South — Digital Guide</div>
-      <div class="product-desc">PDF + GPX + Cue Sheet · Instant delivery</div>
+      <div class="product-name">Lower Natchez Trace, full tour access</div>
+      <div class="product-desc">Every tour version, day by day, GPX files. Updates included, no expiry.</div>
     </div>
     <div class="price">$19</div>
   </div>
   <div class="error-msg" id="error-msg"></div>
-  <div class="email-section" id="email-section">
-    <label for="guest-email">Where should we send your guide?</label>
-    <input type="email" id="guest-email" placeholder="your@email.com">
+  <div class="email-section" id="signin-section" style="display:none">
+    <label>Sign in first</label>
+    <p style="font-size:0.9rem;color:#555;margin-bottom:14px">Your tour is tied to your account, so you can open it on any device.</p>
+    <a class="btn-checkout" id="btn-signin" style="display:block;text-align:center;text-decoration:none" href="/?login=true">Sign in or create account</a>
   </div>
-  <button class="btn-checkout" id="btn-submit">Continue to Payment →</button>
-  <p class="secure-note">🔒 Secure checkout via Stripe · Instant PDF delivery</p>
+  <div class="email-section" id="signed-in-section" style="display:none">
+    <label>Buying as</label>
+    <p id="user-email" style="font-size:0.95rem"></p>
+  </div>
+  <button class="btn-checkout" id="btn-submit" style="display:none">Continue to Payment</button>
+  <p class="secure-note">Secure checkout via Stripe</p>
 </div>
 <script>
-  document.getElementById('btn-submit').addEventListener('click', async () => {
-    const btn = document.getElementById('btn-submit');
-    const errorEl = document.getElementById('error-msg');
-    errorEl.style.display = 'none';
+  const params = new URLSearchParams(window.location.search);
+  // Old links use ?segment=lower. The server decides the price for the route, not this page.
+  const ROUTE_SLUG = params.get('route') || 'natchez-lower';
+  const sb = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnon);
+  const errorEl = document.getElementById('error-msg');
+  const btn = document.getElementById('btn-submit');
 
-    const email = document.getElementById('guest-email').value.trim();
-    if (!email || !email.includes('@')) {
-      errorEl.textContent = 'Please enter a valid email address so we can send your guide.';
-      errorEl.style.display = 'block';
+  function showError(msg) { errorEl.textContent = msg; errorEl.style.display = 'block'; }
+
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      const back = '/checkout?route=' + encodeURIComponent(ROUTE_SLUG);
+      document.getElementById('btn-signin').href = '/?login=true&redirect=' + encodeURIComponent(back);
+      document.getElementById('signin-section').style.display = 'block';
       return;
     }
+    document.getElementById('user-email').textContent = session.user.email;
+    document.getElementById('signed-in-section').style.display = 'block';
+    btn.style.display = 'block';
 
-    btn.disabled = true;
-    btn.textContent = 'Connecting to Stripe...';
-
-    try {
-      const response = await fetch('/.netlify/functions/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionData: {
-            supabase_user_id: '',
-            customer_email: email,
-          },
-          formData: {
-            pace: 'moderate',
-            accommodation: 'mixed',
-            season: 'spring',
-            party_size: '1',
-            partner_emails: '',
-          }
-        })
-      });
-      const data = await response.json();
-      if (!response.ok || !data.url) throw new Error(data.error || 'Checkout failed — please try again.');
-      window.location.href = data.url;
-    } catch (err) {
-      errorEl.textContent = err.message;
-      errorEl.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = 'Continue to Payment →';
-    }
-  });
+    btn.addEventListener('click', async () => {
+      errorEl.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Connecting to Stripe...';
+      try {
+        const { data: { session: fresh } } = await sb.auth.getSession();
+        if (!fresh) { window.location.reload(); return; }
+        const response = await fetch('/.netlify/functions/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + fresh.access_token },
+          body: JSON.stringify({ route_slug: ROUTE_SLUG })
+        });
+        const data = await response.json();
+        if (!response.ok || !data.url) throw new Error(data.error || 'Checkout failed. Please try again.');
+        window.location.href = data.url;
+      } catch (err) {
+        showError(err.message);
+        btn.disabled = false;
+        btn.textContent = 'Continue to Payment';
+      }
+    });
+  })();
 </script>
 </body>
 </html>

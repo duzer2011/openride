@@ -1,59 +1,28 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY.trim());
 const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY.trim());
-const fs = require('fs');
-const path = require('path');
+const ROUTES = require('./lib/routes');
 const { createClient } = require('@supabase/supabase-js');
 const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-async function sendPDF(customerEmail, pdfFile, metadata) {
-    const pdfPath = path.join(__dirname, '../guides/', pdfFile);
+const SITE = 'https://openride.bike';
 
-    // Fallback to default if exact variant doesn't exist
-    const finalPath = fs.existsSync(pdfPath)
-        ? pdfPath
-        : path.join(__dirname, '../guides/natchez-moderate-bnb-spring.pdf');
-
-    const pdfData = fs.readFileSync(finalPath);
-
+async function sendWelcomeEmail(customerEmail, route) {
+    const tourUrl = `${SITE}${route.tour_path}`;
     await resend.emails.send({
         from: 'Chris at OpenRide <hello@openride.bike>',
         to: customerEmail,
-        subject: 'Your Natchez Trace Route Guide is here',
+        subject: `Your ${route.name} tour is ready`,
         html: `
       <p>Hi,</p>
-      <p>Your personalized guide is attached — built around your 
-      ${metadata.pace} pace, ${metadata.accommodation} accommodation 
-      preference, riding in ${metadata.season}.</p>
-      <p>You're going to love this route. Any questions before you go, 
-      just reply to this email.</p>
-      <p>— Chris<br>OpenRide.bike</p>
-    `,
-        attachments: [{
-            filename: pdfFile,
-            content: pdfData.toString('base64'),
-            type: 'application/pdf'
-        }]
-    });
-    console.log(`✅ PDF sent to ${customerEmail}`);
-}
-
-async function sendPartnerEmail(email, metadata) {
-    await resend.emails.send({
-        from: 'Chris at OpenRide <hello@openride.bike>',
-        to: email,
-        subject: 'Your crew is riding the Natchez Trace — here\'s how to prepare',
-        html: `
-      <p>Hi,</p>
-      <p>Someone in your riding group is planning a Natchez Trace trip 
-      and added you to the crew.</p>
-      <p>We'll send you packing tips, fitness prep, and logistics info 
-      so everyone shows up ready.</p>
-      <p>No spam. Just useful stuff for the ride.</p>
-      <p>— Chris<br>OpenRide.bike</p>
+      <p>Your ${route.name} tour is ready. Sign in with this email address and open it here:</p>
+      <p><a href="${tourUrl}">${tourUrl}</a></p>
+      <p>It is a page, not a PDF. When a restaurant changes its hours or a closure gets posted, the page changes and you see it. Your access does not expire.</p>
+      <p>Questions before you go? Reply to this email.</p>
+      <p>Chris<br>OpenRide.bike</p>
     `
     });
-    console.log(`✅ Partner prep email sent to ${email}`);
+    console.log(`Welcome email sent to ${customerEmail}`);
 }
 
 exports.handler = async (event) => {
@@ -73,42 +42,47 @@ exports.handler = async (event) => {
 
     if (stripeEvent.type === 'checkout.session.completed') {
         const session = stripeEvent.data.object;
-        const customerEmail = session.customer_details.email;
-        const metadata = session.metadata;
+        const customerEmail = (session.customer_details && session.customer_details.email) || session.customer_email;
+        const metadata = session.metadata || {};
+        const route = Object.prototype.hasOwnProperty.call(ROUTES, metadata.route_slug) ? ROUTES[metadata.route_slug] : null;
 
-        console.log(`✅ Payment Success: ${session.id} for ${customerEmail}`);
+        if (session.payment_status !== 'paid') {
+            console.log(`Session ${session.id} not paid (${session.payment_status}), skipping`);
+        } else if (!route || !customerEmail) {
+            // Nothing to grant. Return 200 so Stripe does not retry forever; the log has the details.
+            console.error(`Session ${session.id}: missing or unknown route_slug (${metadata.route_slug}) or email`);
+        } else {
+            console.log(`Payment success: ${session.id} for ${customerEmail} (${metadata.route_slug})`);
 
-        // Determine correct PDF variant from metadata
-        const pace = metadata.pace || 'moderate';
-        const accommodation = metadata.accommodation || 'bnb';
-        const season = metadata.season || 'spring';
+            const row = {
+                email: customerEmail,
+                user_id: metadata.user_id || null,
+                stripe_session_id: session.id,
+                route_slug: metadata.route_slug,
+                amount_cents: session.amount_total,
+                metadata: { source: 'tour-access' }
+            };
 
-        // Map to normalized filename
-        const pdfFile = `natchez-${pace}-${accommodation}-${season}.pdf`;
-
-        // Send email with PDF
-        await sendPDF(customerEmail, pdfFile, metadata);
-
-        // Record purchase in Supabase
-        await supabaseAdmin.from('purchases').insert({
-            email: customerEmail,
-            user_id: metadata.supabase_user_id || null,
-            stripe_session_id: session.id,
-            route_slug: 'natchez-lower',
-            pdf_variant: pdfFile,
-            amount_cents: session.amount_total,
-            metadata: { 
-                pace: metadata.pace, 
-                accommodation: metadata.accommodation, 
-                season: metadata.season 
+            let { error } = await supabaseAdmin.from('purchases').insert(row);
+            // user_id references profiles(id). If no profile row exists yet, the email match still unlocks the tour.
+            if (error && error.code === '23503' && row.user_id) {
+                console.warn(`No profile for ${row.user_id}, recording purchase by email only`);
+                ({ error } = await supabaseAdmin.from('purchases').insert({ ...row, user_id: null }));
             }
-        });
 
-        // If partner emails exist, send prep email to each
-        if (metadata.partner_emails) {
-            const partners = metadata.partner_emails.split(',').map(e => e.trim()).filter(e => e.length > 0);
-            for (const email of partners) {
-                await sendPartnerEmail(email, metadata);
+            if (error && error.code === '23505') {
+                // stripe_session_id is UNIQUE: Stripe retried an event we already handled.
+                console.log(`Session ${session.id} already recorded, skipping`);
+            } else if (error) {
+                console.error('Purchase insert failed:', error);
+                return { statusCode: 500, body: 'Could not record purchase' };
+            } else {
+                try {
+                    await sendWelcomeEmail(customerEmail, route);
+                } catch (e) {
+                    // Purchase is recorded; access works without the email. Do not make Stripe retry.
+                    console.error('Welcome email failed:', e);
+                }
             }
         }
     }

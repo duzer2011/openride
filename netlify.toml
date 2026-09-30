@@ -4,7 +4,7 @@
 
 [functions]
   node_bundler = "esbuild"
-  included_files = ["guides/**", "content/**"]
+  included_files = ["content/**"]
 
 # Paid content must never be served statically. Functions read these from disk.
 [[redirects]]
