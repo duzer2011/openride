@@ -1295,7 +1295,7 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
 <div class="modal-overlay" id="modal-guide" onclick="closeModalOutside(event, 'modal-guide')">
   <div class="modal-box">
     <div class="modal-header">
-      <div><span class="modal-title">Sample Route Guide</span><span class="modal-tag">Moderate Pace · B&amp;B · Spring</span></div>
+      <div><span class="modal-title">Sample Route Guide</span><span class="modal-tag">Sample Day · Natchez</span></div>
       <button class="modal-close" onclick="closeModal('modal-guide')">✕</button>
     </div>
     <div class="modal-body">
@@ -1380,8 +1380,8 @@ body { background: var(--parch); color: var(--ink); font-family: 'DM Sans', sans
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
   var pdfModals = [
-    { id: 'modal-guide', container: 'pdf-guide-pages', src: '/PDFs/natchez-moderate-bnb-spring.pdf', loaded: false },
-    { id: 'modal-cues',  container: 'pdf-cues-pages',  src: '/PDFs/natchez-trace-cue-sheet.pdf',    loaded: false }
+    { id: 'modal-guide', container: 'pdf-guide-pages', src: '/samples/natchez-sample-day.pdf', loaded: false },
+    { id: 'modal-cues',  container: 'pdf-cues-pages',  src: '/samples/natchez-sample-day.pdf',    loaded: false }
   ];
 
   // Render all pages of a PDF into canvas elements

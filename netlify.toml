@@ -1,4 +1,5 @@
 [build]
+  publish = "public"
   command = "node generate-config.js"
   functions = "functions"
 

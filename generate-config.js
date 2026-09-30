@@ -6,5 +6,6 @@ const config = `const CONFIG = {
   mapboxToken: '${process.env.MAPBOX_TOKEN}'
 };`;
 
-fs.writeFileSync('config.js', config);
-console.log('config.js generated');
+fs.mkdirSync('public', { recursive: true });
+fs.writeFileSync('public/config.js', config);
+console.log('public/config.js generated');
