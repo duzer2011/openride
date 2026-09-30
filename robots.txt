@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /checkout
+Disallow: /success
+Disallow: /profile
+Disallow: /guide/
+Disallow: /content
+Disallow: /functions
+
+Sitemap: https://openride.bike/sitemap.xml

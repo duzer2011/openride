@@ -1,0 +1,14 @@
+# OpenRide
+
+> OpenRide (openride.bike) sells self-guided bike tours. Each route comes with day-by-day plans, lodging, food stops, shuttle and getting-home options, and GPX files. It is run by Chris VanDusen, who guided bicycle tours professionally for ten years.
+
+The first route is the Natchez Trace Parkway in Mississippi and Tennessee, a 444-mile National Park Service road with no commercial traffic. The lower section, Natchez to Rocky Springs and beyond, is 82 miles and takes 3 to 4 days.
+
+## Route pages
+
+- [Natchez Trace Parkway overview](https://openride.bike/natchez-trace.html): the full 444 miles in three segments, with an FAQ on segments and beginners.
+- [Lower Natchez Trace](https://openride.bike/natchez-trace-lower.html): 82 miles, 3 to 4 days, with an FAQ on direction, season, bikes, logistics, camping and cost.
+
+## Home
+
+- [OpenRide home](https://openride.bike/): all routes.
