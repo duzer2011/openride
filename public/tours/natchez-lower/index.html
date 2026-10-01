@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Natchez Trace Inn-to-Inn: Jackson to Natchez | OpenRide</title>
 <meta name="description" content="Six days from Jackson to Natchez on the Natchez Trace Parkway, sleeping in historic inns. Est. 150-190 miles, best in March, April and October. Self-guided.">
 <link rel="canonical" href="https://openride.bike/tours/natchez-lower/">
@@ -18,12 +18,12 @@
 <meta name="twitter:image" content="https://openride.bike/images/natchez-hero-road-ahead.jpg">
 <meta name="theme-color" content="#2C4A2E">
 <link rel="manifest" href="/manifest.json">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/tours/natchez-lower/tour.css">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/source-sans-3-latin.woff2">
+<link rel="stylesheet" href="/tours/natchez-lower/tour.css">
+<link rel="stylesheet" href="/tours/natchez-lower/print.css" media="print">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -94,14 +94,6 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "How long is the Natchez Trace Inn-to-Inn tour from Jackson to Natchez?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Six days and five nights, plus a Sunday night in Jackson before you start. The riding is an estimated 150-190 miles, depending on the options you take. Riding days run roughly 40-60 miles. Days 2 and 5 are layovers."
-      }
-    },
-    {
-      "@type": "Question",
       "name": "Why start on a Sunday and finish on a Saturday?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -163,133 +155,96 @@
         "@type": "Answer",
         "text": "It depends on where you sleep. Camping keeps it low; inn-to-inn with historic B&Bs runs roughly $150-260 a night per room. Add food, getting to the start in Jackson, and getting home from Natchez. Access to this page includes every inn with its price range."
       }
-    },
-    {
-      "@type": "Question",
-      "name": "What is the bad hour?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Somewhere on your second day in the saddle, usually a dozen or so miles in, you hit a low patch. Legs heavy, head asking why you signed up. It passes. Eat something, drink something, keep turning the pedals."
-      }
     }
   ]
 }
 </script>
 </head>
 <body>
-<div class="print-head"><strong>Natchez Trace Inn-to-Inn: Jackson to Natchez</strong> &middot; openride.bike/tours/natchez-lower</div>
+<div id="public">
+<header class="site-bar"><div class="wrap">
+  <a class="wordmark" href="/">Open<span>Ride</span>.bike</a>
+  <nav aria-label="Site"><a href="/natchez-trace-lower.html">Lower Trace</a><a href="/account/">My tours</a></nav>
+</div></header>
 
-<nav class="nav">
-  <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
-  <div class="nav-links">
-    <a href="/natchez-trace-lower.html">Lower Trace</a>
-    <a href="/profile.html">Account</a>
-  </div>
-</nav>
+<section class="hero"><div class="wrap">
+  <span class="eyebrow">Lower Natchez Trace · Self-guided</span>
+  <h1>Natchez Trace Inn-to-Inn: Jackson to Natchez</h1>
+  <p class="route">Jackson → Natchez</p>
+  <p>Six days, five nights, four towns. You ride south from Jackson to Natchez on the Natchez Trace Parkway and the quiet state and county roads between. Every night is in a historic inn.</p>
+</div></section>
 
-<header class="hero">
-  <div class="wrap">
-    <span class="kicker">Lower Natchez Trace &middot; Self-guided</span>
-    <h1>Natchez Trace Inn-to-Inn: Jackson to Natchez</h1>
-    <p>Six days, five nights, four towns. You ride south from Jackson to Natchez on the Natchez Trace Parkway and the quiet state and county roads between. Every night is in a historic inn.</p>
-    <div class="stats">
-      <div class="stat"><b>6 days</b><span>5 nights</span></div>
-      <div class="stat"><b>Est. 150-190</b><span>Miles</span></div>
-      <div class="stat"><b>Mar-Apr, Oct</b><span>Best months</span></div>
+<main class="wrap">
+  <div class="facts"><div class="fact"><span class="fact-v num">6 days / 5 nights</span><span class="fact-k">Plus a Sunday night in Jackson before you start</span></div><div class="fact"><span class="fact-v num">Est. 150-190 mi</span><span class="fact-k">Depends on the options you take</span></div><div class="fact"><span class="fact-v num">Mar-Apr, Oct</span><span class="fact-k">Best months</span></div><div class="fact"><span class="fact-v num">Carry your bags</span><span class="fact-k">No luggage transfer confirmed</span></div></div>
+
+  <section class="card buy" id="access">
+    <h2 class="price num">$19</h2>
+    <p><strong>One payment, yours for good.</strong> This buys the guide. It does not book rooms, rides or reservations.</p>
+    <ul>
+      <li>All six days: the route, road notes, where to eat, water and warnings</li>
+      <li>Every inn, with price ranges and phone numbers where we have a verified one</li>
+      <li>Getting to Jackson and home from Natchez, with costs and phone numbers</li>
+      <li>Conditions, e-bike and luggage notes</li>
+      <li>Save for offline on your phone, and a Today screen for each morning</li>
+      <li>Print any day, or the whole guidebook</li>
+      <li>Updates when hours or closures change. Your access does not expire.</li>
+    </ul>
+    <div class="btn-row">
+      <a class="btn primary big" id="buy" href="/checkout?route=natchez-lower">Get access</a>
+      <a class="btn ghost big" href="#day-4">See free Day 4</a>
     </div>
-  </div>
-</header>
-
-<main>
-<section class="wrap" aria-label="Get access">
-  <div class="access" id="access">
-    <div class="price">$19</div>
-    <p><strong>One payment, yours for good.</strong> Every day of the tour, every inn with phone numbers and price ranges, getting there and getting home, and a print view for each day. When something changes, the page changes.</p>
-    <div class="actions">
-      <a class="btn" id="buy" href="/checkout?route=natchez-lower">Get access</a>
-      <a href="/?login=true&amp;redirect=/tours/natchez-lower/">Already bought? Sign in</a>
-    </div>
+    <p class="hint"><a href="/?login=true&amp;redirect=/tours/natchez-lower/">Already bought? Sign in</a></p>
     <p id="status" role="status" aria-live="polite"></p>
-  </div>
-  <p id="owner" class="pull" hidden></p>
-</section>
+  </section>
 
-<section class="section" id="overview">
-  <div class="wrap">
-    <h2>The tour</h2>
-    <p>Six days, five nights, four towns. You ride south from Jackson to Natchez on the Natchez Trace Parkway and the quiet state and county roads between. Every night is in a historic inn.</p>
-    <p>You sleep in Vicksburg for two nights, at Canemount in Lorman for one, and in Natchez for two. Both layover days are short on purpose: the Vicksburg battlefield loop and a free day in Natchez.</p>
-    <div class="table-wrap"><table class="glance"><tbody>
-<tr><th scope="row">Length</th><td>6 days, 5 nights, plus a Sunday night in Jackson before you start</td></tr>
-<tr><th scope="row">Distance</th><td>Est. 150-190 miles, depending on the options you take</td></tr>
-<tr><th scope="row">Tour type</th><td>Inn chain: linear, with two layover towns</td></tr>
-<tr><th scope="row">Works for</th><td>Inn-to-inn riders and e-bike riders (with charging checks)</td></tr>
-<tr><th scope="row">Pace</th><td>Moderate. Riding days of roughly 40-60 miles, layover days 0-30</td></tr>
-<tr><th scope="row">Surface</th><td>Paved throughout. About half on the Natchez Trace Parkway, half on state and county roads</td></tr>
-<tr><th scope="row">Best months</th><td>March to April, and October</td></tr>
-<tr><th scope="row">Best schedule</th><td>Arrive Sunday, depart Saturday</td></tr>
-    </tbody></table></div>
-    <div class="pull"><p><b>Direction.</b> South. You ride out of Jackson through Clinton to the Trace, on to Vicksburg, then down to Natchez. Winds generally favor riding north, so expect some headwind days. The payoff is finishing in Natchez.</p></div>
-    <div class="pull"><p><b>Why Sunday to Saturday.</b> Sunday to Saturday avoids the two weak spots. The Enterprise office in Natchez is closed Sundays, which rules out a Sunday one-way rental home, and Vicksburg has few dinner options on Sunday nights. It also puts the Trace days on weekdays, when traffic is lighter.</p></div>
-    <div class="pull"><p><b>The bad hour.</b> Somewhere on your second day in the saddle, usually a dozen or so miles in, you hit a low patch. Legs heavy, head asking why you signed up. It passes. Eat something, drink something, keep turning the pedals.</p></div>
-    <h3>Best months</h3>
-    <p>March to April and October. Book inns 6 to 8 weeks ahead for those months. Canemount has only six rooms. July and August are hot and humid. Spring brings rain, so carry a real rain jacket.</p>
-  </div>
-</section>
+  <section class="public-section" id="route-section">
+    <h2>The route</h2>
+    <div class="card"><div id="route-diagram"></div></div>
+  </section>
 
-<section class="section" id="summary">
-  <div class="wrap">
-    <h2>Day by day, in a line</h2>
-    <ol class="summaries" id="summaries">
-<li>Ride out through Clinton to the Trace, south to MS 27, then west into Vicksburg. Est. 50-60 miles.</li>
-<li>Vicksburg layover. The 16-mile National Military Park loop, or no bike at all.</li>
-<li>Vicksburg to Port Gibson and Windsor Ruins, then Canemount at Lorman. The longest day. Est. 45-60 miles.</li>
-<li><a href="#day-4">Canemount to Natchez. Thirty miles of the best road on the Trace, ending at the parkway's southern terminus. Est. 44 miles.</a> Full sample below.</li>
-<li>Natchez layover. Walk the bluff, or ride a loop of up to 30 miles.</li>
-<li>Home from Natchez by air, one-way rental, or pre-booked van.</li>
-    </ol>
-  </div>
-</section>
+  <section class="public-section" id="days">
+    <h2>Six days</h2>
+    <ol class="day-rows"><li><div class="day-row locked" aria-label="Day 1, included with access"><span class="dr-n num">1</span><span class="dr-txt"><span class="dr-t">Jackson → Vicksburg</span><span class="dr-s">Ride out through Clinton to the Trace, south to MS 27, then west into Vicksburg.</span></span><span class="dr-r num">Est. 50-60 mi</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div></li><li><div class="day-row locked" aria-label="Day 2, included with access"><span class="dr-n num">2</span><span class="dr-txt"><span class="dr-t">Vicksburg layover</span><span class="dr-s">The 16-mile National Military Park loop, or no bike at all.</span></span><span class="dr-r num">Layover</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div></li><li><div class="day-row locked" aria-label="Day 3, included with access"><span class="dr-n num">3</span><span class="dr-txt"><span class="dr-t">Vicksburg → Canemount</span><span class="dr-s">Vicksburg to Port Gibson and Windsor Ruins, then Canemount at Lorman. The longest day.</span><span class="flag">Hardest day</span></span><span class="dr-r num">Est. 57-62 mi</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div></li><li><a class="day-row" href="#day-4" data-open-day="4"><span class="dr-n num">4</span><span class="dr-txt"><span class="dr-t">Canemount → Natchez</span><span class="dr-s">Canemount to Natchez. Thirty miles of the best road on the Trace, ending at the parkway's southern terminus.</span><span class="flag free">Free sample</span></span><span class="dr-r num">Est. 44 mi</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a></li><li><div class="day-row locked" aria-label="Day 5, included with access"><span class="dr-n num">5</span><span class="dr-txt"><span class="dr-t">Natchez layover</span><span class="dr-s">Walk the bluff, or ride a loop of up to 30 miles.</span></span><span class="dr-r num">Layover</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div></li><li><div class="day-row locked" aria-label="Day 6, included with access"><span class="dr-n num">6</span><span class="dr-txt"><span class="dr-t">Natchez → Home</span><span class="dr-s">Home from Natchez by air, one-way rental, or pre-booked van.</span></span><span class="dr-r num">No riding</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div></li></ol>
+    <section class="card amber"><h3>Before you commit</h3><ul><li>Riding days run roughly 40-60 miles. Layover days are 0-30.</li><li>Carry your own luggage. No luggage transfer is confirmed for this route.</li><li>Canemount has six rooms, and dinner there is only what you arrange with the inn.</li><li>Some roads are unconfirmed: shoulder and traffic on MS 27 and US 61.</li><li>Book inns 6 to 8 weeks ahead for March, April and October.</li><li>E-bike riders: charge fully in Vicksburg and ask Canemount about an outlet.</li></ul></section>
+  </section>
 
-<section class="section" id="sample">
-  <div class="wrap">
-    <span class="kicker">Free sample day</span>
-    <h2>Day 4: Canemount to Natchez</h2>
-    <p>This is what every day in the paid tour looks like: the route, the road, where to eat and where to fill bottles.</p>
-<article class="day" id="day-4" data-day="4"><header class="day-head"><div><span class="day-kicker">Day 4 &middot; Thu</span><h3>Canemount to Natchez</h3></div><span class="day-miles">est. 44 miles</span></header><div class="day-body"><p>The best Trace day of the tour. Seven miles east on MS 552 (the first 5 from Alcorn have a wide shoulder) to the Trace at MP 30. Then 30 miles south to the end of the parkway, and about 2.5 miles into town.</p><p>The road rolls, with about 1,800 feet of climbing.</p><div class="warn"><strong>Heads up</strong><ul><li>No food on the Trace between Lorman and Natchez.</li></ul></div><figure class="day-map" data-map="{&quot;geojson&quot;:&quot;/routes/natchez-lower.geojson&quot;,&quot;partial&quot;:true,&quot;from_mp&quot;:30,&quot;to_mp&quot;:0,&quot;start_label&quot;:&quot;Trace at MP 30&quot;,&quot;end_label&quot;:&quot;Natchez, MP 0&quot;,&quot;note&quot;:&quot;The Trace part of today's ride. Mileposts are approximate. You join the Trace at MP 30 from MS 552 and finish about 2.5 miles into town.&quot;}" data-day="4"><span class="map-badge">Trace section only. Full day route coming.</span><div class="day-map-canvas" role="img" aria-label="Route line for day 4"></div><figcaption>The Trace part of today's ride. Mileposts are approximate. You join the Trace at MP 30 from MS 552 and finish about 2.5 miles into town. Route line: OpenStreetMap contributors.</figcaption><button type="button" class="btn ghost no-print" data-locate>Show my position</button><p class="locate-status no-print" role="status"></p></figure><h4>Road notes</h4><ul><li>Coles Creek (MP 17.5) has restrooms and a bike repair station.</li><li>Mount Locust (MP 15.5): the old inn building is closed for structural repairs. The grounds are open.</li></ul><h4>Food and water</h4><table class="meals"><tbody><tr><th scope="row">Breakfast</th><td>At Canemount.</td></tr><tr><th scope="row">Lunch</th><td>Pack a lunch. There is no food on the Trace between Lorman and Natchez. For a late lunch in Natchez, try The Camp on Silver Street (daily 11-8) or Magnolia Grill (closed Mondays only).</td></tr><tr><th scope="row">Dinner</th><td>The Castle at Dunleith (Thursday 6-9) or Fat Mama's Tamales downtown.</td></tr><tr><th scope="row">Water</th><td>Coles Creek, MP 17.5.</td></tr></tbody></table><h4>Worth the detour</h4><ul><li>Emerald Mound, 1 mile west on MS 553 at MP 10.3. It adds 2 miles. Go, everyone: it is the second-largest ceremonial mound in the country.</li></ul><p class="checked">Hours last checked Sep 30, 2026.</p><button type="button" class="btn ghost no-print" data-print-day="4">Print this day</button></div></article>
-  </div>
-</section>
+  <section class="public-section" id="sample">
+    <div class="sample-head"><span class="eyebrow">Free sample day</span><h2>Day 4, in full</h2>
+    <p class="hint">This is what every day looks like: the route, the road, where to eat and where to fill bottles. The other five days are included with access.</p></div>
+    <article class="day-screen" id="day-4" data-day="4"><header class="ds-head"><span class="eyebrow">Thu · Best Trace day</span><h2>Canemount → Natchez</h2><p class="sub">Canemount to Natchez</p></header><div class="chips"><div class="chip"><span class="chip-k" id="miles-4-k">Miles (est.)</span><span class="chip-v num" id="miles-4">44 mi</span></div><div class="chip"><span class="chip-k">Surface</span><span class="chip-v num">Paved</span></div><div class="chip"><span class="chip-k">Climbing</span><span class="chip-v num">1,800 ft</span></div></div><div class="banner" role="note"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v5M12 18v.01"/></svg><div><strong>Heads up</strong><p>No food on the Trace between Lorman and Natchez.</p></div></div><section class="card"><h3>Today's essentials</h3><ul class="ess"><li class="ess-row"><span class="ess-k">Breakfast</span><span class="ess-v">At Canemount.</span></li><li class="ess-row"><span class="ess-k">Lunch</span><span class="ess-v">Pack a lunch. There is no food on the Trace between Lorman and Natchez. For a late lunch in Natchez, try The Camp on Silver Street (daily 11-8) or Magnolia Grill (closed Mondays only).</span></li><li class="ess-row"><span class="ess-k">Dinner</span><span class="ess-v">The Castle at Dunleith (Thursday 6-9) or Fat Mama's Tamales downtown.</span></li><li class="ess-row"><span class="ess-k">Water</span><span class="ess-v">Coles Creek, MP 17.5.</span></li></ul></section><figure class="day-map card" data-map="{&quot;geojson&quot;:&quot;/routes/natchez-lower.geojson&quot;,&quot;partial&quot;:true,&quot;from_mp&quot;:30,&quot;to_mp&quot;:0,&quot;start_label&quot;:&quot;Trace at MP 30&quot;,&quot;end_label&quot;:&quot;Natchez, MP 0&quot;,&quot;note&quot;:&quot;The Trace part of today's ride. Mileposts are approximate. You join the Trace at MP 30 from MS 552 and finish about 2.5 miles into town.&quot;}" data-day="4"><span class="map-badge">Trace section only: MP 30 → MP 0. Full day route coming.</span><div class="day-map-canvas" role="img" aria-label="Route line for day 4"></div><figcaption>The Trace part of today's ride. Mileposts are approximate. You join the Trace at MP 30 from MS 552 and finish about 2.5 miles into town. Route line: OpenStreetMap contributors.</figcaption><button type="button" class="btn ghost" data-locate>Show my position</button><p class="locate-status" role="status"></p></figure><section class="card"><h3>The ride, in stages</h3><div id="stages-4"><ol class="stages"><li>Seven miles east on MS 552 to the Trace at MP 30. The first 5 miles from Alcorn have a wide shoulder.</li><li>Thirty miles south on the Trace to the end of the parkway.</li><li>About 2.5 miles into Natchez.</li></ol></div></section><section class="block"><h3 class="block-h">Worth the detour</h3><div class="card detour"><p>Emerald Mound, 1 mile west on MS 553 at MP 10.3. It adds 2 miles. Go, everyone: it is the second-largest ceremonial mound in the country.</p></div></section><details class="acc"><summary>About this ride<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></summary><div class="acc-body"><p>The best Trace day of the tour. Seven miles east on MS 552 (the first 5 from Alcorn have a wide shoulder) to the Trace at MP 30. Then 30 miles south to the end of the parkway, and about 2.5 miles into town.</p><p>The road rolls, with about 1,800 feet of climbing.</p><h4>Road notes</h4><ul><li>Coles Creek (MP 17.5) has restrooms and a bike repair station.</li><li>Mount Locust (MP 15.5): the old inn building is closed for structural repairs. The grounds are open.</li></ul></div></details><div class="day-actions"><button type="button" class="btn" data-print-day-sheets="4">Print this day</button><a class="btn ghost" href="mailto:hello@openride.bike?subject=Change%20on%20Day%204%3A%20Natchez%20Trace%20Inn-to-Inn%3A%20Jackson%20to%20Natchez">Report a change</a></div></article>
+  </section>
 
-<div id="paid" hidden></div>
-
-<section class="section" id="faq">
-  <div class="wrap">
-    <h2>Frequently asked questions</h2>
-<div class="faq-item"><div class="faq-question">How long is the Natchez Trace Inn-to-Inn tour from Jackson to Natchez?</div><div class="faq-answer">Six days and five nights, plus a Sunday night in Jackson before you start. The riding is an estimated 150-190 miles, depending on the options you take. Riding days run roughly 40-60 miles. Days 2 and 5 are layovers.</div></div>
-<div class="faq-item"><div class="faq-question">Why start on a Sunday and finish on a Saturday?</div><div class="faq-answer">The Enterprise office in Natchez is closed Sundays, which rules out a Sunday one-way rental home, and Vicksburg has few dinner options on Sunday nights. Sunday to Saturday also puts the Trace days on weekdays, when traffic is lighter.</div></div>
-<div class="faq-item"><div class="faq-question">Is the whole route on the Natchez Trace Parkway?</div><div class="faq-answer">No. About half is on the parkway and half is on state and county roads. Everything is paved. The parkway has a 50 mph limit, 11-foot lanes and no shoulder. The state roads are a mix, and the tour page flags the stretches where the shoulder or traffic is unconfirmed.</div></div>
-<div class="faq-item"><div class="faq-question">What is the best time of year to ride it?</div><div class="faq-answer">March to April and October. Summer heat and humidity make July and August hard going, and spring brings rain. Book inns 6 to 8 weeks ahead for the good months, because Canemount has only six rooms.</div></div>
-<div class="faq-item"><div class="faq-question">How do I get home from Natchez?</div><div class="faq-answer">Fly out of Natchez to Houston, pick up an Enterprise one-way rental to Jackson airport by noon on Saturday, or book a van ahead. Greyhound to Baton Rouge and shipping your bike home are the other options. The tour page lists each one with phone numbers and costs.</div></div>
-<div class="faq-item"><div class="faq-question">Can I ride it on an e-bike?</div><div class="faq-answer">Yes, with planning. Day 3 is the range test, with up to 60 miles of rolling terrain. Charge fully in Vicksburg and ask Canemount about an outlet for overnight charging. Vicksburg National Military Park allows e-bikes under 750W, but not riding on the motor alone.</div></div>
-<div class="faq-item"><div class="faq-question">Is there luggage transfer between inns?</div><div class="faq-answer">Not confirmed for this route. Until one is found, plan to carry your own gear in panniers or a trunk bag, or have a friend drive it.</div></div>
-<div class="faq-item"><div class="faq-question">Can I camp instead of staying in inns?</div><div class="faq-answer">Camping is thin on this route. Natchez State Park has tent sites about 10 miles north of town, and Rocky Springs has no drinkable water. This tour is built around inns. A camping version needs its own chain of stops.</div></div>
-<div class="faq-item"><div class="faq-question">How much does a self-guided Natchez Trace tour cost?</div><div class="faq-answer">It depends on where you sleep. Camping keeps it low; inn-to-inn with historic B&amp;Bs runs roughly $150-260 a night per room. Add food, getting to the start in Jackson, and getting home from Natchez. Access to this page includes every inn with its price range.</div></div>
-<div class="faq-item"><div class="faq-question">What is the bad hour?</div><div class="faq-answer">Somewhere on your second day in the saddle, usually a dozen or so miles in, you hit a low patch. Legs heavy, head asking why you signed up. It passes. Eat something, drink something, keep turning the pedals.</div></div>
-  </div>
-</section>
+  <section class="public-section" id="faq">
+    <h2>Questions</h2>
+<details class="faq-item"><summary>Why start on a Sunday and finish on a Saturday?<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></summary><div class="faq-answer">The Enterprise office in Natchez is closed Sundays, which rules out a Sunday one-way rental home, and Vicksburg has few dinner options on Sunday nights. Sunday to Saturday also puts the Trace days on weekdays, when traffic is lighter.</div></details>
+<details class="faq-item"><summary>Is the whole route on the Natchez Trace Parkway?<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></summary><div class="faq-answer">No. About half is on the parkway and half is on state and county roads. Everything is paved. The parkway has a 50 mph limit, 11-foot lanes and no shoulder. The state roads are a mix, and the tour page flags the stretches where the shoulder or traffic is unconfirmed.</div></details>
+<details class="faq-item"><summary>What is the best time of year to ride it?<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></summary><div class="faq-answer">March to April and October. Summer heat and humidity make July and August hard going, and spring brings rain. Book inns 6 to 8 weeks ahead for the good months, because Canemount has only six rooms.</div></details>
+<details class="faq-item"><summary>How do I get home from Natchez?<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></summary><div class="faq-answer">Fly out of Natchez to Houston, pick up an Enterprise one-way rental to Jackson airport by noon on Saturday, or book a van ahead. Greyhound to Baton Rouge and shipping your bike home are the other options. The tour page lists each one with phone numbers and costs.</div></details>
+<details class="faq-item"><summary>Can I ride it on an e-bike?<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></summary><div class="faq-answer">Yes, with planning. Day 3 is the range test, with up to 60 miles of rolling terrain. Charge fully in Vicksburg and ask Canemount about an outlet for overnight charging. Vicksburg National Military Park allows e-bikes under 750W, but not riding on the motor alone.</div></details>
+<details class="faq-item"><summary>Is there luggage transfer between inns?<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></summary><div class="faq-answer">Not confirmed for this route. Until one is found, plan to carry your own gear in panniers or a trunk bag, or have a friend drive it.</div></details>
+<details class="faq-item"><summary>Can I camp instead of staying in inns?<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></summary><div class="faq-answer">Camping is thin on this route. Natchez State Park has tent sites about 10 miles north of town, and Rocky Springs has no drinkable water. This tour is built around inns. A camping version needs its own chain of stops.</div></details>
+<details class="faq-item"><summary>How much does a self-guided Natchez Trace tour cost?<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></summary><div class="faq-answer">It depends on where you sleep. Camping keeps it low; inn-to-inn with historic B&amp;Bs runs roughly $150-260 a night per room. Add food, getting to the start in Jackson, and getting home from Natchez. Access to this page includes every inn with its price range.</div></details>
+  </section>
 </main>
 
 <section class="cta">
   <h2>Ready to ride?</h2>
-  <p>$19 opens the full tour. Every day, every inn, every way home.</p>
-  <p><a class="btn" href="/checkout?route=natchez-lower">Get access</a></p>
+  <p>$19 opens all six days, every inn, and every way home.</p>
+  <p><a class="btn primary big" href="/checkout?route=natchez-lower">Get access</a></p>
 </section>
-<footer class="footer">OpenRide.bike &middot; <a href="/natchez-trace-lower.html">Lower Natchez Trace overview</a></footer>
+<footer class="footer">OpenRide.bike · <a href="/natchez-trace-lower.html">Lower Natchez Trace overview</a></footer>
+</div>
+
+<div id="app" hidden></div>
+<div id="guidebook" aria-hidden="true"></div>
+<script type="application/json" id="sample-data">{"name":"Natchez Trace Inn-to-Inn: Jackson to Natchez","hours_checked":"2026-09-30","public":{"key_facts":[["6 days / 5 nights","Plus a Sunday night in Jackson before you start"],["Est. 150-190 mi","Depends on the options you take"],["Mar-Apr, Oct","Best months"],["Carry your bags","No luggage transfer confirmed"]]},"days":[{"n":4,"weekday":"Thu","tonight_town":"Natchez","map":{"geojson":"/routes/natchez-lower.geojson","partial":true,"from_mp":30,"to_mp":0,"start_label":"Trace at MP 30","end_label":"Natchez, MP 0","note":"The Trace part of today's ride. Mileposts are approximate. You join the Trace at MP 30 from MS 552 and finish about 2.5 miles into town."},"title":"Canemount to Natchez","miles_est":"44","route":["The best Trace day of the tour. Seven miles east on MS 552 (the first 5 from Alcorn have a wide shoulder) to the Trace at MP 30. Then 30 miles south to the end of the parkway, and about 2.5 miles into town.","The road rolls, with about 1,800 feet of climbing."],"road_notes":["Coles Creek (MP 17.5) has restrooms and a bike repair station.","Mount Locust (MP 15.5): the old inn building is closed for structural repairs. The grounds are open."],"breakfast":"At Canemount.","lunch":"Pack a lunch. There is no food on the Trace between Lorman and Natchez. For a late lunch in Natchez, try The Camp on Silver Street (daily 11-8) or Magnolia Grill (closed Mondays only).","snacks":"","dinner":"The Castle at Dunleith (Thursday 6-9) or Fat Mama's Tamales downtown.","water":"Coles Creek, MP 17.5.","side_trips":["Emerald Mound, 1 mile west on MS 553 at MP 10.3. It adds 2 miles. Go, everyone: it is the second-largest ceremonial mound in the country."],"warnings":["No food on the Trace between Lorman and Natchez."],"unconfirmed":[],"kind":"ride","tag":"Best Trace day","title_short":"Canemount → Natchez","subtitle":"Canemount to Natchez","surface":"Paved","climbing_ft":1800,"briefing":"","stages":["Seven miles east on MS 552 to the Trace at MP 30. The first 5 miles from Alcorn have a wide shoulder.","Thirty miles south on the Trace to the end of the parkway.","About 2.5 miles into Natchez."],"guide_note":""}]}</script>
 
 <script src="/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/offline.js"></script>
 <script src="/tours/natchez-lower/render.js"></script>
+<script src="/tours/natchez-lower/guidebook.js"></script>
+<script src="/tours/natchez-lower/journal.js"></script>
 <script src="/tours/natchez-lower/tour.js"></script>
 </body>
 </html>

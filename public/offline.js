@@ -30,7 +30,7 @@
 
   async function read(slug) {
     try {
-      if (!('caches' in root)) return null;
+      if (!('caches' in root) || !(await caches.has(PAID))) return null; // do not re-create an empty cache
       var c = await caches.open(PAID);
       var r = await c.match(key(slug));
       return r ? await r.json() : null;

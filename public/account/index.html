@@ -10,8 +10,6 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/tours/natchez-lower/tour.css">
 <style>
   .tour-item { background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 1.25rem; margin: 1rem 0; }
@@ -21,12 +19,9 @@
 </style>
 </head>
 <body>
-<nav class="nav">
-  <a class="nav-logo" href="/">Open<span>Ride</span>.bike</a>
-  <div class="nav-links"><a href="/natchez-trace-lower.html">Lower Trace</a></div>
-</nav>
-<main class="wrap" style="padding-top:2rem;padding-bottom:3rem;">
-  <h1 style="font-size:2.6rem;">My tours</h1>
+<header class="site-bar"><div class="wrap"><a class="wordmark" href="/">Open<span>Ride</span>.bike</a><nav aria-label="Site"><a href="/natchez-trace-lower.html">Lower Trace</a></nav></div></header>
+<main class="wrap" style="padding-top:24px;padding-bottom:48px;">
+  <h1>My tours</h1>
   <p id="msg" class="lead" role="status" aria-live="polite">Checking your account...</p>
   <div id="list"></div>
   <p id="signout-row" hidden><button type="button" class="btn ghost" id="signout">Sign out</button></p>

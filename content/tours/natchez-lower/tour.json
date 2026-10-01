@@ -9,14 +9,38 @@
       "You sleep in Vicksburg for two nights, at Canemount in Lorman for one, and in Natchez for two. Both layover days are short on purpose: the Vicksburg battlefield loop and a free day in Natchez."
     ],
     "at_a_glance": [
-      ["Length", "6 days, 5 nights, plus a Sunday night in Jackson before you start"],
-      ["Distance", "Est. 150-190 miles, depending on the options you take"],
-      ["Tour type", "Inn chain: linear, with two layover towns"],
-      ["Works for", "Inn-to-inn riders and e-bike riders (with charging checks)"],
-      ["Pace", "Moderate. Riding days of roughly 40-60 miles, layover days 0-30"],
-      ["Surface", "Paved throughout. About half on the Natchez Trace Parkway, half on state and county roads"],
-      ["Best months", "March to April, and October"],
-      ["Best schedule", "Arrive Sunday, depart Saturday"]
+      [
+        "Length",
+        "6 days, 5 nights, plus a Sunday night in Jackson before you start"
+      ],
+      [
+        "Distance",
+        "Est. 150-190 miles, depending on the options you take"
+      ],
+      [
+        "Tour type",
+        "Inn chain: linear, with two layover towns"
+      ],
+      [
+        "Works for",
+        "Inn-to-inn riders and e-bike riders (with charging checks)"
+      ],
+      [
+        "Pace",
+        "Moderate. Riding days of roughly 40-60 miles, layover days 0-30"
+      ],
+      [
+        "Surface",
+        "Paved throughout. About half on the Natchez Trace Parkway, half on state and county roads"
+      ],
+      [
+        "Best months",
+        "March to April, and October"
+      ],
+      [
+        "Best schedule",
+        "Arrive Sunday, depart Saturday"
+      ]
     ],
     "direction": "South. You ride out of Jackson through Clinton to the Trace, on to Vicksburg, then down to Natchez. Winds generally favor riding north, so expect some headwind days. The payoff is finishing in Natchez.",
     "why_sunday": "Sunday to Saturday avoids the two weak spots. The Enterprise office in Natchez is closed Sundays, which rules out a Sunday one-way rental home, and Vicksburg has few dinner options on Sunday nights. It also puts the Trace days on weekdays, when traffic is lighter.",
@@ -71,6 +95,41 @@
         "q": "What is the bad hour?",
         "a": "Somewhere on your second day in the saddle, usually a dozen or so miles in, you hit a low patch. Legs heavy, head asking why you signed up. It passes. Eat something, drink something, keep turning the pedals."
       }
+    ],
+    "key_facts": [
+      [
+        "6 days / 5 nights",
+        "Plus a Sunday night in Jackson before you start"
+      ],
+      [
+        "Est. 150-190 mi",
+        "Depends on the options you take"
+      ],
+      [
+        "Mar-Apr, Oct",
+        "Best months"
+      ],
+      [
+        "Carry your bags",
+        "No luggage transfer confirmed"
+      ]
+    ],
+    "before_you_commit": [
+      "Riding days run roughly 40-60 miles. Layover days are 0-30.",
+      "Carry your own luggage. No luggage transfer is confirmed for this route.",
+      "Canemount has six rooms, and dinner there is only what you arrange with the inn.",
+      "Some roads are unconfirmed: shoulder and traffic on MS 27 and US 61.",
+      "Book inns 6 to 8 weeks ahead for March, April and October.",
+      "E-bike riders: charge fully in Vicksburg and ask Canemount about an outlet."
+    ],
+    "buy_includes": [
+      "All six days: the route, road notes, where to eat, water and warnings",
+      "Every inn, with price ranges and phone numbers where we have a verified one",
+      "Getting to Jackson and home from Natchez, with costs and phone numbers",
+      "Conditions, e-bike and luggage notes",
+      "Save for offline on your phone, and a Today screen for each morning",
+      "Print any day, or the whole guidebook",
+      "Updates when hours or closures change. Your access does not expire."
     ]
   },
   "days": [
@@ -111,7 +170,20 @@
       "unconfirmed": [
         "Shoulder and traffic on MS 27.",
         "A lunch stop at Raymond."
-      ]
+      ],
+      "kind": "ride",
+      "tag": "Ride",
+      "title_short": "Jackson → Vicksburg",
+      "subtitle": "Ride out through Clinton to the Trace, then on to Vicksburg",
+      "surface": "Paved",
+      "climbing_ft": null,
+      "briefing": "",
+      "stages": [
+        "Ride out of Jackson through Clinton to the Natchez Trace at the Clinton Visitor Center (MP 89). About 10 miles on city and suburban streets.",
+        "South on the Trace to the MS 27 exit (MP 67).",
+        "West about 20 miles on MS 27 into Vicksburg."
+      ],
+      "guide_note": ""
     },
     {
       "n": 2,
@@ -137,7 +209,18 @@
         "The park fee is $10 per cyclist, good for 7 days. Card only, no cash.",
         "The section near the Illinois Memorial (tour stops 2 and 3) has been closed since March 2026, with no reopening date."
       ],
-      "unconfirmed": []
+      "unconfirmed": [],
+      "kind": "layover",
+      "tag": "Layover",
+      "title_short": "Vicksburg layover",
+      "subtitle": "Vicksburg layover",
+      "surface": "Paved",
+      "climbing_ft": null,
+      "briefing": "",
+      "stages": [
+        "Vicksburg National Military Park tour road: a 16-mile loop through the siege lines, with shorter 3 to 16 mile options."
+      ],
+      "guide_note": ""
     },
     {
       "n": 3,
@@ -170,6 +253,76 @@
         "Shoulder and truck traffic on US 61.",
         "Old Country Store hours (601-437-3661).",
         "Dinner for cyclists at Canemount, and the breakfast time (601-940-7206)."
+      ],
+      "kind": "ride",
+      "tag": "Longest day",
+      "title_short": "Vicksburg → Canemount",
+      "subtitle": "Vicksburg to Canemount via Port Gibson and Windsor Ruins",
+      "surface": "Paved",
+      "climbing_ft": null,
+      "briefing": "This is the long one, so get rolling right after breakfast. If you take the Trace, the morning is the quietest riding of the trip: hardwood forest, Rocky Springs, and the Sunken Trace, where the old trail is worn into a trench you can walk down into. Port Gibson is your last real town, so stock up there. Then Rodney Road takes you through the hills to Windsor Ruins. Give the columns some time, especially if the light is getting low. From there it's a short roll to Canemount, and tonight there's no town nearby, so dinner is whatever you arranged or carried in.",
+      "guide_note": "",
+      "hardest": true,
+      "route_options": [
+        {
+          "id": "trace",
+          "label": "Trace route",
+          "miles": "57-62",
+          "checked": true,
+          "summary": "Back along MS 27 and down the Trace. Quieter and prettier, passes Rocky Springs and the Sunken Trace. Also long.",
+          "stage1": "Back along MS 27 and down the Trace to Port Gibson, passing Rocky Springs and the Sunken Trace. Est. 57-62 miles for the day."
+        },
+        {
+          "id": "us61",
+          "label": "US 61",
+          "miles": "42-47",
+          "checked": false,
+          "summary": "Shorter, but mostly a four-lane divided highway. Not recommended until someone has ridden or driven it.",
+          "stage1": "US 61 south to Port Gibson. Shoulder and truck traffic are unconfirmed. Est. 42-47 miles for the day."
+        }
+      ],
+      "stages": [
+        "Port Gibson is your last real town. Stock up here.",
+        "MS 552 (Rodney Road) to Windsor Ruins, the 23 columns left of an 1861 mansion.",
+        "On to Canemount, about 2 miles north of Alcorn State on the same road."
+      ],
+      "stories": [
+        {
+          "where": "Trace route · Rocky Springs",
+          "title": "The town that emptied out",
+          "teaser": "A busy farm town, then war, fever and worn-out soil.",
+          "body": "Rocky Springs was a thriving cotton town before the Civil War. War, yellow fever, the boll weevil and eroded soil emptied it, one blow after another. Today the old Methodist church and the cemetery are most of what is left. There is shade here, but water has been reported off; check before you count on it.",
+          "sources": [],
+          "verified": false,
+          "photo": ""
+        },
+        {
+          "where": "Trace route · Sunken Trace",
+          "title": "Worn into the ground by walking",
+          "teaser": "The old trail, cut deep by boatmen heading home.",
+          "body": "Before steamboats, flatboat crews floated goods down the Mississippi to Natchez, sold the boats for lumber and walked home north on the Trace. Years of feet and hooves wore the soft loess soil into a trench. A short walk from the parkway puts you in it. Leave the bike at the pull-off.",
+          "sources": [],
+          "verified": false,
+          "photo": ""
+        },
+        {
+          "where": "Port Gibson",
+          "title": "“Too beautiful to burn”",
+          "teaser": "The town Grant's army passed through in 1863.",
+          "body": "In May 1863, Grant's army fought its way through Port Gibson on the way to Vicksburg. Local tradition says Grant called the town too beautiful to burn. Whether he said it or not, the town kept its churches and old houses. Look up at the gold hand on the Presbyterian steeple, pointing at the sky.",
+          "sources": [],
+          "verified": false,
+          "photo": ""
+        },
+        {
+          "where": "MS 552 · Windsor Ruins",
+          "title": "Twenty-three columns in a field",
+          "teaser": "The biggest mansion in Mississippi, gone in one night.",
+          "body": "Windsor was finished in 1861, and its owner died within weeks of moving in. The house came through the war and burned in 1890, reportedly from a guest's dropped cigar. Only the columns are left standing. Come late in the day when the light is low. There is no water and no restroom here.",
+          "sources": [],
+          "verified": false,
+          "photo": ""
+        }
       ]
     },
     {
@@ -206,7 +359,20 @@
       "warnings": [
         "No food on the Trace between Lorman and Natchez."
       ],
-      "unconfirmed": []
+      "unconfirmed": [],
+      "kind": "ride",
+      "tag": "Best Trace day",
+      "title_short": "Canemount → Natchez",
+      "subtitle": "Canemount to Natchez",
+      "surface": "Paved",
+      "climbing_ft": 1800,
+      "briefing": "",
+      "stages": [
+        "Seven miles east on MS 552 to the Trace at MP 30. The first 5 miles from Alcorn have a wide shoulder.",
+        "Thirty miles south on the Trace to the end of the parkway.",
+        "About 2.5 miles into Natchez."
+      ],
+      "guide_note": ""
     },
     {
       "n": 5,
@@ -228,7 +394,19 @@
       "water": "",
       "side_trips": [],
       "warnings": [],
-      "unconfirmed": []
+      "unconfirmed": [],
+      "kind": "layover",
+      "tag": "Layover",
+      "title_short": "Natchez layover",
+      "subtitle": "Natchez layover",
+      "surface": "Paved",
+      "climbing_ft": 950,
+      "briefing": "",
+      "stages": [
+        "The ride: a loop of about 30 miles combining the Trace and the Mississippi River Trail, with about 950 feet of climbing.",
+        "Or an easy spin on downtown streets and the bluff trail."
+      ],
+      "guide_note": ""
     },
     {
       "n": 6,
@@ -249,7 +427,15 @@
       "warnings": [
         "The Enterprise office in Natchez closes at noon on Saturday."
       ],
-      "unconfirmed": []
+      "unconfirmed": [],
+      "kind": "travel",
+      "tag": "Travel home",
+      "title_short": "Natchez → Home",
+      "subtitle": "Home",
+      "surface": "Paved",
+      "climbing_ft": null,
+      "briefing": "",
+      "guide_note": ""
     }
   ],
   "lodging": {
@@ -266,7 +452,10 @@
         "url": "https://www.tripadvisor.com/Hotel_Review-g43833-d78686-Reviews-Old_Capitol_Inn-Jackson_Mississippi.html",
         "maps_query": "Old Capitol Inn, Jackson, MS",
         "backup": "Fairview Inn ($263-442). Its restaurant has no Sunday dinner.",
-        "unconfirmed": ["Bike storage"]
+        "unconfirmed": [
+          "Bike storage"
+        ],
+        "short": "Old Capitol"
       },
       {
         "night": "1-2 (Mon-Tue)",
@@ -280,7 +469,12 @@
         "maps_query": "Cedar Grove Mansion Inn, Vicksburg, MS",
         "backup": "The Corners Mansion Inn ($181-197). Breakfast is not until 9:00, too late for Day 3.",
         "note": "Cedar Grove reopened under new owners in April 2025.",
-        "unconfirmed": ["Room condition", "Earliest breakfast", "Bike storage"]
+        "unconfirmed": [
+          "Room condition",
+          "Earliest breakfast",
+          "Bike storage"
+        ],
+        "short": "Cedar Grove"
       },
       {
         "night": "3 (Wed)",
@@ -295,7 +489,13 @@
         "maps_query": "Canemount Plantation Inn, Lorman, MS",
         "backup": "None. There is nothing else in Lorman.",
         "note": "Book direct by phone or the inn's reservation page. It is not on Booking.com. Six rooms, no children under 14.",
-        "unconfirmed": ["Breakfast time", "Dinner for cyclists and price", "Bike storage", "E-bike charging"]
+        "unconfirmed": [
+          "Breakfast time",
+          "Dinner for cyclists and price",
+          "Bike storage",
+          "E-bike charging"
+        ],
+        "short": "Canemount"
       },
       {
         "night": "4-5 (Thu-Fri)",
@@ -308,7 +508,11 @@
         "url": "https://www.opentable.com/r/the-castle-at-dunleith-natchez",
         "maps_query": "Dunleith Historic Inn, Natchez, MS",
         "backup": "Natchez Grand Hotel ($111-248), on the bluff, walking distance to 19 restaurants.",
-        "unconfirmed": ["Rates", "Bike storage"]
+        "unconfirmed": [
+          "Rates",
+          "Bike storage"
+        ],
+        "short": "Dunleith"
       }
     ],
     "budget": "Budget options: Hampton Inn & Suites across from the Vicksburg battlefield entrance ($140-236) and Hampton Inn & Suites Natchez, walkable to downtown ($154-284).",
@@ -401,5 +605,14 @@
       "date": "2026-09-30",
       "text": "Tour page published. Road status, restaurant hours and the Vicksburg closure were checked on this date."
     }
-  ]
+  ],
+  "phones": {
+    "emergency": "911",
+    "extra": [
+      {
+        "label": "Old Country Store, Lorman",
+        "phone": "601-437-3661"
+      }
+    ]
+  }
 }
