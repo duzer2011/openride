@@ -1281,6 +1281,34 @@
       display: block
     }
 
+    .auth-info {
+      display: none;
+      background: #f0f7f1;
+      border: 1px solid #b7d4bb;
+      color: #1f4a28;
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.82rem;
+      margin-bottom: 0.75rem
+    }
+
+    .auth-info.show {
+      display: block
+    }
+
+    .auth-resend {
+      display: none;
+      text-align: center;
+      margin: 0 0 0.75rem;
+      font-size: 0.82rem
+    }
+
+    .auth-resend a {
+      color: var(--forest);
+      text-decoration: underline;
+      cursor: pointer
+    }
+
     /* -- ANIMATIONS -------------------------- */
     @keyframes fadeUp {
       from {
@@ -1514,7 +1542,9 @@
         <button class="auth-tab active" id="tabSignup" onclick="switchTab('signup')">Create Account</button>
         <button class="auth-tab" id="tabLogin" onclick="switchTab('login')">Sign In</button>
       </div>
-      <div class="auth-error" id="authError"></div>
+      <div class="auth-error" id="authError" role="alert"></div>
+      <div class="auth-info" id="authInfo" role="status"></div>
+      <div class="auth-resend" id="authResendRow"><a href="#" id="authResend" onclick="resendConfirm();return false;">Resend confirmation email</a></div>
       <div id="signupFields">
         <div class="auth-field">
           <label class="auth-label">Your Name</label>
@@ -1550,9 +1580,10 @@
       if (session?.user) { currentUser = session.user; await loadProfile(session.user.id); renderNavLoggedIn(); }
       sb.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
-          currentUser = session.user; await loadProfile(session.user.id); renderNavLoggedIn(); closeAuth();
-          const redirect = new URLSearchParams(window.location.search).get('redirect');
+          currentUser = session.user; await ensureProfile(session.user); renderNavLoggedIn(); closeAuth();
+          const redirect = safePath(new URLSearchParams(window.location.search).get('redirect'));
           if (redirect) { window.location.href = redirect; return; }
+          if (!pendingAnswers) pendingAnswers = takePendingAnswers();
           if (pendingAnswers && typeof renderGuide === 'function') { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("? Your tour plan is saved! Head to your profile to see it  and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
         }
         if (event === 'SIGNED_OUT') { currentUser = null; currentProfile = null; renderNavLoggedOut(); }
@@ -1583,9 +1614,10 @@
     // -- AUTH MODAL ------------------------------------------------------------
     var authMode = 'signup';
     function openAuth(mode = 'signup', answers = null) { authMode = mode; if (answers) pendingAnswers = answers; switchTab(mode); document.getElementById('authModal').classList.add('open'); setTimeout(() => document.getElementById('authEmail').focus(), 100); }
-    function closeAuth() { document.getElementById('authModal').classList.remove('open'); document.getElementById('authError').classList.remove('show'); }
+    function closeAuth() { document.getElementById('authModal').classList.remove('open'); clearAuthMessages(); }
     function switchTab(mode) {
       authMode = mode;
+      clearAuthMessages();
       document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
       document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
       document.getElementById('signupFields').style.display = mode === 'signup' ? '' : 'none';
@@ -1593,26 +1625,105 @@
       document.getElementById('authTitle').textContent = mode === 'signup' ? 'Save Your Tour Plan' : 'Welcome Back';
       document.getElementById('authSub').textContent = mode === 'signup' ? 'Create a free account to save your itinerary, earn badges, and join the OpenRide community.' : 'Sign in to access your saved tours and profile.';
     }
+    // -- EMAIL CONFIRMATION ------------------------------------------------------
+    // Supabase "Confirm email" is on: signUp returns a user but no session until the link in the email is clicked.
+    const AUTH_LABEL = { signup: "Create My Free Account ?", login: "Sign In ?" };
+    let pendingConfirmEmail = '', resendTimer = null;
+    // Only same-site paths are allowed as a return address ("/checkout?route=x" yes, "//evil.com" and "https://..." no).
+    function safePath(p) { return (typeof p === 'string' && p.charAt(0) === '/' && p.charAt(1) !== '/' && p.indexOf('\\') < 0) ? p : null; }
+    // The page the rider came from: the ?redirect= they were sent here with, else this page without the login flag.
+    function cameFrom() {
+      const q = new URLSearchParams(window.location.search);
+      const r = safePath(q.get('redirect'));
+      if (r) return r;
+      q.delete('login'); q.delete('redirect');
+      const rest = q.toString();
+      return window.location.pathname + (rest ? '?' + rest : '');
+    }
+    function confirmRedirect() { return window.location.origin + cameFrom(); }
+    function showAuthInfo(msg) { const el = document.getElementById('authInfo'); el.textContent = msg; el.classList.add('show'); }
+    function showResend(on) { document.getElementById('authResendRow').style.display = on ? 'block' : 'none'; }
+    function clearAuthMessages() { ['authError', 'authInfo'].forEach(id => document.getElementById(id).classList.remove('show')); showResend(false); }
+    function stashPendingAnswers() { try { if (pendingAnswers) localStorage.setItem('openride:pending-answers', JSON.stringify(pendingAnswers)); } catch (e) { /* private mode */ } }
+    function takePendingAnswers() { try { const v = localStorage.getItem('openride:pending-answers'); if (v) { localStorage.removeItem('openride:pending-answers'); return JSON.parse(v); } } catch (e) { /* ignore */ } return null; }
+    // A profile row is created from what the rider typed at signup, which travels with the account (user_metadata) so it survives the confirm round trip.
+    async function ensureProfile(user) {
+      await loadProfile(user.id);
+      const md = user.user_metadata || {};
+      if (!currentProfile && md.signup === 'web') {
+        const row = { id: user.id };
+        if (md.rider_name) row.rider_name = md.rider_name;
+        if (md.bike_type) row.bike_type = md.bike_type;
+        if (md.lodging_pref) row.lodging_pref = md.lodging_pref;
+        if (md.seasons) row.seasons = md.seasons;
+        const { error } = await sb.from('profiles').upsert(row, { onConflict: 'id' });
+        if (!error) await loadProfile(user.id);
+      }
+    }
+    async function resendConfirm() {
+      const email = (document.getElementById('authEmail').value || pendingConfirmEmail || '').trim();
+      if (!email) { showAuthError('Enter your email above first.'); return; }
+      const link = document.getElementById('authResend');
+      if (link.dataset.busy) return;
+      link.dataset.busy = '1';
+      document.getElementById('authError').classList.remove('show');
+      try {
+        const { error } = await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: confirmRedirect() } });
+        if (error) throw error;
+        showAuthInfo('Sent. Check your inbox, and your spam folder, for a new confirmation link.');
+      } catch (err) {
+        showAuthError(/rate|limit|seconds/i.test((err && err.message) || '') ? 'Please wait a minute before asking for another email.' : ((err && err.message) || 'Could not resend the email.'));
+      }
+      let left = 60;
+      link.textContent = 'Resend confirmation email (' + left + 's)';
+      clearInterval(resendTimer);
+      resendTimer = setInterval(() => {
+        left--;
+        if (left <= 0) { clearInterval(resendTimer); delete link.dataset.busy; link.textContent = 'Resend confirmation email'; }
+        else link.textContent = 'Resend confirmation email (' + left + 's)';
+      }, 1000);
+    }
+
     async function submitAuth() {
       const email = document.getElementById('authEmail').value.trim(), password = document.getElementById('authPassword').value, name = document.getElementById('authName')?.value.trim(), btn = document.getElementById('authSubmit');
       if (!email || !password) { showAuthError('Please enter your email and password.'); return; }
       if (authMode === 'signup' && password.length < 6) { showAuthError('Password must be at least 6 characters.'); return; }
-      btn.disabled = true; btn.textContent = authMode === 'signup' ? 'Creating account...' : 'Signing in...'; document.getElementById('authError').classList.remove('show');
+      btn.disabled = true; btn.textContent = authMode === 'signup' ? 'Creating account...' : 'Signing in...'; clearAuthMessages();
+      pendingConfirmEmail = email;
       try {
         if (authMode === 'signup') {
-          const { data, error } = await sb.auth.signUp({ email, password }); if (error) throw error;
-          if (data.user) {
-            const profileData = { id: data.user.id };
-            if (name) profileData.rider_name = name;
-            if (pendingAnswers) {
-              profileData.bike_type = pendingAnswers.ebike ? 'ebike' : null;
-              profileData.lodging_pref = pendingAnswers.lodging;
-              profileData.seasons = [pendingAnswers.season];
-            }
-            await sb.from('profiles').upsert(profileData, { onConflict: 'id' });
+          const meta = { signup: 'web' };
+          if (name) meta.rider_name = name;
+          if (pendingAnswers) { meta.bike_type = pendingAnswers.ebike ? 'ebike' : null; meta.lodging_pref = pendingAnswers.lodging; meta.seasons = [pendingAnswers.season]; }
+          const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: confirmRedirect(), data: meta } });
+          if (error) throw error;
+          if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+            // Supabase hides whether an address is taken: a confirmed account comes back as a user with no identities.
+            switchTab('login'); document.getElementById('authEmail').value = email;
+            btn.disabled = false; btn.textContent = AUTH_LABEL.login;
+            showAuthError('That email already has an account. Sign in instead.');
+            return;
           }
-        } else { const { error } = await sb.auth.signInWithPassword({ email, password }); if (error) throw error; }
-      } catch (err) { showAuthError(err.message || 'Something went wrong.'); btn.disabled = false; btn.textContent = authMode === 'signup' ? 'Create My Free Account ?' : 'Sign In ?'; }
+          if (!data.session) {
+            // "Confirm email" is on: no session until the link is clicked. Stop the spinner, keep the email, tell them what to do.
+            stashPendingAnswers();
+            btn.disabled = false; btn.textContent = AUTH_LABEL.signup;
+            showAuthInfo('Check your email to confirm your account, then come back and sign in.');
+            showResend(true);
+            return;
+          }
+          await ensureProfile(data.user); // confirm off: there is a session already
+        } else {
+          const { error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+        }
+      } catch (err) {
+        btn.disabled = false; btn.textContent = authMode === 'signup' ? AUTH_LABEL.signup : AUTH_LABEL.login;
+        if (err && (err.code === 'email_not_confirmed' || /not confirmed/i.test(err.message || ''))) {
+          showAuthError('Confirm your email first. We sent you a link when you signed up.');
+          showResend(true);
+        } else showAuthError((err && err.message) || 'Something went wrong.');
+      }
     }
     function showAuthError(msg) { const el = document.getElementById('authError'); el.textContent = msg; el.classList.add('show'); }
     document.getElementById('authModal').addEventListener('click', e => { if (e.target === document.getElementById('authModal')) closeAuth(); });
@@ -1623,6 +1734,13 @@
       setTimeout(() => {
         const params = new URLSearchParams(window.location.search);
         if (params.get('login') === 'true') openAuth('login');
+        const h = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+        if (h.get('error_code') || h.get('error')) {
+          openAuth('login');
+          showAuthError(h.get('error_code') === 'otp_expired' ? 'That confirmation link has expired or was already used. Sign in, or resend the confirmation email.' : (h.get('error_description') || 'That link did not work.'));
+          showResend(true);
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
       }, 300);
     });
 
