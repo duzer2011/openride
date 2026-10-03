@@ -1584,7 +1584,7 @@
           const redirect = safePath(new URLSearchParams(window.location.search).get('redirect'));
           if (redirect) { window.location.href = redirect; return; }
           if (!pendingAnswers) pendingAnswers = takePendingAnswers();
-          if (pendingAnswers && typeof renderGuide === 'function') { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("? Your tour plan is saved! Head to your profile to see it  and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
+          if (pendingAnswers && typeof renderGuide === 'function') { await saveTour(pendingAnswers); pendingAnswers = null; renderGuide("Your tour plan is saved. Head to your profile to see it, and your first badge is waiting.\n\n[QR: View My Profile | Keep Planning]"); }
         }
         if (event === 'SIGNED_OUT') { currentUser = null; currentProfile = null; renderNavLoggedOut(); }
       });
@@ -1621,13 +1621,13 @@
       document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
       document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
       document.getElementById('signupFields').style.display = mode === 'signup' ? '' : 'none';
-      document.getElementById('authSubmit').textContent = mode === 'signup' ? 'Create My Free Account ?' : 'Sign In ?';
+      document.getElementById('authSubmit').textContent = mode === 'signup' ? 'Create My Free Account →' : 'Sign In →';
       document.getElementById('authTitle').textContent = mode === 'signup' ? 'Save Your Tour Plan' : 'Welcome Back';
       document.getElementById('authSub').textContent = mode === 'signup' ? 'Create a free account to save your itinerary, earn badges, and join the OpenRide community.' : 'Sign in to access your saved tours and profile.';
     }
     // -- EMAIL CONFIRMATION ------------------------------------------------------
     // Supabase "Confirm email" is on: signUp returns a user but no session until the link in the email is clicked.
-    const AUTH_LABEL = { signup: "Create My Free Account ?", login: "Sign In ?" };
+    const AUTH_LABEL = { signup: "Create My Free Account →", login: "Sign In →" };
     let pendingConfirmEmail = '', resendTimer = null;
     // Only same-site paths are allowed as a return address ("/checkout?route=x" yes, "//evil.com" and "https://..." no).
     function safePath(p) { return (typeof p === 'string' && p.charAt(0) === '/' && p.charAt(1) !== '/' && p.indexOf('\\') < 0) ? p : null; }
